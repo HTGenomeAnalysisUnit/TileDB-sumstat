@@ -3,7 +3,7 @@ from dask_jobqueue import SLURMCluster as Cluster
 from dask.distributed import Client
 import click
 import cloup
-from cli.query import query
+#from cli.query import query
 from cli.ingestion import ingestion
 
 
@@ -28,7 +28,7 @@ def cli_init(ctx, workers: int, cores_w: int, memory_w: str):
 
 def main():
     cli_init.add_command(ingestion)
-    cli_init.add_command(query)
+    #cli_init.add_command(query)
     cli_init(obj={})
 
 if __name__ == "__main__":
