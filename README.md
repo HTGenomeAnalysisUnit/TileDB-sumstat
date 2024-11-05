@@ -1,2 +1,2 @@
-# TileDB-SC-QTL
-TileDB for storing and analyzing single-cell QTL data
+TileDB for single cell analysis
+
