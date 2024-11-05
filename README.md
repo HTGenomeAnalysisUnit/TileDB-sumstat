@@ -1,7 +1,5 @@
 # TileDB for single cell analysis
 
-![Licence](None)
-![Issues](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/issues)
 
 ## This is a program for the ingestion and analysis of single cell QTL data using TileDB
 
