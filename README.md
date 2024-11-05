@@ -26,4 +26,4 @@ Please have a look at the instruction below on how to contribute to this repo.
 
 ---
 
-#### Note: When you add a new feature or modify an existing one please add it to the README guidelines [HERE]([https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/docs/README.md))
+#### Note: When you add a new feature or modify an existing one please add it to the README guidelines [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/docs/README.md)
