@@ -14,12 +14,12 @@ Qeury TileDB data by cell types, genes and regions.
 @cloup.option_group(
     "Options for querying the TileDB",
     cloup.option("--uri", default = None, type=str, help = "Where to data to be created or queried is stored"),
-    cloup.option("--cells", default = None, type=str, help = "list of cells to interrogate from a txt file"),
+    cloup.option("--cell_type", default = None, type=str, help = "list of cells to interrogate from a txt file"),
     cloup.option("--genes", default = None, type=str, help = "list of genes from a txt file"),
-    cloup.option("--start", default = None, type=int, help = "start position of the region to query"),
-    cloup.option("--end", default = None, type=int, help = "end position of the region to query"),
-    cloup.option("--region_list", default = None, type=str, help = "list of regions to interrogate in the format start-end taken from a txt file"),
-    cloup.option("--out", default = "out", type=str, help = "output folder where queries will be stored")
+    cloup.option("--positions", default = None, type=int, help = "start position of the region to query"),
+    cloup.option("--SNP_list", default = None, type=str, help = "list of regions to interrogate in the format start-end taken from a txt file"),
+    cloup.option("--pvalue-sig", default = None, type=str, help = "output folder where queries will be stored"),
+    cloup.option("--out", default = "out", type=str, help = "output folder where queries will be stored"),
 )
 @cloup.option_group(
     "Options for Locusbreaker",
@@ -34,30 +34,45 @@ def query(
         uri: str,
         cells: str,
         genes: str,
-        start: int,
-        end: int,
-        region_list: str,
+        positions: str,
+        SNP_list: str,
         out: str,
         locusbreaker: bool,
         pvalue_sig : float,
         pvalue_limit : float,
         hole_size : int
         ):
-
     
-    l_cells = open(cells, "r").read().rstrip().split("\n")
-    l_genes = open(genes, "r").read().rstrip().split("\n")
-    if(len(l_genes)>100):
+    tiledb_s = tiledb.open(uri, mode="r")
+    cell_list = open(cells, "r").read().rstrip().split("\n")
+    gene_list = open(genes, "r").read().rstrip().split("\n")
+    
+    if(len(gene_list)>100):
         print("please give a number of genes to query not over 100")
         return
+    
+    if(SNP_list):
+        SNP_list = pd.read_csv(SNP_list)
+        position_list = SNP_list[["position"]].to_list()
+        subset_SNPs = tiledb_s.query(dims=['cell_type','position','gene'], attrs=['SNP', 'beta', 'p-value']).df[cell_list, gene_list ,position_list]
+        subset_SNPs = subset_SNPs.merge(SNP_list, on = "position")
+
+    if positions:
+        position_range= positions.split("-")
+        start = int(position_range[0])
+        end = int(position_range[1])
+        if((end - start) > 20000000):
+            print("region to query is too big, please provide a smaller region")
+            return
+        subset_SNPs = tiledb_s.query(dims=['cell_type','position','gene'], attrs=['SNP', 'beta', 'p-value']).df[cell_list, gene_list ,start:end]
+
     if locusbreaker:
-        tiledb_s = tiledb.open(uri, mode="r")
         tasks = []
         @delayed
         def query_gene(tiledb_data, gene, cell):
             return tiledb_s.query(return_arrow = True, dims=['position'], attrs=['SNP', 'beta','p-value']).df[cell, gene, :].to_pandas()
-        for cell in l_cells:
-            for gene in l_genes:
+        for cell in cell_list:
+            for gene in gene_list:
                 task = locus_breaker(query_gene(tiledb_s,gene,cell), out = f"{out}_{cell}_{gene}.parquet")  # Create a delayed task for each gene
                 tasks.append(task)
         
@@ -66,13 +81,3 @@ def query(
         for i in range(0, len(tasks), batch_size):
             batch = tasks[i:i+batch_size]
             batch_results = compute(*batch)  # Compute the batch
-
-    else:
-        if((end - start) > 20000000):
-            print("region to query is too big, please provide a smaller region")
-            return
-        else:
-            tiledb_s = tiledb.open(uri, mode="r")
-            tiledb_q = tiledb_s.query(return_arrow=True, dims = ["cell_type", "gene"], attrs = ["SNP", "beta", "p-value"]).df[l_cells, l_genes , start:end]
-            pyarrow.parquet.write_table(tiledb_q, f"{out}.parquet")
-
