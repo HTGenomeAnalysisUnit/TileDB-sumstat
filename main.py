@@ -3,7 +3,6 @@ from dask_jobqueue import SLURMCluster as Cluster
 from dask.distributed import Client
 import click
 import cloup
-#from cli.query import query
 from cli.ingestion import ingestion
 
 

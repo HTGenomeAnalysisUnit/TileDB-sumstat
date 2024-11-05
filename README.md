@@ -6,18 +6,7 @@
 ### Description
 
 Welcome aboard fellow developer, this is a journey we are taking for implementing a custom TileDB for single cell QTL data.
-Please have a look at the instruction below on how to contribute to this repo.
-
-### Instructions
-
-- Clone this repository
-- Create a new branch
-- Add your scripts
-- Commit and push in your branch
-- Create a pull request
-- Wait the review of the pull request for merging
-- Wait eventual CI test if any to succeed
-- Celebrate the merging
+Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/CONTRIBUTING.md) on how to contribute to this repo.
 
 ## Additional link to help you get to know TileDB and Dask more
 

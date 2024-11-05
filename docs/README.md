@@ -37,3 +37,12 @@ Example of usage
 
 ### Query
 In development.
+
+
+### Dummy file creation
+
+To create a dummy file for test like the one on Sanger you can use the script in utils/create_dummy_data.py. To run this script you can run the script like below
+
+```
+  $user12 python main.py ingestion --uri  /Users/bruno.ariano/work/HT/sanger_work/tiledb-scqtl/test_tiledb --input test_data.txt.gz --cell_type CD14
+  ```
