@@ -15,7 +15,6 @@ def process_write_chunk(chunk, SNP_list, file_stream):
         pl.col("A0").cast(pl.String),
         pl.col("A1").cast(pl.String)
     ])
-    print(chunk_polars)
 
     # Perform the join operation with Polars
     subset_SNPs_merge = chunk_polars.join(

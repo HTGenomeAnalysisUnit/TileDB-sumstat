@@ -50,12 +50,6 @@ To ingest new data into a TileDB use the ingestion option of the program. To che
 </details>
 </br>
 
-Usage example
-  ```
-  $user12 python main.py ingestion --uri /Users/bruno.ariano/work/HT/sanger_work/tiledb-scqtl/test_tiledb --input test_data.txt.gz --cell_type CD14
-  ```
-</br>
-
 ### Query and Export
 To query and export the TileDB you need to use the command exportlike shown below. Also below are the options you can see the type of query you can use and how to export the data in a csv file
 
