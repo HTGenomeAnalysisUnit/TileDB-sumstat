@@ -4,7 +4,7 @@ from dask.distributed import Client
 import click
 import cloup
 from cli.ingestion import ingestion
-
+from cli.export import export
 
 @cloup.group(name="main", help="Single cell analysis with TileDB", no_args_is_help=True)
 @cloup.option_group(
@@ -27,7 +27,7 @@ def cli_init(ctx, workers: int, cores_w: int, memory_w: str):
 
 def main():
     cli_init.add_command(ingestion)
-    #cli_init.add_command(query)
+    cli_init.add_command(export)
     cli_init(obj={})
 
 if __name__ == "__main__":
