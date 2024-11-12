@@ -110,12 +110,19 @@ python main.py export --uri dummy_tiledb_CD14 --schema
 Here we are showing how to query the TileDB created above for a series of SNPs within cell types
 
 ```
-python main.py export --uri dummy_tiledb_CD14 --snp test_data/dummy_SNPs.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_snp_CD14.csv
+python main.py export --uri dummy_tiledb_CD14 --snp test_data/dummy_SNPs.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_snp_CD14
 ```
 </br>
 
 ### Step 4 query and export data by a list of genes and cell types for all the positions
 
 ```
-python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14.csv
+python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
+```
+</br>
+
+### Step 5 run locus-breaker
+
+```
+python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
 ```

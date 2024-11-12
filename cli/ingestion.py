@@ -25,22 +25,22 @@ def ingestion(ctx, uri: str, input: str, chunk_size: int, cell_type: str):
     ctx.obj = {"uri": uri, "input": input, "chunksize": chunk_size}
     if not os.path.exists(ctx.obj["uri"]):
         create_tiledb_schema(ctx.obj["uri"])
-        for chunk in pd.read_table(input, 
+    for chunk in pd.read_table(input, 
                                 chunksize=int(chunk_size), 
                                 compression="gzip", 
                                 engine = "c", 
-                                usecols = ["variant_id","phenotype_id","slope","slope_se","af"], 
+                                usecols = ["variant_id","phenotype_id","slope","slope_se","af", "pval_nominal"], 
                                 low_memory=False,
-                                dtype={"variant_id":str, "phenotype_id":str, "slope":np.float32,"slope_se":np.float32, "af":np.float32}):
-                                chunk_harmonized = harmonize_data(chunk, cell_type)
-                                dict_type = {"cell_type":"ascii", "position":np.uint32, "SNP":"ascii", "allele0":"ascii", "allele1":"ascii", "af":np.float32, "beta":np.float32, "se":np.float32, "p-value":np.float64}
-                                tiledb.from_pandas(
-                                uri=uri,
-                                dataframe=chunk_harmonized,
-                                index_dims=["cell_type", "gene", "position"],
-                                column_types=dict_type,
-                                mode="append"
-                                )
+                                dtype={"variant_id":str, "phenotype_id":str, "slope":np.float32,"slope_se":np.float32, "af":np.float32, "pval_nominal":np.float64}):
+                    chunk_harmonized = harmonize_data(chunk, cell_type)
+                    dict_type = {"cell_type":"ascii", "position":np.uint32, "SNP":"ascii", "allele0":"ascii", "allele1":"ascii", "af":np.float32, "beta":np.float32, "se":np.float32, "p-value":np.float64}
+                    tiledb.from_pandas(
+                    uri=uri,
+                    dataframe=chunk_harmonized,
+                    index_dims=["cell_type", "gene", "position"],
+                    column_types=dict_type,
+                    mode="append"
+                    )
                                 
     # Ingest data into TileDB
    

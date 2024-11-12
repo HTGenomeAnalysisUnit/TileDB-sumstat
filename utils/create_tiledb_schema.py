@@ -7,7 +7,7 @@ def create_tiledb_schema(uri):
     dom = tiledb.Domain(
         tiledb.Dim(name="cell_type", dtype="ascii",  var=True, filters=tiledb.FilterList([tiledb.LZ4Filter(level=5)]) ),
         tiledb.Dim(name="gene",dtype="ascii", var=True, filters=tiledb.FilterList([tiledb.LZ4Filter(level=5)]) ),
-        tiledb.Dim(name="position", domain = pos_domain, dtype=np.uint32, filters=tiledb.FilterList([tiledb.LZ4Filter(level=5)]) )
+        tiledb.Dim(name="position", domain = pos_domain, dtype=np.uint32, filters=tiledb.FilterList([tiledb.LZ4Filter(level=5)]))
     )
     schema = tiledb.ArraySchema(
         domain=dom,
