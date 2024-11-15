@@ -29,11 +29,21 @@ def create_dummy_data(num_snps, num_snps_gene, out_csv):
         for _ in range(num_snps_gene):
             # Ensure unique variant_id
             while True:
-                variant_id = f"chr20_{np.random.randint(1, num_snps)}_" \
-                             f"{np.random.choice(['A', 'T', 'C', 'G'])}_{np.random.choice(['A', 'T', 'C', 'G'])}"
-                if variant_id not in generated_variant_ids:
+                pos = np.random.randint(1, num_snps)
+                a1 = np.random.choice(['A', 'T', 'C', 'G'])
+                a2 = np.random.choice(['A', 'T', 'C', 'G'])
+                while a1==a2:
+                    a1 = np.random.choice(['A', 'T', 'C', 'G'])
+                    a2 = np.random.choice(['A', 'T', 'C', 'G'])
+                
+                variant_id = f"chr20_{pos}_{a1}_{a2}"
+                variant_reverse_id = f"chr20_{pos}_{a2}_{a1}"
+
+                if variant_id not in generated_variant_ids and variant_reverse_id not in generated_variant_ids:
                     generated_variant_ids.add(variant_id)
+                    generated_variant_ids.add(variant_reverse_id)
                     break
+                
             
             # Generate other columns with dummy data
             start_distance = np.random.randint(-500000, 500000)

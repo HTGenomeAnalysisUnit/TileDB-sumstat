@@ -1,5 +1,5 @@
 #Create Dask cluster
-from dask_jobqueue import SLURMCluster as Cluster
+from dask_jobqueue import LSFCluster as Cluster
 from dask.distributed import Client
 import click
 import cloup
@@ -10,7 +10,7 @@ from cli.export import export
 @cloup.option_group(
     "Dask cluster options",
     cloup.option("--workers", default = None, type=int, help = "Number of workers to use in the Dask cluster"),
-    cloup.option("--cores_w", default = 2, type=int, help = "Number of core to use per single worker"),
+    cloup.option("--cores_w", default = 1, type=int, help = "Number of core to use per single worker"),
     cloup.option("--memory_w", default = "8", type=str, help = "Number of GB to give as memory for each worker")
 )
 

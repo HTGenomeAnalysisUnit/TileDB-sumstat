@@ -1,13 +1,18 @@
+#Function writte in polars to intersect a list of SNP in input with a TileDB chunk
 import polars as pl
+import dask.delayed as delayed
+
+@delayed
 def process_write_chunk(chunk, SNP_list, file_stream):
     SNP_list_polars = pl.DataFrame(SNP_list)
     chunk_polars = pl.DataFrame(chunk)
+    #Split SNPs in realite fields
     chunk_polars = chunk_polars.with_columns(
         pl.col("SNP").str.split_exact("_", 3)
         .struct.rename_fields(["pos",'A0','A1'])
         .alias("fields")
     ).unnest('fields')
-    
+    #Change types of dataframe
     chunk_polars = chunk_polars.with_columns([
         pl.col("position").cast(pl.UInt32),
         pl.col("A0").cast(pl.String),
