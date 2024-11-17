@@ -48,6 +48,10 @@ def export(
     
     #Open connection with TileDB
     tiledb_export = tiledb.open(uri, mode="r")
+    #Print only the schema of the tiledb
+    if schema:
+        print(tiledb_export.schema)
+        exit()
 
     #Get list of genes, cell type and positions or create ones
     unique_positions = slice(None)
@@ -58,12 +62,6 @@ def export(
         gene_arrow = tiledb_export.query(return_arrow = True, dims=['gene']).df[cell_list, :, unique_positions]
         gene_array = gene_arrow['gene']
         gene_list = list(set(gene_array.to_pylist()))
-
-
-    #Print only the schema of the tiledb
-    if schema:
-        print(tiledb_export.schema)
-        exit()
 
     #Intersect the tiledb with a list of SNPs
     if snp: 

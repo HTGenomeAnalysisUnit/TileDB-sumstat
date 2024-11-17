@@ -1,5 +1,5 @@
 #Create Dask cluster
-from dask_jobqueue import LSFCluster as Cluster
+from dask_jobqueue import SLURMCluster as Cluster
 from dask.distributed import Client
 import click
 import cloup

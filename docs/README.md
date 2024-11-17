@@ -90,7 +90,7 @@ To give an idea on how this program works we created a series of script and dumm
 To test how to ingest data you can use the below command which use all the options described above:
 
 ```
-python main.py ingestion --uri dummy_tiledb_CD14 --input test_data/dummy_out.tsv.gz --cell_type CD14
+python main.py ingestion --uri dummy_tiledb_CD14 --list_files list_files.txt
 ```
 This should create a TileDB in a few minutes (depending on how fast your file system is in terms of IO).
 
@@ -125,4 +125,10 @@ python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.
 
 ```
 python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
+```
+
+### Step 6 run locus-breaker with Dask
+
+```
+python main.py --workers 6 --memory_w 15 export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
 ```
