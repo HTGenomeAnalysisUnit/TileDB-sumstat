@@ -1,5 +1,6 @@
 # TileDB for single cell analysis
 
+<img width="345" alt="Screenshot 2024-11-17 at 20 47 08" src="https://github.com/user-attachments/assets/cd7ffb0e-1d58-41a9-9b86-d29420849111">
 
 ## This is a program for the ingestion and analysis of single cell QTL data using TileDB
 
