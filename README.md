@@ -9,7 +9,7 @@
 Welcome aboard fellow developer, this is a journey we are taking for implementing a custom TileDB for single cell QTL data.
 Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/CONTRIBUTING.md) on how to contribute to this repo.
 
-## Additional link to help you get to know TileDB and Dask more
+## Additional link to help you get to know TileDB, Dask and Polars more
 
 - [TileDB](https://tiledb.com/)
 - [Dask](https://www.dask.org/)
