@@ -4,7 +4,7 @@
 This program works using. python on the Sanger cluster using the tiledb conda environment. This program consists of 2 main subcommands called ingestion and export. The ingestion is used in import new data into an axisting or a new TileDB while the export can be used to query the data and export in different format. This program makes also optionally use of Dask for accelerate the computation. To get a menu of the main parameters and commands available run a script like below.
 
 ```
-$user12 python main.py
+python main.py
 
 Usage: main.py [OPTIONS] COMMAND [ARGS]...
 
@@ -20,13 +20,13 @@ Other options:
 
 Commands:
   ingestion  Ingest single cell QTL with TileDB
-  export  Query the TileDb and export the data in csv format
+  export     Query the TileDb and export the data in csv format
 ```
 </br>
 
 
 ## Ingestion
-To ingest new data into a TileDB use the ingestion option of the program. To check all the possible option run
+To ingest new data into a TileDB use the ```ingestion``` option of the program. To check all the possible option that can be given below.
 
 ``` python main.py ingestion --help```
 
@@ -42,7 +42,7 @@ To ingest new data into a TileDB use the ingestion option of the program. To che
   --cell_type TEXT   The celltype to ingest
 
   Optional parameters:
-  --chunk_size TEXT  The number of rows to ingest at once
+  --batch_size TEXT  The number of rows form a file to ingest at once(Don't touch this parameter unless you know how ot will affect both the memory of the process and the TileDB itself).
 
   Other options:
   --help             Show this message and exit.
@@ -64,24 +64,29 @@ Usage: main.py export [OPTIONS]
   Qeury TileDB database and export data.
 
 Options for querying the TileDB:
-  --uri TEXT          Where to data to be created or queried is stored
-  --schema            Print the schema of a tiledb
-  --cell_types TEXT   List of cells to interrogate taken from a txt file
-  --genes TEXT        List of genes taken from a txt file
-  --snp TEXT          List of SNPs to interrogate taken from a txt file. Please
-                      check README for details on the format of this file
-  --output_path TEXT  Output path with file name where results will be stored
+  --uri TEXT            Where to data to be created or queried is stored
+  --schema              Print the schema of a tiledb
+  --cell_file TEXT      List of cells to interrogate taken from a txt file
+  --gene_file TEXT      List of genes taken from a txt file
+  --snp TEXT            List of SNPs to interrogate taken from a txt file.
+                        Please check the example file in test_data/dummy_SNPs.txt for details on the format of this file
+  --output_path TEXT    Output path with file name where results will be stored
 
+Options for Locusbreaker:
+  --locusbreaker        Option to run locusbreaker
+  --pvalue-sig FLOAT    P-value threshold to use for filtering the data (default: 5e-8)
+  --pvalue-limit FLOAT  P-value threshold for loci borders (default: 5e-6)
+  --hole-size INTEGER   Minimum pair-base distance between SNPs in different
+                        loci (default: 250000)
 Other options:
   --help              Show this message and exit.
 ```
 </details>
 </br>
 
-
 ## Dry example run 
 
-To give an idea on how this program works we created a series of script and dummy data for you to test the program. Please keep in mind that for running these example you need at least 15 GB of memory on your computer
+To give an idea on how this program works we created a series of script and dummy data for you to test the program. Please keep in mind that for running these example you need at least 15 GB of memory on your computer and you need also the conda environment activated
 
 </br>
 
@@ -90,10 +95,8 @@ To give an idea on how this program works we created a series of script and dumm
 To test how to ingest data you can use the below command which use all the options described above:
 
 ```
-python main.py ingestion --uri dummy_tiledb_CD14 --list_files list_files.txt
+python main.py ingestion --uri dummy_tiledb_CD14 --list_files test_data/list_files.txt
 ```
-This should create a TileDB in a few minutes (depending on how fast your file system is in terms of IO).
-
 </br>
 
 ### Step 2 investigate the schema of the TileDB
@@ -103,6 +106,34 @@ To get details on how the TileDB you created is made run the following command:
 ```
 python main.py export --uri dummy_tiledb_CD14 --schema
 ```
+<details>
+  <summary>Schema of the file</summary>
+
+```
+ArraySchema(
+  domain=Domain(*[
+    Dim(name='cell_type', domain=('', ''), tile=None, dtype='|S0', var=True, filters=FilterList([LZ4Filter(level=5), ])),
+    Dim(name='gene', domain=('', ''), tile=None, dtype='|S0', var=True, filters=FilterList([LZ4Filter(level=5), ])),
+    Dim(name='position', domain=(1, 3000000000), tile=3000000000, dtype='uint32', filters=FilterList([LZ4Filter(level=5), ])),
+  ]),
+  attrs=[
+    Attr(name='SNP', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='af', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='beta', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='se', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='allele0', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='allele1', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+    Attr(name='p-value', dtype='float64', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
+  ],
+  cell_order='row-major',
+  tile_order='row-major',
+  capacity=10000,
+  sparse=True,
+  allows_duplicates=True,
+)
+```
+</details>
+This will print the schema of the TileDB created.
 </br>
 
 ### Step 3 query and export data by a list of SNPs
@@ -126,9 +157,11 @@ python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.
 ```
 python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
 ```
+This will create 2 files in txt format. One containing the the limit of each clumped region and another file with all the positions included in each independent region defined by significant SNPs.
 
 ### Step 6 run locus-breaker with Dask
 
+To run both the ingestion and locusbreaker on parallel workers using Dask you can use the --workers parameters to define how many you want to use like described in the command below.
 ```
 python main.py --workers 6 --memory_w 15 export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
 ```
