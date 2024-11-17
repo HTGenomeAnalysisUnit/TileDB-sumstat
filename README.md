@@ -13,6 +13,7 @@ Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/
 
 - [TileDB](https://tiledb.com/)
 - [Dask](https://www.dask.org/)
+- [Polars](https://pola.rs/)
 
 ---
 
