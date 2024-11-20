@@ -32,6 +32,7 @@ def locus_breaker(
 
     # Filter rows based on the p_limit threshold
     tiledb_data = tiledb_data[tiledb_data["p-value"] < pvalue_limit]
+    print(tiledb_data)
     
     # If no rows remain after filtering, return an empty DataFrame
     if tiledb_data.empty:

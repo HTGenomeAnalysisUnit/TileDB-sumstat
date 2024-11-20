@@ -55,7 +55,7 @@ def export(
     if gene_file:
         gene_list = open(gene_file, "r").read().rstrip().split("\n")
     else:
-        gene_arrow = tiledb_export.query(return_arrow = True, dims=['gene']).df[cell_list, :, unique_positions]
+        gene_arrow = tiledb_export.query(return_arrow = True, dims=['gene'], attrs=[]).df[cell_list, :, unique_positions]
         gene_array = gene_arrow['gene']
         gene_list = list(set(gene_array.to_pylist()))
 
@@ -79,29 +79,31 @@ def export(
                 for chunk in tiledb_iterator:
                     process_write_chunk(chunk, snp_list, f)
         print(f"Saved filtered summary statistics by SNPs in {output_path}.csv")
-    
+
     elif locusbreaker:
         print("Starting LocusBreaker")
         tasks = []
         #Defininf the Dask functions for delayed
         @delayed
         def query_gene(tiledb_data, gene, cell):
-            return tiledb_export.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions]
+            return tiledb_data.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions]
         @delayed
-        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size):    
+        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size):
             # Call locus_breaker with the computed tiledb_data
             return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size)
         #The computation is divided and run in parallel for each cell and gene separately
         for cell in cell_list:
             for gene in gene_list:
+                #print(tiledb_export.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions])
                 task = delayed_locus_breaker(query_gene(tiledb_export, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
                 tasks.append(task)
-        
+
         #The batch size here is fixed at 10 genes-cell per time
-        batch_size = 10
+        batch_size = 1
         computed_results = []
         with Bar('Computing', fill='#', suffix='%(percent).1f%% - %(eta)ds') as bar:
             for i in range(0, len(tasks), batch_size):
+                print(tasks)
                 batch = tasks[i:i+batch_size]
                 batch_results = compute(*batch)  # Compute the batch
                 bar.next()

@@ -10,18 +10,42 @@ def harmonize_ingest_data(chunk_size, file, uri):
                                 chunksize=int(chunk_size), 
                                 compression="gzip", 
                                 engine = "c", 
-                                usecols = ["variant_id","phenotype_id","slope","slope_se","af", "pval_nominal"], 
+                                usecols = ["variant_id","start_distance","phenotype_id","slope","slope_se","af", "pval_nominal"], 
                                 low_memory=False,
-                                dtype={"variant_id":str, "phenotype_id":str, "slope":np.float32,"slope_se":np.float32, "af":np.float32, "pval_nominal":np.float64}):
+                                dtype={"variant_id":str, "start_distance":str, "phenotype_id":str, "slope":np.float32,"slope_se":np.float32, "af":np.float32, "pval_nominal":np.float64}):
         #mapping_SNP = pd.read_table(pvar_map, dtype = {"POS":np.int64})
         chunk_pl = pl.from_pandas(chunk)
+        chunk_pl = chunk_pl.with_columns(
+        pl.when(pl.col("start_distance").str.contains("vs"))
+        .then(None)
+        .otherwise(pl.col("start_distance"))
+        .alias("start_distance2")
+        )
+        vs_count = chunk_pl.filter(pl.col("start_distance2").str.contains("_vs_")).shape[0]
+        print(f"Rows with '_vs_': {vs_count}")
+        chunk_pl = chunk_pl.with_columns(
+        pl.col("start_distance2").cast(pl.Int32).alias("start_distance")
+        )
+#        chunk_pl = chunk_pl.with_columns(pl.when(pl.col("start_distance").str.contains("_vs_")).then(-500000000).otherwise(pl.col("start_distance").cast(pl.Int32)))
+#        chunk_pl = chunk_pl.with_columns(
+#        pl.when(pl.col("start_distance").str.contains("_vs_"))
+#        .then(None)  # Replace "_vs_" values with None
+#        .otherwise(pl.col("start_distance").cast(pl.Int64))  # Cast remaining to Int64
+#        .alias("start_distance")
+#        )
+#        chunk_pl = chunk_pl.with_columns(
+#        pl.when(pl.col("start_distance") == "1_vs_20")
+#        .then(-9999999999)
+#        .otherwise(pl.col("start_distance"))
+#        .cast(pl.Int64)
+#        .alias("start_distance")
+#        )
         chrompos_split = chunk_pl.with_columns(
             pl.col("variant_id").str.split_exact("_", 4)
             .struct.rename_fields(["CHROM",'POS','REF','ALT'])
             .alias("fields")
             ).unnest('fields')
     
-
         # Ensure POS columns are strings
         chrompos_split = chrompos_split.with_columns(pl.col("POS").cast(pl.Utf8))
         #mapping_SNP = pl.from_pandas(mapping_SNP)
@@ -67,6 +91,7 @@ def harmonize_ingest_data(chunk_size, file, uri):
             pos.alias("position"),
             ref.alias("allele0"),
             alt.alias("allele1"),
+            #pl.col("start_distance2").alias("start_distance"),
             new_beta.alias("beta"),
             pl.col("slope_se").alias("se"),
             pl.lit(file[1]).alias("cell_type"),  # Assuming `cell_type` is defined somewhere
@@ -76,9 +101,9 @@ def harmonize_ingest_data(chunk_size, file, uri):
 
         # Select necessary columns for the output
         chunk_processed = chrompos_split.select([
-        "cell_type", "gene", "SNP", "position", "allele0", "allele1", "af", "beta", "se", "p-value"
+        "cell_type", "gene", "SNP", "start_distance", "position", "allele0", "allele1", "af", "beta", "se", "p-value"
         ])
-        dict_type = {"cell_type":"ascii", "position":np.uint32, "SNP":"ascii", "allele0":"ascii", "allele1":"ascii", "af":np.float32, "beta":np.float32, "se":np.float32, "p-value":np.float64}
+        dict_type = {"cell_type":"ascii", "position":np.uint32, "SNP":"ascii", "allele0":"ascii", "allele1":"ascii", "start_distance":np.int32, "af":np.float32, "beta":np.float32, "se":np.float32, "p-value":np.float64}
         tiledb.from_pandas(
                         uri=uri,
                         dataframe=chunk_processed.to_pandas(),

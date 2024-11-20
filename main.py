@@ -5,7 +5,6 @@ import click
 import cloup
 from cli.ingestion import ingestion
 from cli.export import export
-
 @cloup.group(name="main", help="Single cell analysis with TileDB", no_args_is_help=True)
 @cloup.option_group(
     "Dask cluster options",
@@ -16,14 +15,15 @@ from cli.export import export
 
 @click.pass_context
 def cli_init(ctx, workers: int, cores_w: int, memory_w: str):
-
-    #Create Dask cluster
-    if not workers is None:
-        cluster = Cluster(cores = cores_w, memory=f"{memory_w} GB",interface='ib0')
-        cluster.scale(workers)
-        client = Client(cluster)
-        ctx.obj = {"dask_cluster": client}  
-        return ctx.obj
+	#Create Dask cluster
+	if not workers is None:
+		cluster = Cluster(cores = cores_w, memory=f"{memory_w} GB")
+		print(f"Cluster created: {cluster}")
+		cluster.scale(workers)
+		client = Client(cluster)
+		print(f"Dask dashboard available at {client.dashboard_link}")
+		ctx.obj = {"dask_cluster": client}
+		return ctx.obj
 
 def main():
     cli_init.add_command(ingestion)
