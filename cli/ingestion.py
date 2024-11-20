@@ -11,12 +11,11 @@ import dask
 @cloup.option_group(
     "Essential parameters",
     cloup.option("--uri", default = None, type=str, help = "Where to store the TileDB"),
-    cloup.option("--batch_size", default = 50000000, type=int, help = "size of the batch"),
-    cloup.option("--list_files", default = None, type=str, help = "List of the files to ingest"),
+    cloup.option("--list_files", default = None, type=str, help = "List of the files to ingest")
 )
 @cloup.option_group(
     "Optional parameters",
-    cloup.option("--chunk_size", default = 50000000, type=str, help = "The number of rows to ingest at once")
+    cloup.option("--batch_size", default = 50000000, type=int, help = "The number of rows to ingest at once")
 )
 @click.pass_context
 def ingestion(ctx, uri: str, chunk_size: int, batch_size: int, list_files:str):
