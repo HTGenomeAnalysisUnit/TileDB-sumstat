@@ -56,12 +56,7 @@ def export(
     #Get list of genes, cell type and positions or create ones
     unique_positions = slice(None)
     cell_list = open(cell_file, "r").read().rstrip().split("\n")
-    if gene_file:
-        gene_list = open(gene_file, "r").read().rstrip().split("\n")
-    else:
-        gene_arrow = tiledb_export.query(return_arrow = True, dims=['gene'], attrs=[]).df[cell_list, :, unique_positions]
-        gene_array = gene_arrow['gene']
-        gene_list = list(set(gene_array.to_pylist()))
+    gene_list = open(gene_file, "r").read().rstrip().split("\n")
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
@@ -83,33 +78,40 @@ def export(
         tasks = []
         #Defininf the Dask functions for delayed
         @delayed
-        def query_gene(tiledb_data, gene, cell):
-            return tiledb_data.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions]
+        def query_gene(uri, gene, cell):
+            with tiledb.open(uri, mode="r") as tiledb_data:
+                return tiledb_data.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions]
+            
         @delayed
         def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size):
             # Call locus_breaker with the computed tiledb_data
             return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size)
         #The computation is divided and run in parallel for each cell and gene separately
+        gene_batches = [gene_list[i:i + 100] for i in range(0, len(gene_list), 100)]
+
         for cell in cell_list:
-            for gene in gene_list:
+            for gene in gene_batches:
                 #print(tiledb_export.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions])
-                task = delayed_locus_breaker(query_gene(tiledb_export, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
+                task = delayed_locus_breaker(query_gene(uri, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
                 tasks.append(task)
 
-        #The batch size here is fixed at 10 genes-cell per time
-        batch_size = 1
+        #The batch size to use which is set to the number of workers if Dask is run
+        if ctx.obj["workers"]:
+            batch_size = ctx.obj["workers"]
+        else:
+            batch_size = 1
         computed_results = []
-        with Bar('Computing', fill='#', suffix='%(percent).1f%% - %(eta)ds') as bar:
-            for i in range(0, len(tasks), batch_size):
-                print(tasks)
+        for i in range(0, len(tasks), batch_size):
+                print(f"Batch {i} of {len(tasks)}")
                 batch = tasks[i:i+batch_size]
                 batch_results = compute(*batch)  # Compute the batch
-                bar.next()
                 for result in batch_results:
-                    interval = result[0]
-                    segments = result[1]
-                    interval.to_csv(output_path + "_interval.csv", mode="a", index=False, header = None)
-                    segments.to_csv(output_path + "_segment.csv", mode="a", index=False, header = None)
+                    if not len(result)==0 and not result[0].empty:
+                        #print(result)
+                        interval = result[0]
+                        segments = result[1]
+                        interval.to_csv(output_path + "_interval.csv", mode="a", index=False, header = None)
+                        segments.to_csv(output_path + "_segment.csv", mode="a", index=False, header = None)
     #If no SNP or locusbreker is run only a filtering is done
     else:
         with tiledb.open(uri, mode="r") as A:

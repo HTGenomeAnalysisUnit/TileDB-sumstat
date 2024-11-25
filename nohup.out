@@ -1,0 +1,114 @@
+2024-11-25 11:37:23,895 - distributed.scheduler - ERROR - Error during deserialization of the task graph. This frequently
+occurs if the Scheduler and Client have different environments.
+For more information, see
+https://docs.dask.org/en/stable/deployment-considerations.html#consistent-software-environments
+
+Cluster created: LocalCluster(e07b8a25, 'tcp://127.0.0.1:39173', workers=2, threads=8, memory=37.25 GiB)
+Dask dashboard available at http://127.0.0.1:8787/status
+Starting LocusBreaker
+Batch 0 of 51536
+Batch 2 of 51536
+Batch 4 of 51536
+Batch 6 of 51536
+Batch 8 of 51536
+Batch 10 of 51536
+Batch 12 of 51536
+Batch 14 of 51536
+Batch 16 of 51536
+Batch 18 of 51536
+Batch 20 of 51536
+Batch 22 of 51536
+Batch 24 of 51536
+Batch 26 of 51536
+Batch 28 of 51536
+Batch 30 of 51536
+Batch 32 of 51536
+Batch 34 of 51536
+Batch 36 of 51536
+Batch 38 of 51536
+Batch 40 of 51536
+Batch 42 of 51536
+Batch 44 of 51536
+Batch 46 of 51536
+Batch 48 of 51536
+Batch 50 of 51536
+Batch 52 of 51536
+Batch 54 of 51536
+Batch 56 of 51536
+Batch 58 of 51536
+Batch 60 of 51536
+Batch 62 of 51536
+Batch 64 of 51536
+Batch 66 of 51536
+Batch 68 of 51536
+Batch 70 of 51536
+Batch 72 of 51536
+Batch 74 of 51536
+Batch 76 of 51536
+Batch 78 of 51536
+Batch 80 of 51536
+Batch 82 of 51536
+Batch 84 of 51536
+Batch 86 of 51536
+Batch 88 of 51536
+Batch 90 of 51536
+Batch 92 of 51536
+Batch 94 of 51536
+Batch 96 of 51536
+Batch 98 of 51536
+Batch 100 of 51536
+Batch 102 of 51536
+Batch 104 of 51536
+Batch 106 of 51536
+Batch 108 of 51536
+Batch 110 of 51536
+Batch 112 of 51536
+Batch 114 of 51536
+Batch 116 of 51536
+Batch 118 of 51536
+Batch 120 of 51536
+Batch 122 of 51536
+Traceback (most recent call last):
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/distributed/scheduler.py", line 4850, in update_graph
+    graph = deserialize(graph_header, graph_frames).data
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/distributed/protocol/serialize.py", line 452, in deserialize
+    return loads(header, frames)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/distributed/protocol/serialize.py", line 111, in pickle_loads
+    return pickle.loads(pik, buffers=buffers)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/distributed/protocol/pickle.py", line 92, in loads
+    return pickle.loads(x)
+  File "libtiledb.pyx", line 1514, in tiledb.libtiledb.Array.__setstate__
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/tiledb/ctx.py", line 376, in __init__
+    super().__init__(_config)
+tiledb.cc.TileDBError: [TileDB::C++API] Error: Failed to create context
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/nfs/users/nfs_b/ba13/tiledb_scqtl/TileDB-SC-QTL/main.py", line 45, in <module>
+    main()
+  File "/nfs/users/nfs_b/ba13/tiledb_scqtl/TileDB-SC-QTL/main.py", line 42, in main
+    cli_init(obj={})
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/core.py", line 1157, in __call__
+    return self.main(*args, **kwargs)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/core.py", line 1078, in main
+    rv = self.invoke(ctx)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/core.py", line 1688, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/core.py", line 1434, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/core.py", line 783, in invoke
+    return __callback(*args, **kwargs)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/click/decorators.py", line 33, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "/nfs/users/nfs_b/ba13/tiledb_scqtl/TileDB-SC-QTL/cli/export.py", line 103, in export
+    batch_results = compute(*batch)  # Compute the batch
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/dask/base.py", line 660, in compute
+    results = schedule(dsk, keys, **kwargs)
+  File "/nfs/users/nfs_b/ba13/.local/lib/python3.10/site-packages/distributed/client.py", line 2427, in _gather
+    raise exception.with_traceback(traceback)
+RuntimeError: Error during deserialization of the task graph. This frequently
+occurs if the Scheduler and Client have different environments.
+For more information, see
+https://docs.dask.org/en/stable/deployment-considerations.html#consistent-software-environments
+
