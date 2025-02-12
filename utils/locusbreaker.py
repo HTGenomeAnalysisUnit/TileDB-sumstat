@@ -17,18 +17,6 @@ def locus_breaker(
     :param hole_size: Minimum pair-base distance between SNPs in different loci (default: 250000)
     :return: DataFrame with the loci information
     """
-    expected_schema = {
-    'cell_type': pd.Series(dtype='object'),
-    'position': pd.Series(dtype='int32'),
-    'gene': pd.Series(dtype='object'),
-    'SNP': pd.Series(dtype='object'),
-    'af': pd.Series(dtype='float32'),
-    'se': pd.Series(dtype='float32'),
-    'beta': pd.Series(dtype='float32'),
-    'p-value': pd.Series(dtype='float64'),
-    'allele0': pd.Series(dtype='object'),
-    'allele1': pd.Series(dtype='object')
-}
 
     # Filter rows based on the p_limit threshold
     tiledb_data = tiledb_data[tiledb_data["p-value"] < pvalue_limit]

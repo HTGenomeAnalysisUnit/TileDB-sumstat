@@ -15,19 +15,22 @@ Query TileDB database and export data.
 
 @cloup.command("export", no_args_is_help=True, help=help_doc)
 @cloup.option_group(
-    "Options for querying the TileDB",
-    cloup.option("--uri", default = None, type=str, help = "Where to data to be created or queried is stored"),
-    cloup.option("--schema", is_flag = True, type=bool, help = "Print the schema of a tiledb"),
+    "Options for querying specific chromosomes, cells, genes or positions in the TileDB",
+    cloup.option("--chrom", default = None, type=int, help = "List of chromosomes to filter (e.g. 1,2,3,4)"),
     cloup.option("--cell_file", default = None, type=str, help = "List of cells to interrogate taken from a txt file"),
     cloup.option("--gene_file", default = None, type=str, help = "List of genes taken from a txt file"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
-    cloup.option("--output_path", default = "out", type=str, help = "Output path with file name where results will be stored"),
+    cloup.option("--output_path", default = "out", type=str, help = "Output path with file name where results will be stored")
+)
+
+@cloup.option_group(
+    "Options for general filters into TileDB",
+    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB for")
 )
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, help="Option to run locusbreaker"),
-    cloup.option("--pvalue-sig", default=5e-8, type=float, help="P-value threshold to use for filtering the data"),
-    cloup.option("--pvalue-limit", default=5e-6, type=float, help="P-value threshold for loci borders"),
+    cloup.option("--table", default = None, type=int, help = "Path of the table to provide"),
     cloup.option("--hole-size", default=250000, type=int, help="Minimum pair-base distance between SNPs in different loci (default: 250000)")
 )
 
@@ -35,12 +38,13 @@ Query TileDB database and export data.
 def export(
         ctx,
         uri: str,
+        chrom:int,
         cell_file: str,
         gene_file: str,
         snp: str,
+        maf: float,
         locusbreaker: bool,
-        pvalue_sig: float,
-        pvalue_limit:float,
+        table: str,
         hole_size: int,
         output_path: str,
         schema: bool
@@ -55,18 +59,28 @@ def export(
 
     #Get list of genes, cell type and positions or create ones
     unique_positions = slice(None)
-    cell_list = open(cell_file, "r").read().rstrip().split("\n")
-    gene_list = open(gene_file, "r").read().rstrip().split("\n")
+    if(chrom):
+        chrom_list = chrom.split(",")
+    else:
+        chrom_list = slice(None)
+    if(cell_file):
+        cell_list = open(cell_file, "r").read().rstrip().split("\n")
+    else:
+        cell_list = slice(None)
+    if(gene_file):
+        gene_list = open(gene_file, "r").read().rstrip().split("\n")
+    else:
+        gene_list = slice(None)
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
-        snp_list = pd.read_table(snp, dtype = {"chr":str, "position":np.uint32, "A0":str, "A1":str})
+        snp_list = pd.read_table(snp, dtype = {"CHR":str, "POS":np.uint32, "A0":str, "A1":str})
         unique_positions = snp_list['position'].unique().tolist()
         #Open a streaming connection with TileDB
         with tiledb_export as A:
             tiledb_iterator = A.query(
                 return_incomplete=True
-            ).df[cell_list ,gene_list ,unique_positions]
+            ).df[chrom_list, cell_list ,gene_list ,unique_positions]
             #Open a streaming connection with output and run the function
             with open(output_path + ".csv", mode="a") as f:
                 for chunk in tiledb_iterator:
@@ -76,11 +90,12 @@ def export(
     elif locusbreaker:
         print("Starting LocusBreaker")
         tasks = []
-        #Defininf the Dask functions for delayed
+        #Defining the Dask functions for delayed
+        traits = pd.read_table(table)
         @delayed
-        def query_gene(uri, gene, cell):
+        def query_gene(uri, chrom, gene, cell):
             with tiledb.open(uri, mode="r") as tiledb_data:
-                return tiledb_data.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions]
+                return tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N']).df[chrom, cell ,gene ,unique_positions]
             
         @delayed
         def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size):
@@ -89,11 +104,15 @@ def export(
         #The computation is divided and run in parallel for each cell and gene separately
         gene_batches = [gene_list[i:i + 100] for i in range(0, len(gene_list), 100)]
 
-        for cell in cell_list:
-            for gene in gene_batches:
-                #print(tiledb_export.query(dims=['cell_type','gene','position'], attrs=['SNP' ,'allele0', 'allele1' ,'af' , 'beta', 'se', 'p-value']).df[cell, gene, unique_positions])
-                task = delayed_locus_breaker(query_gene(uri, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
-                tasks.append(task)
+        for ind, row in traits.iterrows():
+            chrom = row["chrom"]
+            cell = row["cell"]
+            gene = row["gene"]
+            chrom = row["chrom"]
+            pvalue_sig = row["pvalue_sig"]
+            pvalue_limit = row["pvalue_limit"]
+            task = delayed_locus_breaker(query_gene(uri, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
+            tasks.append(task)
 
         #The batch size to use which is set to the number of workers if Dask is run
         if ctx.obj["workers"]:

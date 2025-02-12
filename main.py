@@ -15,7 +15,6 @@ from cli.export import export
 	cloup.option("--local_cluster", default = False, is_flag = True, type=bool, help = "If you need to run on local cluster or distributed on different nodes"),
 
 )
-#cluster = LocalCluster(n_workers=2, threads_per_worker=4, memory_limit="4GB")
 
 @click.pass_context
 def cli_init(ctx, workers: int, cores_w: int, memory_w: str, local_cluster: bool):
