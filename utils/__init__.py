@@ -5,6 +5,7 @@ import pyarrow.csv
 import pyarrow.parquet as pq
 import gc
 import scipy.stats as stats
+import polars as pl
 
 @delayed
 def batch_query_tiledb(array, queries, output_dir, batch_index):
@@ -29,3 +30,10 @@ def batch_query_tiledb(array, queries, output_dir, batch_index):
         # Return None if the combined result is empty
         #gc.collect()
         return None
+
+
+def compute_pheno_variance(df):
+    median_pl = df.select(((pl.col("SE") ** 2) * pl.col("N") * 2 * pl.col("AF") * (1 - pl.col("AF"))).median())
+    median_value = median_pl.item()
+    median_str = str(median_value)
+    return median_str

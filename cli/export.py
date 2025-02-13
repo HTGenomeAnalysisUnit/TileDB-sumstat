@@ -5,10 +5,11 @@ import pandas as pd
 import pyarrow.parquet
 from dask import delayed, compute
 from utils.process_write_chunk import process_write_chunk
-from utils.locusbreaker import locus_breaker
+from utils.locusbreaker_polars import locus_breaker
 import numpy as np
 from pyarrow import csv
 from progress.bar import Bar
+
 help_doc = """
 Query TileDB database and export data.
 """
@@ -16,11 +17,13 @@ Query TileDB database and export data.
 @cloup.command("export", no_args_is_help=True, help=help_doc)
 @cloup.option_group(
     "Options for querying specific chromosomes, cells, genes or positions in the TileDB",
-    cloup.option("--chrom", default = None, type=int, help = "List of chromosomes to filter (e.g. 1,2,3,4)"),
-    cloup.option("--cell_file", default = None, type=str, help = "List of cells to interrogate taken from a txt file"),
-    cloup.option("--gene_file", default = None, type=str, help = "List of genes taken from a txt file"),
+    cloup.option("--uri", default = None, type=str, help = "path of TileDB"),
+    cloup.option("--chrom", default = None, type=int, help = "chromosome to filter (e.g. 1,2,3,4)"),
+    cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
+    cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
+    cloup.option("--list_regions", default = None, type=str, help = "File containing a list of regions to interrogate"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
-    cloup.option("--output_path", default = "out", type=str, help = "Output path with file name where results will be stored")
+    cloup.option("--out", default = "out", type=str, help = "Output path with file name where results will be stored")
 )
 
 @cloup.option_group(
@@ -29,9 +32,9 @@ Query TileDB database and export data.
 )
 @cloup.option_group(
     "Options for Locusbreaker",
-    cloup.option("--locusbreaker", is_flag=True, type=bool, help="Option to run locusbreaker"),
-    cloup.option("--table", default = None, type=int, help = "Path of the table to provide"),
-    cloup.option("--hole-size", default=250000, type=int, help="Minimum pair-base distance between SNPs in different loci (default: 250000)")
+    cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
+    cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
+    cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
 )
 
 @click.pass_context
@@ -39,38 +42,36 @@ def export(
         ctx,
         uri: str,
         chrom:int,
-        cell_file: str,
-        gene_file: str,
+        cell: str,
+        gene: str,
+        list_regions: str,
         snp: str,
         maf: float,
+        phenovar: bool,
         locusbreaker: bool,
         table: str,
-        hole_size: int,
-        output_path: str,
-        schema: bool
+        out: str
         ):
     
     #Open connection with TileDB
     tiledb_export = tiledb.open(uri, mode="r")
     #Print only the schema of the tiledb
-    if schema:
-        print(tiledb_export.schema)
-        exit()
 
     #Get list of genes, cell type and positions or create ones
     unique_positions = slice(None)
-    if(chrom):
-        chrom_list = chrom.split(",")
-    else:
-        chrom_list = slice(None)
-    if(cell_file):
-        cell_list = open(cell_file, "r").read().rstrip().split("\n")
-    else:
-        cell_list = slice(None)
-    if(gene_file):
-        gene_list = open(gene_file, "r").read().rstrip().split("\n")
-    else:
-        gene_list = slice(None)
+    if not chrom:
+        chrom = slice(None)
+    if not cell:
+        cell = slice(None)
+    if not gene:
+        gene = slice(None)
+    
+    lower_af = 0.01
+    upper_af = 0.99
+    if maf !=0.01:
+        lower_af = maf
+        upper_af = 1-maf
+
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
@@ -92,26 +93,26 @@ def export(
         tasks = []
         #Defining the Dask functions for delayed
         traits = pd.read_table(table)
+
         @delayed
-        def query_gene(uri, chrom, gene, cell):
+        def query_gene(uri, chrom, cell, gene, phenovar):
             with tiledb.open(uri, mode="r") as tiledb_data:
-                return tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N']).df[chrom, cell ,gene ,unique_positions]
+                tiledb_filtered = tiledb_data.query(cond="attr('AF') <0.99 and attr('AF')>0.01",dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N']).df[chrom, cell ,gene , :]
+                return tiledb_filtered
             
         @delayed
-        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size):
+        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar):
             # Call locus_breaker with the computed tiledb_data
-            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size)
-        #The computation is divided and run in parallel for each cell and gene separately
-        gene_batches = [gene_list[i:i + 100] for i in range(0, len(gene_list), 100)]
-
+            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar)
+            
         for ind, row in traits.iterrows():
-            chrom = row["chrom"]
-            cell = row["cell"]
+            chrom = row["chr"]
+            cell = row["cell_type"]
             gene = row["gene"]
-            chrom = row["chrom"]
-            pvalue_sig = row["pvalue_sig"]
-            pvalue_limit = row["pvalue_limit"]
-            task = delayed_locus_breaker(query_gene(uri, gene, cell),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size)
+            pvalue_sig = float(row["p_thresh1"])
+            pvalue_limit = float(row["p_thresh2"])
+            hole_size = int(row["hole"])
+            task = delayed_locus_breaker(query_gene(uri, chrom, cell, gene, phenovar),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size, phenovar = phenovar)
             tasks.append(task)
 
         #The batch size to use which is set to the number of workers if Dask is run
@@ -119,24 +120,25 @@ def export(
             batch_size = ctx.obj["workers"]
         else:
             batch_size = 1
-        computed_results = []
+            computed_results = []
         for i in range(0, len(tasks), batch_size):
                 print(f"Batch {i} of {len(tasks)}")
                 batch = tasks[i:i+batch_size]
                 batch_results = compute(*batch)  # Compute the batch
                 for result in batch_results:
-                    if not len(result)==0 and not result[0].empty:
+                    #if not len(result) == 0 and not result[0].empty:
+                    if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:
                         #print(result)
                         interval = result[0]
                         segments = result[1]
-                        interval.to_csv(output_path + "_interval.csv", mode="a", index=False, header = None)
-                        segments.to_csv(output_path + "_segment.csv", mode="a", index=False, header = None)
+                        interval.to_csv(out + "_interval.csv", mode="a", index=False, header = None)
+                        segments.to_csv(out + "_segment.csv", mode="a", index=False, header = None)
     #If no SNP or locusbreker is run only a filtering is done
     else:
         with tiledb.open(uri, mode="r") as A:
             tiledb_iterator = A.query(
                 return_incomplete=True
-            ).df[cell_list , gene_list, unique_positions] 
+            ).df[chrom, cell , gene, unique_positions] 
             for chunk in tiledb_iterator:
                 chunk.to_csv(output_path + ".csv", mode="a", index=False, header = True)
         print(f"Saved filtered summary statistics in {output_path}")
