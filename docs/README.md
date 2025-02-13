@@ -1,7 +1,7 @@
 # TileDB for single cell analysis
 
 ## Overall usage
-This program works using. python on the Sanger cluster using the tiledb conda environment. This program consists of 2 main subcommands called ingestion and export. The ingestion is used in import new data into an axisting or a new TileDB while the export can be used to query the data and export in different format. This program makes also optionally use of Dask for accelerate the computation. To get a menu of the main parameters and commands available run a script like below.
+This program works using. python on the Sanger cluster using the tiledb conda environment. This program consists of 2 main subcommands called ingestion and export. The ingestion is used in import new data into an existing or a new TileDB while the export can be used to query the data and export it in a txt file. This program makes also optionally use of Dask for accelerate the computation. To get a menu of the main parameters and commands available run a script like below.
 
 ```
 python main.py
@@ -14,6 +14,7 @@ Dask cluster options:
   --workers INTEGER  Number of workers to use in the Dask cluster
   --cores_w INTEGER  Number of core to use per single worker
   --memory_w TEXT    Number of GB to give as memory for each worker
+  --local_cluster    Use this option to parallelize within a node (Use for Sanger cluster)
 
 Other options:
   --help             Show this message and exit.
@@ -38,12 +39,12 @@ To ingest new data into a TileDB use the ```ingestion``` option of the program. 
 
   Essential parameters:
   --uri TEXT         Where to store the TileDB
-  --input TEXT       A tsv file in gzip format to ingest
+  --list_files TEXT  List of the files to ingest. Each files needs to be in tsv format (gz or not)
   --cell_type TEXT   The celltype to ingest
 
   Optional parameters:
-  --batch_size TEXT  The number of rows form a file to ingest at once(Don't touch this parameter unless you know how ot will affect both the memory of the process and the TileDB itself).
-
+  --batch_size INT  The number of rows form a file to ingest at once(Don't touch this parameter unless you know how ot will affect both the memory of the process and the TileDB itself).
+  --chunk_size INT  The number of rows to ingest at once
   Other options:
   --help             Show this message and exit.
   ```
@@ -64,20 +65,31 @@ Usage: main.py export [OPTIONS]
   Qeury TileDB database and export data.
 
 Options for querying the TileDB:
-  --uri TEXT            Where to data to be created or queried is stored
-  --schema              Print the schema of a tiledb
-  --cell_file TEXT      List of cells to interrogate taken from a txt file
-  --gene_file TEXT      List of genes taken from a txt file
-  --snp TEXT            List of SNPs to interrogate taken from a txt file.
-                        Please check the example file in test_data/dummy_SNPs.txt for details on the format of this file
-  --output_path TEXT    Output path with file name where results will be stored
+  --uri   TEXT            Where to data to be created or queried is stored
+  --schema                Print the schema of a tiledb
+  --chrom TEXT            Cell to interrogate
+  --cell  TEXT            Cell to interrogate
+  --gene  TEXT            Gene to interrogate
+  --snp   TEXT            List of SNPs to interrogate taken from a txt file.
+                          Please check the example file in test_data/dummy_SNPs.txt for details on the format of this file
+  
+
+Options for general filters into TileDB:
+  
+  --maf   FLOAT   
 
 Options for Locusbreaker:
   --locusbreaker        Option to run locusbreaker
-  --pvalue-sig FLOAT    P-value threshold to use for filtering the data (default: 5e-8)
-  --pvalue-limit FLOAT  P-value threshold for loci borders (default: 5e-6)
-  --hole-size INTEGER   Minimum pair-base distance between SNPs in different
-                        loci (default: 250000)
+  --pvalue-sig    FLOAT      P-value threshold to use for filtering the data (default: 5e-8)
+  --pvalue-limit  FLOAT      P-value threshold for loci borders (default: 5e-6)
+  --hole-size     INTEGER    Minimum pair-base distance between SNPs in different loci (default: 250000)
+  --maf           FLOAT      The MAF to filter the TILEDB before locusbreaker (default: 0.01)
+  --table         TEXT       Path of the table containing the traits to interrogate
+
+Options for output:
+  --out           TEXT       Output path with file name where results will be stored
+
+                        
 Other options:
   --help              Show this message and exit.
 ```

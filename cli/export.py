@@ -21,30 +21,33 @@ Query TileDB database and export data.
     cloup.option("--chrom", default = None, type=int, help = "chromosome to filter (e.g. 1,2,3,4)"),
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
-    cloup.option("--list_regions", default = None, type=str, help = "File containing a list of regions to interrogate"),
-    cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
-    cloup.option("--out", default = "out", type=str, help = "Output path with file name where results will be stored")
+    cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
 @cloup.option_group(
-    "Options for general filters into TileDB",
-    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB for")
+    "Options for getting info from TileDB",
+    cloup.option("--schema", is_flag=True, type=bool, default = False, help="Option to print on screen the schema of the TileDB used"),
 )
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
+    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
+)
+@cloup.option_group(
+    "Options for output",
+    cloup.option("--out", default = "out", type=str, help = "Output path with file name where results will be stored")
 )
 
 @click.pass_context
 def export(
         ctx,
         uri: str,
+        schema: bool,
         chrom:int,
         cell: str,
         gene: str,
-        list_regions: str,
         snp: str,
         maf: float,
         phenovar: bool,
@@ -72,6 +75,9 @@ def export(
         lower_af = maf
         upper_af = 1-maf
 
+    if schema:
+        print(tiledb_export.schema)
+        exit()
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
