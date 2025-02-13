@@ -5,10 +5,11 @@ import pandas as pd
 import pyarrow.parquet
 from dask import delayed, compute
 from utils.process_write_chunk import process_write_chunk
-from utils.locusbreaker_polars import locus_breaker
+from utils.locusbreaker import locus_breaker
 import numpy as np
 from pyarrow import csv
 from progress.bar import Bar
+import os
 
 help_doc = """
 Query TileDB database and export data.
@@ -134,11 +135,14 @@ def export(
                 for result in batch_results:
                     #if not len(result) == 0 and not result[0].empty:
                     if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:
+                        
                         #print(result)
                         interval = result[0]
                         segments = result[1]
-                        interval.to_csv(out + "_interval.csv", mode="a", index=False, header = None)
-                        segments.to_csv(out + "_segment.csv", mode="a", index=False, header = None)
+                        write_header_interval = not os.path.exists(out + "_interval.csv")
+                        write_header_segment = not os.path.exists(out + "_segment.csv")
+                        interval.to_csv(out + "_interval.csv", mode="a", index=False, header = write_header_interval)
+                        segments.to_csv(out + "_segment.csv", mode="a", index=False, header = write_header_segment)
     #If no SNP or locusbreker is run only a filtering is done
     else:
         with tiledb.open(uri, mode="r") as A:

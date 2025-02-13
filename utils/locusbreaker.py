@@ -56,14 +56,14 @@ def locus_breaker(
 
     # Convert results to a DataFrame
 
-    columns = ["GENE", "start", "end", "snp_pos", "snp_pval"] + tiledb_data.columns.tolist()
+    columns = ["GENE", "START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
     trait_res_df = pd.DataFrame(trait_res, columns=columns)
     trait_res_df = trait_res_df.drop(trait_res_df.columns[0], axis=1)
     trait_res_df = trait_res_df.drop(columns=["POS", "P"])
         
-    columns = ["GENE", "snp_pos", "snp_pval"] + tiledb_data.columns.tolist()
+    columns = ["GENE", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
     trait_res_allsnp_df = pd.DataFrame(trait_res_allsnp, columns=columns)
     #trait_res_allsnp_df = trait_res_allsnp_df.drop(trait_res_allsnp_df.columns[0], axis=1)
-    trait_res_allsnp_df = trait_res_allsnp_df.drop(columns=["snp_pos", "snp_pval"])
+    trait_res_allsnp_df = trait_res_allsnp_df.drop(columns=["SNP_POS", "SNP_PVAL"])
 
     return [trait_res_df,trait_res_allsnp_df]
