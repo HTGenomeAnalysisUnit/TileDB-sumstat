@@ -33,8 +33,12 @@ Query TileDB database and export data.
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
+    cloup.option("--pvalue_sig", default = 5e-8, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
+    cloup.option("--pvalue_limit", default = 5e-6, type=float, help = "P-value threshold for loci borders"),
+    cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
     cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker"),
+    cloup.option("--category",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
 )
 @cloup.option_group(
@@ -54,10 +58,14 @@ def export(
         gene: str,
         table_regions: str,
         snp: str,
-        maf: float,
-        phenovar: bool,
         locusbreaker: bool,
+        maf: float,
+        category: str,
+        phenovar: bool,
         table: str,
+        pvalue_sig: float,
+        pvalue_limit: float,
+        hole: int,
         out_lb: str,
         out_rg: str
         ):
@@ -118,27 +126,24 @@ def export(
         print("Starting LocusBreaker")
         tasks = []
         #Defining the Dask functions for delayed
-        traits = pd.read_table(table)
+        traits = pd.read_csv(table)
 
         @delayed
-        def query_gene(uri, chrom, cell, gene, phenovar):
+        def query_gene(uri, chrom, cell, gene):
             with tiledb.open(uri, mode="r") as tiledb_data:
-                tiledb_filtered = tiledb_data.query(cond="attr('AF') <0.99 and attr('AF')>0.01",dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N']).df[chrom, cell ,gene , :]
+                tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N', 'DIST']).df[chrom, cell ,gene , :]
                 return tiledb_filtered
             
         @delayed
-        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar):
+        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar, maf, category):
             # Call locus_breaker with the computed tiledb_data
-            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar)
+            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar, maf = maf, category = category)
             
         for ind, row in traits.iterrows():
-            chrom = row["chr"]
-            cell = row["cell_type"]
-            gene = row["gene"]
-            pvalue_sig = float(row["p_thresh1"])
-            pvalue_limit = float(row["p_thresh2"])
-            hole_size = int(row["hole"])
-            task = delayed_locus_breaker(query_gene(uri, chrom, cell, gene, phenovar),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole_size, phenovar = phenovar)
+            chrom = row["CHR"]
+            cell = row["CELL"]
+            gene = row["GENE"]
+            task = delayed_locus_breaker(query_gene(uri, chrom, cell, gene),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole, phenovar = phenovar, maf = maf, category = category)
             tasks.append(task)
 
         #The batch size to use which is set to the number of workers if Dask is run
@@ -158,10 +163,10 @@ def export(
                         #print(result)
                         interval = result[0]
                         segments = result[1]
-                        write_header_interval = not os.path.exists(out + "_interval.csv")
-                        write_header_segment = not os.path.exists(out + "_segment.csv")
-                        interval.to_csv(out + "_interval.csv", mode="a", index=False, header = write_header_interval)
-                        segments.to_csv(out + "_segment.csv", mode="a", index=False, header = write_header_segment)
+                        write_header_interval = not os.path.exists(out_lb + "_interval.csv")
+                        write_header_segment = not os.path.exists(out_lb + "_segment.csv")
+                        interval.to_csv(out_lb + "_interval.csv", mode="a", index=False, header = write_header_interval)
+                        segments.to_csv(out_lb + "_segment.csv", mode="a", index=False, header = write_header_segment)
     #If no SNP or locusbreker is run only a filtering is done
     else:
         with tiledb.open(uri, mode="r") as A:
@@ -169,8 +174,8 @@ def export(
                 return_incomplete=True
             ).df[chrom, cell , gene, unique_positions] 
             for chunk in tiledb_iterator:
-                chunk.to_csv(output_path + ".csv", mode="a", index=False, header = True)
-        print(f"Saved filtered summary statistics in {output_path}")
+                chunk.to_csv(out_rg + ".csv", mode="a", index=False, header = True)
+        print(f"Saved filtered summary statistics in {out_rg}")
         exit()
     
 
