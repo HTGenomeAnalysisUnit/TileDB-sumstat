@@ -59,7 +59,7 @@ def locus_breaker(
                 end_pos = group_df["POS"].max()
                 best_snp = group_df.loc[group_df["P"].idxmin()]
 
-                region = str(group_df["CHR"].iloc[0]) + ":" + group_df["CELL"].iloc[0]+ ":" + gene + ":" + str(start_pos) + ":" + str(end_pos)
+                region = str(group_df["CHR"].iloc[0]) + ":" + str(start_pos) + ":" + str(end_pos)
 
 
                 # Store the interval with the best SNP
