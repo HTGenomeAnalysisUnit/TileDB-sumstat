@@ -22,6 +22,7 @@ Query TileDB database and export data.
     cloup.option("--chrom", default = None, type=int, help = "chromosome to filter (e.g. 1,2,3,4)"),
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
+    cloup.option("--table_regions", default = None, type=str, help = "Regions to interrogate from a table"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
@@ -38,7 +39,9 @@ Query TileDB database and export data.
 )
 @cloup.option_group(
     "Options for output",
-    cloup.option("--out", default = "out", type=str, help = "Output path with file name where results will be stored")
+    cloup.option("--out_lb", default = "out", type=str, help = "Output path with file name where results will be stored"),
+    cloup.option("--out_rg", default = "out", type=str, help = "Output path with file name where results will be stored")
+
 )
 
 @click.pass_context
@@ -49,12 +52,14 @@ def export(
         chrom:int,
         cell: str,
         gene: str,
+        table_regions: str,
         snp: str,
         maf: float,
         phenovar: bool,
         locusbreaker: bool,
         table: str,
-        out: str
+        out_lb: str,
+        out_rg: str
         ):
     
     #Open connection with TileDB
@@ -94,6 +99,20 @@ def export(
                 for chunk in tiledb_iterator:
                     process_write_chunk(chunk, snp_list, f)
         print(f"Saved filtered summary statistics by SNPs in {output_path}.csv")
+    elif table_regions:
+        pd_region = pd.read_csv(table_regions)
+        #header_pd = pd.DataFrame(columns = ["CHR","CELL","GENE","POS","P","CHR:CELL:GENE:START:END"])
+        #header_pd.to_csv(out_rg, index = False)
+        counter_nonempty_region = 0
+        for ind, row  in pd_region.iterrows():
+            region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),row["CELL"],row["GENE"],int(row["START"]):int(row["END"])]
+            region["CHR_CELL_GENE_START_END"] = str(row["CHR"]) + ":" + row["CELL"] + ":" + row["GENE"] + ":" + str(row["START"]) + ":" + str(row["END"])
+            if len(region)>0:
+                if counter_nonempty_region==0:
+                    region.to_csv(out_rg, mode='a', index = False, header = True)
+                    counter_nonempty_region +=1
+                else:
+                    region.to_csv(out_rg, mode='a', index = False, header = False)
 
     elif locusbreaker:
         print("Starting LocusBreaker")
