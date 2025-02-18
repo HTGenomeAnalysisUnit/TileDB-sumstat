@@ -58,12 +58,11 @@ def locus_breaker(
                 start_pos = group_df["POS"].min()
                 end_pos = group_df["POS"].max()
                 best_snp = group_df.loc[group_df["P"].idxmin()]
-
                 region = str(group_df["CHR"].iloc[0]) + ":" + str(start_pos) + ":" + str(end_pos)
 
 
                 # Store the interval with the best SNP
-                line_res = [gene, start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist()
+                line_res = [start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist()
                 trait_res.append(line_res)
 
                 #Collect all SNPs within the region
@@ -73,9 +72,8 @@ def locus_breaker(
 
     # Convert results to a DataFrame
 
-    columns = ["GENE", "START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
+    columns = [ "START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
     trait_res_df = pd.DataFrame(trait_res, columns=columns)
-    trait_res_df = trait_res_df.drop(trait_res_df.columns[0], axis=1)
     trait_res_df = trait_res_df.drop(columns=["POS", "P"])
     columns = ["REGION","SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
     trait_res_allsnp_df = pd.DataFrame(trait_res_allsnp, columns=columns)
