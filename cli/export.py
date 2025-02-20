@@ -23,6 +23,7 @@ Query TileDB database and export data.
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
     cloup.option("--table_regions", default = None, type=str, help = "Regions to interrogate from a table"),
+    cloup.option("--attr", default = None, type=str, help = "Regions to interrogate from a table"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
@@ -57,6 +58,7 @@ def export(
         cell: str,
         gene: str,
         table_regions: str,
+        attr: str,
         snp: str,
         locusbreaker: bool,
         maf: float,
