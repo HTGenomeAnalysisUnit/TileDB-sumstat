@@ -1,0 +1,36 @@
+name: CI Test
+
+# Trigger the workflow on pushes to the main branch and on pull requests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    # Run the job on the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Miniconda with Python 3.10 and activate the environment
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          activate-environment: test-env
+
+      # Install the required packages into the activated environment
+      - name: Install dependencies
+        shell: bash -l {0}
+        run: conda install -c conda-forge tiledb-py dask dask-jobqueue click cloup pyarrow pandas numpy
+
+      # Run the Python test command
+      - name: Run test
+        shell: bash -l {0}
+        run: python main.py test_file_run

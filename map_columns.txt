@@ -1,8 +1,0 @@
-POS,position
-BETA,beta
-SE,se
-AF_Allele2,af
-MarkerID,SNP
-p.value,p-value
-Allele1,ALT
-Allele2,REF

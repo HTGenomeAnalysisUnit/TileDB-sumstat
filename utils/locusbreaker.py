@@ -26,18 +26,16 @@ def locus_breaker(
     # Create a copy of the original dataset before filtering
     original_data = tiledb_data.copy()
     
+    if phenovar:
+        original_data["S"] = compute_pheno_variance(original_data)
+    else:
+        original_data["S"] = 1.0
+    
     # Filter for SNPs below the p-value limit to define loci
     loci_snps = tiledb_data[tiledb_data["P"] < pvalue_limit].copy()
-    if phenovar:
-        loci_snps["S"] = compute_pheno_variance(loci_snps)
-    else:
-        loci_snps["S"] = 1.0
     
     if loci_snps.empty:
         return []
-    
-    # Apply MAF filtering
-    loci_snps = loci_snps[(loci_snps["AF"] > maf) & (loci_snps["AF"] < 1 - maf)]
     
     # Apply cis/trans filtering if needed
     if category == "cis":
@@ -72,9 +70,10 @@ def locus_breaker(
     
     # Convert to DataFrames
     columns = ["START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
+
     trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
     
-    columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
+    columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
     all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
     
     return [trait_res_df, all_snp_df]

@@ -158,9 +158,7 @@ def export(
                 batch_results = compute(*batch)  # Compute the batch
                 for result in batch_results:
                     #if not len(result) == 0 and not result[0].empty:
-                    if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:
-                        
-                        #print(result)
+                    if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
                         interval = result[0]
                         segments = result[1]
                         write_header_interval = not os.path.exists(out_lb + "_interval.csv")
