@@ -2,13 +2,10 @@ import tiledb
 import click
 import cloup
 import pandas as pd
-import pyarrow.parquet
 from dask import delayed, compute
 from utils.process_write_chunk import process_write_chunk
 from utils.locusbreaker import locus_breaker
 import numpy as np
-from pyarrow import csv
-from progress.bar import Bar
 import os
 
 help_doc = """
@@ -74,6 +71,7 @@ def export(
     
     #Open connection with TileDB
     tiledb_export = tiledb.open(uri, mode="r")
+    client = ctx.obj.get("dask_cluster", None)
     #Print only the schema of the tiledb
 
     #Get list of genes, cell type and positions or create ones
@@ -84,15 +82,12 @@ def export(
         cell = slice(None)
     if not gene:
         gene = slice(None)
-    
-    lower_af = 0.01
-    upper_af = 0.99
-    if maf !=0.01:
-        lower_af = maf
-        upper_af = 1-maf
 
     if schema:
         print(tiledb_export.schema)
+        if client:
+            print("Shutting down Dask cluster...")
+            client.close()
         exit()
 
     #Intersect the tiledb with a list of SNPs
@@ -109,6 +104,7 @@ def export(
                 for chunk in tiledb_iterator:
                     process_write_chunk(chunk, snp_list, f)
         print(f"Saved filtered summary statistics by SNPs in {output_path}.csv")
+        client.close()
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
         #header_pd = pd.DataFrame(columns = ["CHR","CELL","GENE","POS","P","CHR:CELL:GENE:START:END"])
@@ -123,6 +119,9 @@ def export(
                     counter_nonempty_region +=1
                 else:
                     region.to_csv(out_rg, mode='a', index = False, header = False)
+            if client:
+                print("Shutting down Dask cluster...")
+                client.close()
 
     elif locusbreaker:
         print("Starting LocusBreaker")
@@ -153,7 +152,6 @@ def export(
             batch_size = ctx.obj["workers"]
         else:
             batch_size = 1
-            computed_results = []
         for i in range(0, len(tasks), batch_size):
                 print(f"Batch {i} of {len(tasks)}")
                 batch = tasks[i:i+batch_size]
@@ -169,6 +167,10 @@ def export(
                         write_header_segment = not os.path.exists(out_lb + "_segment.csv")
                         interval.to_csv(out_lb + "_interval.csv", mode="a", index=False, header = write_header_interval)
                         segments.to_csv(out_lb + "_segment.csv", mode="a", index=False, header = write_header_segment)
+        if client:
+            print("Shutting down Dask cluster...")
+            client.close()
+
     #If no SNP or locusbreker is run only a filtering is done
     else:
         with tiledb.open(uri, mode="r") as A:
@@ -178,6 +180,9 @@ def export(
             for chunk in tiledb_iterator:
                 chunk.to_csv(out_rg + ".csv", mode="a", index=False, header = True)
         print(f"Saved filtered summary statistics in {out_rg}")
+        if client:
+            print("Shutting down Dask cluster...")
+            client.close()
         exit()
     
 
