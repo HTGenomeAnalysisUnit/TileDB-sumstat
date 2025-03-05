@@ -56,8 +56,9 @@ def locus_breaker(
                 end_pos = group_df["POS"].max() + 100000
                 best_snp = group_df.loc[group_df["P"].idxmin()]
                 region = f"{group_df['CHR'].iloc[0]}:{start_pos}:{end_pos}"
+                trait_id = f"{group_df['CELL']}_{gene}"
                 
-                trait_res.append([start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist())
+                trait_res.append([trait_id, start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist())
                 
                 # Include all SNPs within the expanded region from the original dataset
                 expanded_snps = original_data[
@@ -66,14 +67,14 @@ def locus_breaker(
                     (original_data["POS"] <= end_pos)
                 ]
                 for _, snp_row in expanded_snps.iterrows():
-                    all_snp_res.append([region, snp_row["POS"], snp_row["P"]] + snp_row.tolist())
+                    all_snp_res.append([trait_id, region, snp_row["POS"], snp_row["P"]] + snp_row.tolist())
     
     # Convert to DataFrames
-    columns = ["START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
+    columns = ["TRAITID","START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
 
     trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
     
-    columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
+    columns = ["TRAITID", "REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
     all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
     
     return [trait_res_df, all_snp_df]
