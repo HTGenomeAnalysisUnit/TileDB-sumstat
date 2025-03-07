@@ -31,8 +31,8 @@ Query TileDB database and export data.
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
-    cloup.option("--pvalue_sig", default = 5e-8, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
-    cloup.option("--pvalue_limit", default = 5e-6, type=float, help = "P-value threshold for loci borders"),
+    cloup.option("--pvalue_sig", default = 2e-5, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
+    cloup.option("--pvalue_limit", default = 2e-5, type=float, help = "P-value threshold for loci borders"),
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
     cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker"),
@@ -127,7 +127,7 @@ def export(
         tasks = []
         #Defining the Dask functions for delayed
         traits = pd.read_csv(table)
-
+        traits[["CELL","GENE"]] = traits["TRAITID"].str.split(":", expand = True)
         @delayed
         def query_gene(uri, chrom, cell, gene):
             with tiledb.open(uri, mode="r") as tiledb_data:

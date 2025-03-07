@@ -24,6 +24,7 @@ def locus_breaker(
     :return: Two DataFrames, one with loci regions and another with all SNPs in loci
     """
     # Create a copy of the original dataset before filtering
+    tiledb_data["TRAITID"] = tiledb_data['CELL'] + "_" + tiledb_data['GENE']
     original_data = tiledb_data.copy()
     
     if phenovar:
@@ -45,21 +46,17 @@ def locus_breaker(
     
     trait_res = []
     all_snp_res = []
-    
     for gene, gene_df in loci_snps.groupby("GENE"):
         gaps = gene_df["POS"].diff() > hole_size
         group = gaps.cumsum()
-        
         for _, group_df in gene_df.groupby(group):
             if group_df["P"].min() < pvalue_sig:
                 start_pos = group_df["POS"].min() - 100000
                 end_pos = group_df["POS"].max() + 100000
                 best_snp = group_df.loc[group_df["P"].idxmin()]
                 region = f"{group_df['CHR'].iloc[0]}:{start_pos}:{end_pos}"
-                trait_id = f"{group_df['CELL']}_{gene}"
                 
-                trait_res.append([trait_id, start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist())
-                
+                trait_res.append([start_pos, end_pos, best_snp["POS"], best_snp["P"]] + best_snp.tolist())
                 # Include all SNPs within the expanded region from the original dataset
                 expanded_snps = original_data[
                     (original_data["CHR"] == group_df["CHR"].iloc[0]) &
@@ -67,14 +64,13 @@ def locus_breaker(
                     (original_data["POS"] <= end_pos)
                 ]
                 for _, snp_row in expanded_snps.iterrows():
-                    all_snp_res.append([trait_id, region, snp_row["POS"], snp_row["P"]] + snp_row.tolist())
-    
+                    all_snp_res.append([region, snp_row["POS"], snp_row["P"]] + snp_row.tolist())
+
     # Convert to DataFrames
-    columns = ["TRAITID","START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
+    columns = ["START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
 
     trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
-    columns = ["TRAITID", "REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
-
+    columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
     all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
     
     return [trait_res_df, all_snp_df]
