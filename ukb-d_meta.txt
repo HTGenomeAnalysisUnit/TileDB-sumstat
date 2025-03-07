@@ -1,0 +1,831 @@
+project	study	category	data_id	trait.desc
+ukb	d	GWAS	5d9d4e663218b8f717a7aee02caeda7dc26d65e2d3ecdacde0da9c9f92a51302	Symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified
+ukb	d	GWAS	637540e83438ef1dd4f37ca686454bc16185661096eb0d466c49ab929b1b57ee	Diseases of the skin and subcutaneous tissue
+ukb	d	GWAS	773699c21d0d327516850afb2c9cf7c9371ff76963388c83f4d3bf63011ba73b	Pregnancy, childbirth and the puerperium
+ukb	d	GWAS	dfd5aead9df0bb350196e3ae6376188b121debd821d2d91afcb68138004bf94f	Diseases of the respiratory system
+ukb	d	GWAS	14596edfb45ab9589d9ee87d7bdba9057629198f037ce7c572d686258d6d378f	Diagnoses - main ICD10: Z01 Other special examinations and investigations of persons without complaint or reported diagnosis
+ukb	d	GWAS	d79279545770a322f97c89a796edcfbce2611c23a25e08b7c38ed7815c9c1e2d	Congenital malformations, deformations and chromosomal abnormalities
+ukb	d	GWAS	781d32af803c056d1b92d55ee433c3349e132da6d8c612ab255d22ae8842885b	Diseases of the musculoskeletal system and connective tissue
+ukb	d	GWAS	40a8191ca7d4a6db23dceb6adc75203466b11cebee78764d8b0d81bfb041968f	Diagnoses - main ICD10: Z42 Follow-up care involving plastic surgery
+ukb	d	GWAS	892a36a8e7dec86d4bd8e6c8083e5368b3267fa5c53a17563821c4b03fd0d439	Diseases of the digestive system
+ukb	d	GWAS	c9685bd16ce66a7062b93bbabc5692ab556228ef0a63d2857ee4fab274b01da0	Diagnoses - main ICD10: Z46 Fitting and adjustment of other devices
+ukb	d	GWAS	61793a5a55663b90b5dea4eaf0bc715b5d1911990861826ff0ceebf90d427de9	Diagnoses - main ICD10: Z08 Follow-up examination after treatment for malignant neoplasm
+ukb	d	GWAS	efeb1141d08e73ba71e7ac848c8216bf24388b71d1d67e008ff2fb892a00b916	Diagnoses - main ICD10: Z30 Contraceptive management
+ukb	d	GWAS	1b90109cd6235cb1ad3b42d0e4401f99fdb508078d3ea9f33fed40d271b7a718	Diagnoses - main ICD10: Z45 Adjustment and management of implanted device
+ukb	d	GWAS	0376d1933cb0253d756c3e3334ecee769b413d925ab0a6411f9502035c9f78b9	Injury, poisoning and certain other consequences of external causes
+ukb	d	GWAS	0414b1cbd198bed090eac3bed7609f19984925431b1a854b0cf36811611c92c9	Diseases of the ear and mastoid process
+ukb	d	GWAS	4926d87aa67ab0f3c28775cf0bf2783fed2b53b434463d247d684dcdca402471	Factors influencing health status and contact with health services
+ukb	d	GWAS	08d08603dc946813de2fbfd913582f42aad7e396fb50f5230d451d4af6984485	Diseases of the genitourinary system
+ukb	d	GWAS	2511c9c0baff1aa599063ce583c35a7b42f74a07d65e19afacc6f326fb0c7f7c	Diagnoses - main ICD10: Z03 Medical observation and evaluation for suspected diseases and conditions
+ukb	d	GWAS	1c8f7f7a9f3b7db1caff6b2cb59887cb076bb9004efc72a1b9bde0af6903d1db	Diagnoses - main ICD10: Z13 Special screening examination for other diseases and disorders
+ukb	d	GWAS	ce0331eb579610bfd5165d256be6036f0e2a32701c5d471d9afc20c216f9222d	Diagnoses - main ICD10: Z43 Attention to artificial openings
+ukb	d	GWAS	1945396eaf0325c6c2893b22ebf4d340db02abadcfa1e371e5c3c72bf4f14613	Diagnoses - main ICD10: Z53 Persons encountering health services for specifie procedures, not carried out
+ukb	d	GWAS	cb41c936579d1cdd8f7d53bbd994d3d155b652204ddfac3fe9a006f5f88b867a	Diagnoses - main ICD10: Z12 Special screening examination for neoplasms
+ukb	d	GWAS	20936e0c1e87a31d83db80112e3c55ef671afb2e862e6549fb862aa8d7e3520d	C-reactive protein
+ukb	d	GWAS	d594e053d3979ced46aaef9d882d0f153f019c54d0369ace244240d94c6cced1	Other or unspecified ileus, impaction or obstruction
+ukb	d	GWAS	54fd1cf56ca65ccae7c3795b51a5a5d534aab53fba05827198163400ed010595	Underlying (primary) cause of death: ICD10: C34.9 Bronchus or lung, unspecified
+ukb	d	GWAS	a0c8a433706bc16f11bc59e2427f4d5188bbf523cadee543504b147c960f1e1e	Type of tobacco previously smoked: Manufactured cigarettes
+ukb	d	GWAS	b38f3a59826af991b67416870ef0439c2e99704adadf054c430b2a7f3dcad040	Any ICDMAIN event in hilmo or causes of death
+ukb	d	GWAS	70ff40230a374c7a99ef970bb44a0b76fed6cf60ce6707ef71d9de67350ca6c3	Alkaline phosphatase
+ukb	d	GWAS	a764a68943c61e7ba16af68d0212ebd2ffc7e227767e42d50c41b9db955a1bbf	Diagnoses - main ICD10: R50 Fever of unknown origin
+ukb	d	GWAS	01e51f0f07c405db86de3c3ca5c7fae8be405d594a0f8b4548376bff0ac3c80b	Which eye(s) affected by presbyopia: Left eye
+ukb	d	GWAS	df7aeab153dc3c5fbd4d9e1add55cb5eea8391b179913492b2611e04082d0011	COPD differential diagnosis
+ukb	d	GWAS	4467ad5989bcc81985fc33c89754901abcecfd0320875edc3c09c7dd1b82bd58	Detention categories: Informal, not formally detained
+ukb	d	GWAS	b252ee9b661b66e10a53ffe5cff7bd53861d515ad45f7fd520eb1d1b7bb8c328	Diagnoses - main ICD10: R59 Enlarged lymph nodes
+ukb	d	GWAS	4708a052654a31c39c059e37eb845ee973d0965093f690e7bdbce51db5eff9bd	Diagnoses - main ICD10: M70 Soft tissue disorders related to use, overuse and pressure
+ukb	d	GWAS	95814a59df692e6d9e7d2fbc4d1904e572d57981f42b927560bdf3784077d341	Fibroblastic disorders
+ukb	d	GWAS	8dd71895c8eb70cf0b66a0081d53d2f046a5b46b821a614d89105fea4e9efbae	Diagnoses - main ICD10: M65 Synovitis and tenosynovitis
+ukb	d	GWAS	23bcaeb7fdbe6e5a4a95b5632416ff29e057b4e1a879f7548254c701f9a6aa02	OCT measured (left): Not performed - other reason
+ukb	d	GWAS	42b9b6ea17b68c29ba79aa274ef7dc062db9124c06322975e1cdf4566216ef62	Diagnoses - main ICD10: K01 Embedded and impacted teeth
+ukb	d	GWAS	36291b8bc0a2a5e18e5fd9a9fc807522863596d53984ea12cc5704acba9192c5	Tinnitus: Yes, now a lot of the time
+ukb	d	GWAS	25d75da877642a8813e978148541035a0be3533e8cf353aa7f53ca1f2f6f15fa	FI2 : identify largest number
+ukb	d	GWAS	198b0a3f1ed3279bba76194d6e3c318ca32e128d4c299faf2006f8fcde76183c	HDL cholesterol
+ukb	d	GWAS	33889bf5b5335bd68ac7ea36898143e8c71c3fd6f5a8da18a1b4608a169dacd1	Stroke, including SAH
+ukb	d	GWAS	d15f76f6a9ce00fcd76b8f4fde7543dcc50a66f2151dad71ae3b023e140e4327	Malignant neoplasm of corpus uteri
+ukb	d	GWAS	d857994d2dc8e9d2db2e68d79cfd2d9e359f5e471fee9f3d077540dc825ecc82	Diagnoses - main ICD10: C18 Malignant neoplasm of colon
+ukb	d	GWAS	66c094c52eeb5f7edd96f1f4e8818203319ae5994c2a61efd67ae78bfb353340	Other specified and unspecified  disorders of eyelid
+ukb	d	GWAS	203322ea89472aa81a0ec1b7eee07936bba03e179d6d7e90cdba0b5972811929	Non-rheumatic valve diseases
+ukb	d	GWAS	155cdcf1edba15d8146dc078910852c501f87ffb994682fb71d3fb51484203e6	Testosterone
+ukb	d	GWAS	659b38c17a7379bcc76195a8082763f9c059a35975b93fae2bd0543b9d94537c	Diagnoses - main ICD10: S62 Fracture at wrist and hand level
+ukb	d	GWAS	415aa8ce81cf9195c9854ca3b95ecfc28eda2dab927ba3c8944adb9e723fe470	Diagnoses - main ICD10: N84 Polyp of female genital tract
+ukb	d	GWAS	9b529543163467c73772e75887c6ab7023d31a0794c790bd0ed719efabdbe3b1	SHBG
+ukb	d	GWAS	d37eac66e69d83dbc24237775d039720e9d4a514bef41b97a3de4786579fd402	Gap coding: Looking after the home and/or family
+ukb	d	GWAS	dd415f5e88f55652ea83550bb1606abac715f4608002812668c77ac611b96d41	Diagnoses - main ICD10: M25 Other joint disorders, not elsewhere classified
+ukb	d	GWAS	af0839d2c58144ffd5c0aa813d2e3942cd1da9c394d8f2409f3ced5401ae72d0	Which eye(s) affected by presbyopia: Both eyes
+ukb	d	GWAS	72fd8699bace7acdd09163fbc26ade22c2f5d90b68d73e4f4dba3db9d452e5c1	LDL direct
+ukb	d	GWAS	0b090a69466f6f542131b1aa208b7c17ae3818aad3594ed5484534173e4611bf	Other bacterial diseases
+ukb	d	GWAS	302300befc87db3d23bc2f1a5806520130ccbf2ce54b33caf047b887348c5fdd	Nontraumatic intracranial haemmorrhage
+ukb	d	GWAS	bdf91f1c810d1a03a7f9ba85c44f44a4f3d198f3c970fdc7559f9a1ca657d579	Other retinal disorders
+ukb	d	GWAS	832cd5e4165bf82b62892e1637817d0f710609fb48fb447fd83246c5630b132c	Anaesthetics administered during delivery: Epidural or caudal anaesthetic
+ukb	d	GWAS	e44a439f53faae4dec1ffeb5b5b1c804445363f0fde9d468695fe30408a23f36	Disorders of synovium and tendon
+ukb	d	GWAS	6afe9eac3ca2d305836be7fa9931c04fcd93f8fe0a7050d589a6098a8e523b0c	FI9 : concept interpolation
+ukb	d	GWAS	d21dc0c55d360d685f026f6e276bf451fb1d8ce9fedb56574def0d486d55b5f9	Diagnoses - main ICD10: J45 Asthma
+ukb	d	GWAS	493da07bd6190a82138f1fd9c727e1e51aab71e2d13152e9dad909023c3d4802	Reticulocyte percentage
+ukb	d	GWAS	f637296e992ebffe09281ebb460123c5d335cc58e59d1fffa2a4bd820a1141cd	Hypertensive diseases
+ukb	d	GWAS	3ad8289923fe3f8a648d442dc8697789f619f0b3ccc86dfcab6c615cb1ef75a4	Diagnoses - main ICD10: O80 Single spontaneous delivery
+ukb	d	GWAS	2e8d82dd6a25f4427af5c5cfd4e79366c579297d6576e86da71310fd5352adbd	Job SOC coding: Care assistants and home carers
+ukb	d	GWAS	5623a1c39a2f665526538a8bcd4be936694c47883f2a99003b446d5ce10eab0b	Delivery methods: Emergency caesarean section
+ukb	d	GWAS	163b4f3a9e578b485f1c894b4d3f210e218e65a23e8f79f1202f4dfb32ffc8b0	Other diseases of the digestive system
+ukb	d	GWAS	207b03d24ced8efa204ba8da13516fedcd6a5c4eef3ade40e73ba59f3398c6de	Ever had corneal graft surgery: No
+ukb	d	GWAS	61b29a3c1f101eadf6ada6aa9a99673980559d0b2495dc5faa1004a05097384c	Cardiac arrhytmias, COPD co-morbidities
+ukb	d	GWAS	b0e35bd30384b109eb840289d5fb1b5e76943a6166baaad3817b391357202c89	Diagnoses - main ICD10: R56 Convulsions, not elsewhere classified
+ukb	d	GWAS	ef85b354432bc348b0f850601032228cb652db646ca2d01ba716c8a6d65841ca	Own or rent accommodation lived in: Rent - from local authority, local council, housing association
+ukb	d	GWAS	c1b30aed20161589cf3cdabb314186029002006e213c650e94bbc0acc406af00	FI3 : word interpolation
+ukb	d	GWAS	8672dc45da6608cae79bba3bf367ea8ebe7877a1aa3775e63e80bf046548484e	Ulcerative colitis, NAS
+ukb	d	GWAS	1cc1daa70efadd10370d78494d5920bd70d660abee1ea39c61d19250a8c045a5	Diagnoses - main ICD10: N39 Other disorders of urinary system
+ukb	d	GWAS	a55e557eb4af9184f5c488c706426ffe5faf7f76b7ba191700fb5feba088ebaf	Ischaemic heart disease, wide definition
+ukb	d	GWAS	7bd233c6c850d125a882c4b25c8b5e4c433989d37d938f72c805a516125d28af	Ever had refractive laser eye surgery: Both eyes
+ukb	d	GWAS	a32e50c80126da0db98858fffd6d5d6ffbe726b4649c644df3dff327561c1330	Malignant neoplasm of bronchus and lung
+ukb	d	GWAS	744685a341dd46803d4713f33cd8d371837f37b223a5bd0c8667458aa6bf92db	Phosphate
+ukb	d	GWAS	1ba3699b3961bbc0fe17c01ec5677711d1d9c16561517bb8c1a9b3281a7dc807	Own or rent accommodation lived in: Own with a mortgage
+ukb	d	GWAS	0c2f33bff9dc1a0d97caa5b7096b6709858453c52920e0073902f87aeafc3098	Direct bilirubin
+ukb	d	GWAS	1916078c37bb5c37d66330eb012beca5b10db9f1d0a6cb0fc0e8ad032f50fe50	Diagnoses - main ICD10: N80 Endometriosis
+ukb	d	GWAS	414ba82b810b167aa97a9f564c6f56826965fa512b85e916b7edd547d488a1de	Shoulder lesions
+ukb	d	GWAS	a49c193345efd1f60b63186255c46ad4c5718611ab3b0470499b449aaaa8fb56	Breathing problems improved/stopped away from workplace or on holiday: No
+ukb	d	GWAS	79e8cbf114e1cb60802297de1f49d74c50e3ee12f190320e1fec95ba0d78aac8	Rheumatoid factor
+ukb	d	GWAS	e1a477bb0ef16aa9d99f00672be167ab9c79e3080a2dc41be652bd325c0f66d9	DVT of lower extremities and pulmonary embolism
+ukb	d	GWAS	241f10f7cf24a701fd51629e0b522943cf25bd2c855dd788ef776230a904e99c	Diseases of appendix
+ukb	d	GWAS	f225b8f056e017839348b95a29bd161efa0f7558d8f7ee9bd4288cb4787f578d	Gap coding: Unpaid or voluntary work
+ukb	d	GWAS	e817b784329187ce0d45da5f820f62669abc0291136b8f6478fd348526fa18dc	Malignant neoplasm of breast
+ukb	d	GWAS	0debb6d924dfc0c009c237637ad47f734718d04692cbc15870389c8799cb8311	Diagnoses - main ICD10: K92 Other diseases of digestive system
+ukb	d	GWAS	f544627e512812f1efa9f24851f6c9789e94fc12be7a9a24fee0467234375bae	Diagnoses - main ICD10: O63 Long labour
+ukb	d	GWAS	87f9d1c4d6e21dd1e5b80b51d0423685c021481d893bc39ac7d2f195a08ac33e	FI11 : antonym
+ukb	d	GWAS	6d38dd4ddc6dccb11b68d5358c5b5a6ec24d426b6efbdd271ba135e4a0d106fd	Urea
+ukb	d	GWAS	daf6e95635743edfb4bd21f7d1efe0808d41efdd7205141290a5e39f2ac3162c	Mixture of day and night shifts worked: This type of shift pattern was not worked during job
+ukb	d	GWAS	6689549e9b42a1e8ca983915d80188c90575f37735fadd8166e29257030afbcd	Testosterone
+ukb	d	GWAS	7e025647318f97a105cd3582beb5855c09893caf527422be978b7958b6671770	Malignant neoplasm of rectum
+ukb	d	GWAS	cd01f9fe928d251eef313ec4e21d5708f778c6fce18e16012a06a536e9e7fa4c	Cancer of digestive organs
+ukb	d	GWAS	1fd7fa3abad51ffcfd4135cffba3777c145a54ed458aa5255473c33478cd9752	Mean platelet (thrombocyte) volume
+ukb	d	GWAS	9e80b426ed2c09911de43d4b8a90a01b54108b1ddf3b81e322e1c153e27b9127	Haematocrit percentage
+ukb	d	GWAS	923f8bdc0e4e0ad344179a32049b2a2c57140d90eceeacdebeed1bd90979b5ed	Barret oesophagus
+ukb	d	GWAS	47f971bd4bda4d69538ad70d28279a20416ae6b530517ae8dbb42613fb41bf85	Diagnoses - main ICD10: R39 Other symptoms and signs involving the urinary system
+ukb	d	GWAS	91f66b268fd10fc19e2c737efc123ea6a509a72263092f7fd3db38c1e7af5546	Which eye(s) affected by astigmatism: Left eye
+ukb	d	GWAS	0760ae14d506c633635240cde78d5f100c5a0ee43e497b80df47c835658b75d8	Retinal detachment with retinal break
+ukb	d	GWAS	5ad2fac99b9d7e37ca40fe8a82c3a5e3cbf823da1848dbc620f9b840724abe91	Diagnoses - main ICD10: R93 Abnormal findings on diagnostic imaging of other body structures
+ukb	d	GWAS	fe1993c61cf3e90d0ad4250f6a54608def268494625d8348b592df4fa4539fe8	Mood [affective] disorders
+ukb	d	GWAS	480aae456f1de2e8c89a0c2f67c2b9d1e5e4fffbb158fe4486269dd432ef0a81	Diagnoses - main ICD10: N90 Other noninflammatory disorders of vulva and perineum
+ukb	d	GWAS	d52945227bfa095e6d024cfd13043718bc7e8da939d0e85d1eaad80a2136aed7	Diagnoses - main ICD10: D12 Benign neoplasm of colon, rectum, anus and anal canal
+ukb	d	GWAS	1b6a8ea482ef8b069f2bbc7b65324ff56c5d62b8b75d3084f7a52c4e890566c8	Which eye(s) affected by myopia (short sight): Both eyes
+ukb	d	GWAS	8eac05dc9d8a4e075d523c36e399986865b59b9ca6ac42cfc5c0c01a650f24bb	Mood disorders
+ukb	d	GWAS	f13f6677f77117663ffae7a6d579b125c91f234e6b83f218bd0bfef7c353a9a5	Diagnoses - main ICD10: M15 Polyarthrosis
+ukb	d	GWAS	01fe924fe9bec4a7ca4fd916000de0e63e916a36d51dab13dbe8c2dee9d6b8fa	Type of accommodation lived in: A house or bungalow
+ukb	d	GWAS	cd385d58695734720d86da8686e3a1a09066fe5105b356e67191ce4e435ebc89	Day shifts worked: Shift pattern was worked for some (but not all) of job
+ukb	d	GWAS	e409d7420d83d275d29247f8c33bdbe9f79ccadb8554e34d2489fbcf5541d2e3	Breathing problems responsible for leaving job: No
+ukb	d	GWAS	247ea514373c475bf88c747faa85641f0436de028f82b1d4d91f844aa9d7eaac	Job SOC coding: Sales related occupations n.e.c.
+ukb	d	GWAS	032e114074a4384cb16dc455e8607956249fb8a588978c1acc18bc1ef80b3f50	Impingement syndrome of shoulder
+ukb	d	GWAS	5ff0d12a2369916f4e10c42095abcf230ff3da1dd51a38ded73370ea86d81415	Depression
+ukb	d	GWAS	74557863e928e9e24e36681138d181dcd803e831e6ac3454cda47fa820e543de	Age at recruitment
+ukb	d	GWAS	72e69803a9d0de6fa3d6bd3c4b4ec5775832037be0df8a003bea2580b2394313	Type of tobacco currently smoked: Cigars or pipes
+ukb	d	GWAS	b23cc6ec3b5b8bae70556bdb9f43ec0761d42ff43c5796d30c6de38b2cd8e5dc	Mean reticulocyte volume
+ukb	d	GWAS	99465aa6ff20a00c7f89c0047adcfb54196d95e595a3c2795333d775afabf3c9	Heart failure
+ukb	d	GWAS	47f972ea3c33eaea657c51bdda0cb99fce4b0884e57952afed55f5782c2b6cab	Urate
+ukb	d	GWAS	84da6bbf96e290c59c7d465cd208e7fd324ebd159b1226778e316eb22dcc573a	Reason former drinker stopped drinking alcohol: Other reason
+ukb	d	GWAS	92e64f85096da1849b251ed8fc6295ece85d6f0699a89391f57b4be73121d833	Job SOC coding: Customer care occupations
+ukb	d	GWAS	e2f4d7ae13a0895fcd58592e17b50cb1fee9705347b7f361efcae1533d3fc3e8	OCT measured (right): Not performed - other reason
+ukb	d	GWAS	02e2362908960108c52cb9040ac66c587cf3d2c54622a54e43d76d145341fc57	Malignant neoplasm of colon
+ukb	d	GWAS	9d23163fdbfd1fda7e3909874edd488ff752fa1eb43eb8cb6eb857a69357a678	Home location - north co-ordinate (rounded)
+ukb	d	GWAS	7222639dd1021159e663f066dc3b11252ef8d66132775940d8924344c74a87a8	OCT measured (left): Measurable
+ukb	d	GWAS	12319e1444fcba67536db28f5b3162aa40c6f6250f0cc2e6c27b58cdece296bd	Diseases of liver
+ukb	d	GWAS	699d6362f75d4ffaa1b1ee1371c5831184dd307a2bf85f3dd978023e34a8f138	Diagnoses - main ICD10: K59 Other functional intestinal disorders
+ukb	d	GWAS	6718b1f59349a00a496fe12c67c8dcc2d86756405ce33d9e15eb320b82f1b44f	Triglycerides
+ukb	d	GWAS	6a9669808a4c49fd80b53126a25a5ffffa2f2ee01d61ce4acf7ef6a064996bdf	Day shifts worked: This type of shift pattern was not worked during job
+ukb	d	GWAS	143dea0ad762e0916e769eac8dd3d582973092b5cbac13ece278ec8e8fabb9ac	Diagnoses - main ICD10: C79 Secondary malignant neoplasm of other sites
+ukb	d	GWAS	810ac70d9e734e6443b3c10f7d6779b9827c42ec96669ed1be93642c638437b9	Soft tissue disorders related to use, overuse and pressure
+ukb	d	GWAS	169d849cbf91c462c9a88ca7420b107750a4430e6dde18d4597c8565e65a42bf	Total protein
+ukb	d	GWAS	62d1cc7ce9392d7e73b166f7a805d6fa1d73aae515865f029d0db60d92318173	Aspartate aminotransferase
+ukb	d	GWAS	2f725e76114bdbea0be3f2de4aba7c9e5d068e9ee3ea966b54f0af774fcedf67	Diagnoses - main ICD10: C67 Malignant neoplasm of bladder
+ukb	d	GWAS	9a86d728a472777741f81ad8d864612165a8d50e97eb52d8e4b2ee72c94be34a	Diagnoses - main ICD10: T84 Complications of internal orthopaedic prosthetic devices, implants and grafts
+ukb	d	GWAS	527209f7ebf5535cb71cf0ce8db8449f6c4c7215ef3fd2fb85818fbeab1f3e13	Myocardial infarction
+ukb	d	GWAS	e4b63ba63c47ff2d79ec7e2cbe8e9c47b850f0970352b2c4fccbd04827170206	Urate
+ukb	d	GWAS	b98db3f7f235a5c1f0c1e890a76f76934e95b8ef936a0324609b41aa1693bb7b	Unstable angina pectoris
+ukb	d	GWAS	8128e757dd93862d63767c3397242a38250975033d7872e2e5bc8459d7882ccf	#Arthrosis
+ukb	d	GWAS	9e7254ec64dc0eeecd2212d962741c0cb373de974b64fb220be350b63f2fb94d	Which eye(s) affected by hypermetropia (long sight): Left eye
+ukb	d	GWAS	f6dcd40045e6bd457bc2bd8f9d1c30bc0b174a574e806d3702c9e120969103ef	Anxiety disorders
+ukb	d	GWAS	514958afa4d202663c045a018c6d280582440263426ca2a678ab4c3f1168b84e	Nerve, nerve root and plexus disorders
+ukb	d	GWAS	da5eb575716dca91fef3b00ab39d59115d9528dbecef23f4166f187f31c84294	Lipoprotein A
+ukb	d	GWAS	b6a738760fcc8e71e09acb11e5407df5c8fab3476a56271bb707b96703287c09	Which eye(s) affected by hypermetropia (long sight): Right eye
+ukb	d	GWAS	336ed9136ec185295e3a6744ea19b3050bc7c3567a9597861afe23a8735548ba	Coronary atherosclerosis
+ukb	d	GWAS	c61412ee53eb0d866a334bee4335e5ed3c204d65418b55e4b9d18b5e8b93b6d5	Diagnoses - main ICD10: H33 Retinal detachments and breaks
+ukb	d	GWAS	653a94780b16af68bf89ed79bfd8d4a5894e08697a025eb51979a14c1ce982bb	Neutrophill percentage
+ukb	d	GWAS	2525e8931f43dbbace123bc3e758466ffd67f42a72310d45ad22946f5b7611ef	Calcium
+ukb	d	GWAS	cd2baba0207541e93c0e1fb59439a415e97eb21a329e7036727a38c5e6aff5c9	Disorders of lacrimal system
+ukb	d	GWAS	4168b73cd6b814995a944fa5b62d22fa55d15c28cd31cf248f0dfc7a9b1f0d79	Ever had laser treatment for glaucoma or high eye pressure: No
+ukb	d	GWAS	2a91f92733fbe4c0a795debfbef74784e70b1146a79755f33eedb75ace373488	Inverse distance to the nearest major road
+ukb	d	GWAS	471b199c7c05955eee642d56c74223207d4c5d16e590cc6845aff6d7105b2682	Diagnoses - main ICD10: N48 Other disorders of penis
+ukb	d	GWAS	cd4c7b8d599c46bdb1fd532e2c374f10c6d0d3885651aa53c9115e53dc2641ca	Certain infectious and parasitic diseases
+ukb	d	GWAS	eb7bcc8e1f3003f8b5cda33e96a7dc73b0c55156f5d93e34a200658e4798b9fc	Mean sphered cell volume
+ukb	d	GWAS	39e31e2cc36b068a14fe50608920b2ad69ee97c816c297e9ddd4a8556ac4ddff	Tinnitus: Yes, now most or all of the time
+ukb	d	GWAS	827da1dc81362d3d6b41a5bf9cc1fe9a398118dd554730b0888efa2ccc6dd508	Diagnoses - main ICD10: K81 Cholecystitis
+ukb	d	GWAS	e29709706c2562b6b0a7fb65e17485976d7050211744ebeac5c57acba169ebc3	Sleep apnoea
+ukb	d	GWAS	7b09232fd27302fccecebd401b815d8412b2e9b62d2954f0a00496ec639c441c	Mean corpuscular haemoglobin
+ukb	d	GWAS	4d3e08ed6951333282f46f3bcff22489ce87ee4099b51943e30ba2987fbfc1c0	Gonarthrosis [arthrosis of knee](FG)
+ukb	d	GWAS	21f9d27091e1ed90f7fe745093d5ccce0d8c2e9e3364f442e9a6b3baba674d87	Mean corpuscular volume
+ukb	d	GWAS	18effc5a395c7081106ba2efa4d012a4e1ce0d9fe5aa6a943520db13e49e91b9	Diagnoses - main ICD10: T82 Complications of cardiac and vascular prosthetic devices, implants and grafts
+ukb	d	GWAS	2d2d5a6614a8df274d7620c3b164fde3287b2503a3d641d1747507b77ceb6c3f	Trigger finger
+ukb	d	GWAS	6fb07c1d6360a47be7b79ee56828258d65b67ba60019183524115431ecf7a792	DVT of lower extremities
+ukb	d	GWAS	91ff56d7f973d617a795dea3c5ea90e3432b3eea48da82f104a723f62016ecee	Reason for reducing amount of alcohol drunk: Other reason
+ukb	d	GWAS	f8bc2bef8858839ffb5713b542e9ee8f551e1b544eb821d403cdf241c640fed0	Gap coding: Full-time or part-time education
+ukb	d	GWAS	90b2680cefd5b44cc45c87a906934a9c5d2d14921ad2399f96e47b25b85ed97a	Hallux rigidus
+ukb	d	GWAS	2db037821c9bc89a734fd01a262198d09e63faf5e31d0432d6d6b8c9675838e6	Peripheral artery disease
+ukb	d	GWAS	7a729edbfca2f4ebe35016de6fde8f0c4b2f695975422cfd0303e9603dffed55	Rotator cuff syndrome
+ukb	d	GWAS	81fce80dda7500c60fb5bfa4c421928b41dc6fdc271a3b40f6e01383decdb2a3	Anaesthetics administered during delivery: Spinal anaesthetic
+ukb	d	GWAS	84f7c787e855331cc831f0d352021e3b58d92eb2d1ebccf9e1a9ebb56055030a	Job SOC coding: Other goods handling and storage occupations n.e.c.
+ukb	d	GWAS	6114e5d9e04850b7b437801d746bc04222dfd5adf661f57969e281ecc02d47df	Ever had cataract surgery: No
+ukb	d	GWAS	57cc1541f96096992cb930ffccc62f302cd0fbb5c76b1d196ace031115416711	Diagnoses - main ICD10: K63 Other diseases of intestine
+ukb	d	GWAS	19a2b5853e1a31a45f1bc5373719e52d8ced018e306cda91bdb13daee7627016	Scar conditions and fibrosis of skin
+ukb	d	GWAS	ce0b57734c42d6ece8956c6fb2d5d30701f3aa5792bd03f072e2727590b79650	Which eye(s) affected by myopia (short sight): Left eye
+ukb	d	GWAS	e5d673a43656bcd2098af7dfe8558431a52f5ff79e85aa4e92e836e4a7707708	Which eye(s) affected by hypermetropia (long sight): Both eyes
+ukb	d	GWAS	b31bd441a38a66d5401119a2f00bae672552317df88708415135cd10b34be6bb	Diseases of the circulatory system
+ukb	d	GWAS	a7b05225a80fbb149bbd604543f5cc6b3283d87e17c31bae70753f6d6231ad24	C-reactive protein
+ukb	d	GWAS	16185fd44f31cf967717a53fe904418d3de7d0c675eb8770cdae82a00454ef0d	Diagnoses - main ICD10: N92 Excessive, frequent and irregular menstruation
+ukb	d	GWAS	d6c9c5af2e9fc0b86493f33c52395b0c3c23e826a7fcd5e65e7e1a0488200674	Diagnoses - main ICD10: S72 Fracture of femur
+ukb	d	GWAS	ff773a38bf9dc4564b3b49a239c7b40778a12e9e1706aaaf0f6221bc6919e4e4	Reason for reducing amount of alcohol drunk: Financial reasons
+ukb	d	GWAS	26b1a60a600db51242eec69f847492c091707fb27f40891bb4e2725b7829e28b	Oestradiol
+ukb	d	GWAS	08e8c92d6fb1419de026cf89ad64845b3278b498335a9c557ee765247015905e	malignant neoplasm of female genital organs
+ukb	d	GWAS	f75df5a96d19a399fdba6d5382dca473a6547a226a4aa2deb65385f4ad0faa80	FI8 : chained arithmetic
+ukb	d	GWAS	c466b5302a9de5dc857dca166f99499c5efc3dad67cb6ec22289418b8aacdd25	Asthma
+ukb	d	GWAS	a50c6842aed86a128eb18204d82c21cc7f8a042ffc355e703c73fbfabf639831	Diseases of veins, lymphatic vessels and lymph nodes, not elsewhere classified
+ukb	d	GWAS	8da99d8d7b9e2059c979ba6ac3ea725205268265e9cca74f1d055b447632f95c	Diagnoses - main ICD10: H35 Other retinal disorders
+ukb	d	GWAS	060e11d9392a9aa35fab2b9e6c221f21ad077d97e211d11c92a37c9ffb088220	Alanine aminotransferase
+ukb	d	GWAS	c54a854fcee62a03fdedf99a651d22fa611015ba0cd689f5d5f0a06ef880fa79	Job SOC coding: Nursing auxiliaries and assistants
+ukb	d	GWAS	4124b8821e74c2d086f2866a60fe875c9cbaba783bcf3b8a2afe91aa0c2b61c1	Diagnoses - main ICD10: M84 Disorders of continuity of bone
+ukb	d	GWAS	cabd502600a5901141287872b60d8bcb07b1867dbe5f6ecef9166e4191588e92	Diagnoses - main ICD10: I63 Cerebral infarction
+ukb	d	GWAS	6be649c68aec4846989fdb894d033a8bbc6ecdab449737dc149b52053ded1441	Meniscus derangement
+ukb	d	GWAS	05f86b99cb1f33cdc9f1dae9ed0601255a2a2454c82ec9c651f1485e0082e83f	Retinal detachments and breaks
+ukb	d	GWAS	23844b7360bb2b7da62ba82488b78fd57a788aad8987db37d70ca1c33aff365f	Anaesthetics administered post delivery: Other
+ukb	d	GWAS	195d82951e629e46edb3a36819e0b635bdf5bfe228902fe36302d7a3f9efc9f8	Job SOC coding: Sales and retail assistants
+ukb	d	GWAS	bb045bf2d100525f66b4d7a4da2f57c0359a7285f7aaeaceeece3d4e0ae597b5	Adult-onset Still disease
+ukb	d	GWAS	17a320b1260eb82c8be3be89244b9d02aab0dd55d635bbe00416c6e2b30b0c9e	Siatica+with lumbago
+ukb	d	GWAS	da39b2136a91da93259145252008f5412bb77f4a9dc533d930e63d689257d794	Intestinal infectious diseases
+ukb	d	GWAS	36a6552f20b71916bdfb337be09b090b9f03a21a4c641a022446f1291c931341	Estimated sample dilution factor
+ukb	d	GWAS	b095bd0b175b2e5dbbcd432803bb32032fef93cd6b44a142c8ba976d8645a65a	Rheumatoid factor
+ukb	d	GWAS	cadf3996021fbcf72788416c054a01e5b2d0bc61ddf7392a6aaaf79c8382b4e6	Cancer of respiratory intrathoracic
+ukb	d	GWAS	07a57fd8d3efc903ec1bcb5c52da60612e197fb880317ce02a87e3fb1f3b7bff	Other gastritis (incl. Duodenitis)
+ukb	d	GWAS	9bee951b339c1bc7e298212ecfb020c4b0e76ae8fccc186d770391fe492cb313	Diagnoses - main ICD10: N83 Noninflammatory disorders of ovary, Fallopian tube and broad ligament
+ukb	d	GWAS	70e4166336c436b5cdb13b4cac0fbd603b4355d6b2bf701149a3f9b9bb6595d0	Diagnoses - main ICD10: D05 Carcinoma in situ of breast
+ukb	d	GWAS	98057cc1a5d8fd29202bc1f22ef5eb1b9d9e07da2d657946f48849a57f67525a	Heart failure,strict
+ukb	d	GWAS	c97fb6a6f5d430d3e48289ef9f6d7007db62614ebb9cf3d3e522367f0f30c052	Palmar fascial fibromatosis [Dupuytren]
+ukb	d	GWAS	37ae756639acac2895a1229abd3b3aa881b1bd1eb0715a1018f6b235a3808438	Episodal and paroxysmal disorders
+ukb	d	GWAS	a8e69fe7db2fdc88bbf3833bb08f979c6f71c59a7ffa1e31964b37572a1c8158	Pneumonias (Asthma/COPD co-morbidities)
+ukb	d	GWAS	adbb8cf39c6de5bfd3c7efbe91fd06e2a850786c3104d1d8acc12f2b8cf5f9d9	Diagnoses - main ICD10: N13 Obstructive and reflux uropathy
+ukb	d	GWAS	8e4dcd542c08265f76c441696a425cf1e7fcc958e5732aad5c501b7cfb3f692c	Major coronary heart disease event excluding revascularizations
+ukb	d	GWAS	818cf2394b65e1bf6bfa0943ce3c65a5b8a38edc58172216d290d9c2eb4b5f27	Glucose
+ukb	d	GWAS	cc8945675e6cef0a10199a49a892efe3053d4f00e5821d8624693260d769261e	IGF-1
+ukb	d	GWAS	61b39fcf47c3f19fdee084e97e8849366228bb340b55c5f2e569ec91d2a45231	Home location - east co-ordinate (rounded)
+ukb	d	GWAS	b2b14a9eb3eccb22230db32b6e04442d0dd75fdaef45bc5c8a08931aaa942e9d	Any mental disorder
+ukb	d	GWAS	ab024f711e4b51005243f4223b01d211deff32ec547a34e4f436426bddd380d2	Non-butter spread type details: Flora Pro-Active or Benecol
+ukb	d	GWAS	8bbe8540d7679a30ce7c68e46ce4e2667a81fbb1239540e0becbe0d9c85e7007	Carpal tunnel syndrome
+ukb	d	GWAS	e9a6a79386262de1c79adf1c2076d9fc1078c77792de43aa07785e6b28cf6559	Diagnoses - main ICD10: S02 Fracture of skull and facial bones
+ukb	d	GWAS	7a33109fbf4584082262563200577abed1f1de8f3a7b645e63b1130b9b92c51b	Diagnoses - main ICD10: A41 Other septicaemia
+ukb	d	GWAS	c7931a3a94362c8d72cf92d99b2df8c273ec435f0399e1cb33dec29a44f01240	Diagnoses - main ICD10: I50 Heart failure
+ukb	d	GWAS	0e87c6a86d64a86328ccd07b7c2b3276dd7412d48d76d88a3dbe90cb40357615	Monocyte count
+ukb	d	GWAS	9a0f273788cd0b8ba65bfc0af1fc5e0804b905b7620a6947821121e38f1543c9	Diagnoses - main ICD10: R79 Other abnormal findings of blood chemistry
+ukb	d	GWAS	b1c95834a6b36b2f7644d7d41d52b395bc9c4e88244dbe4b3fe3cc21649fbc43	Ulcer of oesophagus
+ukb	d	GWAS	65365c8ad78bb4a618afdf82486ee5d5d4cdb4c8d343e289eef4bcead37603fb	Degeneration of macula and posterior pole
+ukb	d	GWAS	2a8422d8e113ae347631e0c3def979964ac1a6fb48c7e4ecc38e6585d7d9768e	Disorders of gallbladder, biliary tract and pancreas
+ukb	d	GWAS	b88006dbf258dfb002d277985eaea9792a8d8a1297c262c59fb5ade2092e7c1c	Diagnoses - main ICD10: N93 Other abnormal uterine and vaginal bleeding
+ukb	d	GWAS	d8be9ce7f06bf9b70311a4a03e46db8ed551eafef4054598ef84621161743abf	#Other joint disorders
+ukb	d	GWAS	9af0ddbcf23c8fd5cc6a4ec28d08115fa42747e4be7db2086226ca769274c22c	Cancer of primary lymphoid hematopoietic
+ukb	d	GWAS	3bbb1085428a029dfe68fc75fd265c2dadc0f0b155c5d922fbf77e70605b11f1	Malignant neoplasm of respiratory system and intrathoracic organs
+ukb	d	GWAS	ab90af7a5e8529a6c0b2a0ce4f15476144398c3fb937f2ef669df534ea5677eb	Which eye(s) affected by myopia (short sight): Right eye
+ukb	d	GWAS	51f773ff3ab223c45737ac9c3b9f77392bd157bfa0a87f5427abd7c2c761cc7a	Diagnoses - main ICD10: J38 Diseases of vocal cords and larynx, not elsewhere classified
+ukb	d	GWAS	199882e34ddcedb3843e78c9a6f267eb9204cf26e67e9281cc711ab664e8cead	Reticulocyte count
+ukb	d	GWAS	9a6fcc4052db258fa61cf7939d23a4a0d38e0b1fd1a8e9387e29fd8e53eafd5f	HDL cholesterol
+ukb	d	GWAS	9bb868dd0d0c9de0d39b7fb99afd0c33c67af5772ca4ef5375633db3bf2ebbaf	Diagnoses - main ICD10: L02 Cutaneous abscess, furuncle and carbuncle
+ukb	d	GWAS	3d9ed9c5f7414e6abca737414bb2759175e28dd79336b4bd398a8d45ae47737d	Facial pains for 3+ months
+ukb	d	GWAS	f74bb50319c44f6c184d74819c2c87e73888b72559d133d8b818c3e4332ec7f7	Diagnoses - main ICD10: G57 Mononeuropathies of lower limb
+ukb	d	GWAS	e540de4ab3913e86ea5cbe3212022bde3ac3e5f12cc427a6bc873bbe4b858479	GI-bleeding
+ukb	d	GWAS	f4618d19032c1dc51dea877b6bdb44389a196a0006521776bcd5fcac58e32304	Gap coding: Paid work for less than 15 hours per week on average or lasting less than 6 months
+ukb	d	GWAS	e08f83e5ee70db6ceebf48a5eb4624a83cd97fb15c61ebac045193875094d1cc	Skin changes due to chronic exposure to nonionizing radiation
+ukb	d	GWAS	f37fe703f4d822f4967e37945308d7db85961d50c6c05ca0e0869ad8113bd717	Severity of manic/irritable episodes
+ukb	d	GWAS	5b87065c27ec6a677a5c2772e325fb31414d6147e828cc0b7582305c8b411415	Diagnoses - main ICD10: N94 Pain and other conditions associated with female genital organs and menstrual cycle
+ukb	d	GWAS	2348fa84297a425585e1f47da29b12f594dd023c9333988507eddf45d420bc5e	History of psychiatric care on admission: One or more previous psychiatric episodes with this Health Care Provider
+ukb	d	GWAS	cef16660d9d5eb3e5ee955487dc3fd6b315cd0779737b0f90f77b80504597ae3	Estimated sample dilution factor
+ukb	d	GWAS	a0b73beda61a82cfef92a84d24d4500ab5c0813fdb2a075d7c4f803591320b31	Diagnoses - main ICD10: I47 Paroxysmal tachycardia
+ukb	d	GWAS	26a7e2509639a699a9fb05379e00ade484ed003bba1d29d10a14ab9898c949da	Gastroduodenal ulcer
+ukb	d	GWAS	a7c6a5581da3276d464838775772c5b1489685675573ee79c9e969b2d8d39a3a	Primary_lymphoid and hematopoietic malignant neoplasms
+ukb	d	GWAS	9db05ab6dc145a1ecce158caae9a84fd62f24d8ff651b93c8ba7476608d7638c	Basophill percentage
+ukb	d	GWAS	e6ec30f3ccda9ad1793451cdad5c6112f23cb6fa1bafbe5acf76e0d70f86ab8e	Ohter specific/unspecified arthritis
+ukb	d	GWAS	1d8b42890857a9c855331619611f6ecf8e990a65a6dc52369bae47b4326e4a56	Diagnoses - main ICD10: L72 Follicular cysts of skin and subcutaneous tissue
+ukb	d	GWAS	1197ae38e8be802ea60695d346b1e074aeb606ca718ff6fb9d766c50cc65e088	Alanine aminotransferase
+ukb	d	GWAS	516af10bb733fcd2adc694592d07a12038a15aa6d0a4d2fc46fbe1fa8001897e	Type of tobacco previously smoked: Hand-rolled cigarettes
+ukb	d	GWAS	ae5ae5a27688f785c7c88836fa615ca7b8a236b5ee9354843c27e119804f220d	Cholesterol
+ukb	d	GWAS	c68df60d490ebf3418348e9e2044d4ba347654450f5418ffeb99c927693d776c	Other specified/unspecified soft tissue disorders
+ukb	d	GWAS	1c1076c1de7e47982a4740fbe0b41b3cc68b7c668cb395ab5f7345f0b8041868	Cancer of male genital
+ukb	d	GWAS	b53655b31de909b1287ca046c4fcb7bd96b63823d44098e072b76f0d8ad1018e	Completion status of test: Heart rate reached safety level
+ukb	d	GWAS	ed72122bec7476d38d3b676e5023657c253b67dde3aa65f160a36789368cca91	Diagnoses - main ICD10: K31 Other diseases of stomach and duodenum
+ukb	d	GWAS	90a473e585d388dc2e0c7ec1f7ec481f8df7c473a0f2df8f6dd02ed6d1d36ef0	Job involved shift work: No
+ukb	d	GWAS	e4638f8ca42884c48dcd3dd408c4ce41edee120f21fb39b6f318c515c69b8c86	Age cataract diagnosed
+ukb	d	GWAS	4a8e0f20e324d18692d0cc006e2b59a013ad691dfd768239dec7a123cc4ed73b	Diagnoses - main ICD10: R00 Abnormalities of heart beat
+ukb	d	GWAS	a85dca5e5123d74c3bcca0e615655c39599f07d4be6c65b2ef6d5dabf0b5c465	Coxarthrosis [arthrosis of hip](FG)
+ukb	d	GWAS	a4bab92879776fa18df0d8952d90bfed80ab20f589126ac61a5e7aa902b50029	Diagnoses - main ICD10: J32 Chronic sinusitis
+ukb	d	GWAS	3a2143772caf6f4b8f3708c71d2ed55192462642e932202542e66c4a5cfb22af	Total bilirubin
+ukb	d	GWAS	76bf895b347d67e9284875cf5d01be57a1878e1a018e0d2ae166d369ec21651f	Diagnoses - main ICD10: N30 Cystitis
+ukb	d	GWAS	3f821af784f3f8acafcf159deba1756f12f70f01284755d822e1e5fc84e63843	Diagnoses - main ICD10: L90 Atrophic disorders of skin
+ukb	d	GWAS	a1aa7c0c7d65a7b03b5fa85bddf718fac4171ad039fb0a839a84725def55f65c	Diagnoses - main ICD10: H40 Glaucoma
+ukb	d	GWAS	0a60e46078ac26173d8d22e6daab94df180088fc08cdf3b2cf7fbceae2b029d3	Detention categories: Formally detained under Part II, Mental Health Act 1983
+ukb	d	GWAS	ae1053542645693dfd588b0d0edaf5e7b231ec082f15237e5476adcdce523b89	Apoliprotein B
+ukb	d	GWAS	7224cf22a3d2652d6417d23a36c887542b6f9a857b8ea38967acf77e6130f3d7	Apoliprotein A
+ukb	d	GWAS	9c8eff67a2b775ab58933f5ebff3202d65c4ec2f815ce7448da12380a8a7e132	Creatinine
+ukb	d	GWAS	dde18d717fcd75eb5279f8ef1290257d563239e733426252a158fc8dbf24767c	Type of tobacco currently smoked: Manufactured cigarettes
+ukb	d	GWAS	895451e0440da4a1c4f6d315441124a826bfa461bfdc98f71bf52c19b2089eec	Ischaemic Stroke, excluding all haemorrhages
+ukb	d	GWAS	1ff5704e77799505f45ea26ed1f5be17988c27b7d3d8c64161cfd382f2cc44d3	Childhood asthma (age<16)
+ukb	d	GWAS	3a5f12b028dd356a98dbbbdffc7edad26fa8ed0ac4d3ca9c96b8181ef333e87e	Non-butter spread type details: Polyunsaturated/sunflower oil based spread (eg: Flora)
+ukb	d	GWAS	1df7381ad43420980a456bc06a3301a7efa8d28452a2a71fedb8d81b795c8944	Red blood cell (erythrocyte) count
+ukb	d	GWAS	a4f89a934baaeabdeb1e45bd4d5df419f3ee5a4a09d25f7a05d1717b875fa1ed	Diagnoses - main ICD10: N85 Other noninflammatory disorders of uterus, except cervix
+ukb	d	GWAS	7768f08d6546d14b8a78ef3236e34372ddd10e5baf53fc53a13badfa7c38392a	Diagnoses - main ICD10: M75 Shoulder lesions
+ukb	d	GWAS	a8d6bf7d28da8121964283f80e0b4e854c753c8f3598eb20e253422db3a8559e	Reason for reducing amount of alcohol drunk: Doctor's advice
+ukb	d	GWAS	925ecd198f54dc247a5e5f7dde5d8aeb73fb36cf8ffb419b6a7900b50e3a6382	Diagnoses - main ICD10: S82 Fracture of lower leg, including ankle
+ukb	d	GWAS	a25eaf5b9530c28a4d0e540abff1bddc2b9a047c2989f90cc825cdf66baf799c	STROKE
+ukb	d	GWAS	ee10bc87c20c791105c80e55c1053b81a557250bc1abd1f5cad1f6f0a6aa759c	Non-butter spread type details: Soft (tub) margarine
+ukb	d	GWAS	d72413b4e4e7f56335e3de0642c4153e32de32df6b91f4221451b76fde014299	Direct bilirubin
+ukb	d	GWAS	e15aecd031564863745ad8a0271097d9cbac639a923ebc49184dae5aa2f451c8	Diagnoses - main ICD10: J18 Pneumonia, organism unspecified
+ukb	d	GWAS	00b3313e90762ed73dabdef2c54acff6a14393f8c15c7bb347ecf95ebb4b6129	Diagnoses - main ICD10: T39 Poisoning by nonopioid analgesics, antipyretics and antirheumatics
+ukb	d	GWAS	7d8fdb27c48259091df6b1b287c586b246198d7f3eb5c4a545dfd794fa635a1f	Diagnoses - main ICD10: H00 Hordeolum and chalazion
+ukb	d	GWAS	038579427abef6105bbd12cdc568fc8678b0328828603d541065cc3c1448a9bc	Diagnoses - main ICD10: T85 Complications of other internal prosthetic devices, implants and grafts
+ukb	d	GWAS	a335c1ffaa8ed42567d2990cc80a1df9483f3396ee337b9d29d1129301ec26aa	Monocyte percentage
+ukb	d	GWAS	d8d8868d8d6b1e748fa26d04489a986d7a016100549a622c7ced0a8d4be88f18	Platelet count
+ukb	d	GWAS	fd68e5c9297d0176e7964d422b8fc2efa82a2f7bef8f4b5a9c5d5351674db977	Night shifts worked: Shift pattern was worked for whole of job
+ukb	d	GWAS	737a95dfcbc354e546c598c7d22297a999d25a94c64df2cc203e5e0bfeda23a6	Dorsalgia
+ukb	d	GWAS	a781b6c675fde2cb65f7998588961e50adfb3ed339e08773f8b5db077855c8a8	Night shifts worked: This type of shift pattern was not worked during job
+ukb	d	GWAS	967ce306f728232e1a5d10d9470f3e51b4d22b22c35c178608dbfee70a36cea6	Chronic gastritis
+ukb	d	GWAS	1ff16a0f483ff68cc8919456f58291e5905304c99abc457cccba0c502495be08	Hearing test done: Yes
+ukb	d	GWAS	18657b219dc098e7badadef0cb145968f768a78f000c61b8e23f3fbec696e5b7	Malignant neoplasm of skin
+ukb	d	GWAS	f652db6645d5745c3c4c2c520b4b84e0d217ea311d0a44d7f53e0bef651bedfd	Cancer of female genital
+ukb	d	GWAS	6c13b08c41b015918da6e56d700ba27dd45270957625d54690eb748d8c89e720	Final attempt correct: no
+ukb	d	GWAS	27720bc34165e5efd3a0d5753593020db45a98381904d17ee239aa3d805b2308	Surgery/amputation of toe or leg: No
+ukb	d	GWAS	1e2824036a2a256063c7741a0d86a47b16837e579d0af9414ecace27ca679d03	Other arthrosis
+ukb	d	GWAS	893f5774395aea67223d6d34addd413778a3b5e21e6dc8f822d0fba68da5d3e7	COPD, early/later onset
+ukb	d	GWAS	002f46027bd3171de6c71c0223bbe27c6859595de10606b6bc0aacc7a8959d47	Diagnoses - main ICD10: K08 Other disorders of teeth and supporting structures
+ukb	d	GWAS	68bea17ed3971c89eb29fe2d93513adbdf971cb6026dc747655795360a69ad47	Diagnoses - main ICD10: I26 Pulmonary embolism
+ukb	d	GWAS	102f2ff4a81a55f88485471f843b01d9cd868c72683d809c55c149e33f7cc4bb	Cancer of skin
+ukb	d	GWAS	3143dce25cdf82e2c6e3eafc11d66578a32987f25e04456b97f3ae0f3785edfc	Diseases of the blood and blood-forming organs and certain disorders involving the immune mechanism
+ukb	d	GWAS	af309e86b0206c8686a1de06ded5c7a6384bb0e7c04f54a1663682dd80e6bd8b	Diagnoses - main ICD10: H04 Disorders of lachrymal system
+ukb	d	GWAS	c0728d0da57004d8e4705086a8b41e4b98e4f68e41277d3416f424f7a6a53cd1	Anaesthetics administered during delivery: Other
+ukb	d	GWAS	b431c1b5564d003cde8bd5bcc9e67f9a762d1ec986104c0f0ef4211b83a3bde9	Non-butter spread type details: Olive oil based spread (eg: Bertolli)
+ukb	d	GWAS	8a42078ce627dc0cd695867479204bad76091061adadda712ffd69c3f13c8528	Endocrine, nutritional and metabolic diseases
+ukb	d	GWAS	9d99fd1b6f28cf11833b43641e202d6b24f9306034a6574a88330118da945c3d	Lymphomas
+ukb	d	GWAS	22a85fc4123322bc4468e39b3c7d9ae5717fc85a38bc6d92b668af3c9d7cee76	Own or rent accommodation lived in: Live in accommodation rent free
+ukb	d	GWAS	f58b40360df8b7d7e63d9e0ea3a4f0222b743cdb61afcd07b9904683cb02a198	Type of accommodation lived in: A flat, maisonette or apartment
+ukb	d	GWAS	7ef697874ac23043e55ce7c8d823fd41b454143fc26fc2edb5b8bdfff5742263	Red blood cell (erythrocyte) distribution width
+ukb	d	GWAS	e6d8330cdefecad003703ac6542a8d1a22f8a2a3f5e0320f9a12dd117f38120f	Job involved shift work: Yes
+ukb	d	GWAS	30d690dba9f32167ce4adf772d1cb2fa3c1a9450abc89464a822eb55bd8c28e7	Pain in limb
+ukb	d	GWAS	41733680915b15ba4624ac423134316812e04f93801d1beb7ccf60ccce36bc78	Gamma glutamyltransferase
+ukb	d	GWAS	28321619e90014a1e6b0b80b1d0c7c445acf1f046daa8342ad50fa222e69f36a	Rheumatoid arthritis
+ukb	d	GWAS	ad16b197124ac4f3ed4d560259f9c4d1b8b5b0bd45e92f20ca71748c33cc4dfa	Diagnoses - main ICD10: M06 Other rheumatoid arthritis
+ukb	d	GWAS	d23784757d62d41310a11f8dfd40ac1abfe817fa586d5bc618c7d3df92c6fdf8	Malignant neoplasm of prostate
+ukb	d	GWAS	6fad2bb8ef0b46ebe753fbc46e69c32a23df7b16af214ca0950eb5ab2270767b	Weight, manual entry
+ukb	d	GWAS	e9ee401a145aab56be821c34565d1d537af8c48f4d13547befff7cd980e922f1	Which eye(s) affected by astigmatism: Right eye
+ukb	d	GWAS	94683e3b2a78aa3b64d37dd3ba02cdfe3bcf100bcba448e62ce817fc52eead8b	Diagnoses - main ICD10: M13 Other arthritis
+ukb	d	GWAS	36a858ee448f72ce90ade0f9d5dfe0193a957b52ec8235da89192549230bf85c	Non-butter spread type details: Other type of spread/margarine
+ukb	d	GWAS	8501d31bd507a9e090be66f1e445fe3779d34096f4c2b2cb62c378a7aa5a7f43	malignant neoplasm of male genital organs
+ukb	d	GWAS	b81b92c9edbadacfd1678424e696de357bd1ccc2d9dc63f2d1236be184f6b388	Diagnoses - main ICD10: D17 Benign lipomatous neoplasm
+ukb	d	GWAS	7c0e4a31ec2ef00a603d20b63f1448257a6ba5134a50e07a6b4cdaf3a81fe3ad	Diagnoses - main ICD10: O36 Maternal care for other known or suspected foetal problems
+ukb	d	GWAS	20e99003578db07f747103a4cff72e1dbc3d91db52fe32872d94d4162011218c	Cervicalgia
+ukb	d	GWAS	9d40cfab03f07a0f9a5980b6f830d6e128f4e65db835c4e68af2d61c28008092	FI6 : conditional arithmetic
+ukb	d	GWAS	3ba9f349b93280739cd817c9f0c61c8b98cc0f3d9d3abf2ebd454ed960f65211	Hernia
+ukb	d	GWAS	22ea5db36d19d5ecc79c137f300f46514af1201a35a9a4cd04b8f8326b1033e2	Diagnoses - main ICD10: S61 Open wound of wrist and hand
+ukb	d	GWAS	376fafa8c83d5291fb84bafac45387cfeda987b4c2c936f9024aa6918d789c9d	Neutrophill count
+ukb	d	GWAS	dc369615fe8ba399391bf7da0625533de983cf7c3d36a2288797271b7eca1168	Diagnoses - main ICD10: K13 Other diseases of lip and oral mucosa
+ukb	d	GWAS	1d8ede33d2df5b533917bdf6fcbf72c1d4bdf198c0987c76d8150d6e34aef8aa	Albumin
+ukb	d	GWAS	8cce4bb1c0ba146bacb4bc0c62baaa5d36faad9ce2d7038b0ec4f93763bdc234	Low back pain
+ukb	d	GWAS	819d00a3dd40e8ef2797bc4ce465ca035b592debf7b2aac8de51b31f2f65dcbc	Diagnoses - main ICD10: N31 Neuromuscular dysfunction of bladder, not elsewhere classified
+ukb	d	GWAS	a75a5872571eeb31b8bb0367e08504be0d62a240480a95933507342f300f6f48	Aspartate aminotransferase
+ukb	d	GWAS	a96d79f8d2d0eb107d2ef105eaa08e5ad871d73c4e152d1ec67274cf8ed82fac	High light scatter reticulocyte count
+ukb	d	GWAS	9408cf397c3d5929a5db94ecc34cced8c800e5fe206ea9b1e04353b1f5326e47	Job SOC coding: Assemblers and routine operatives n.e.c.
+ukb	d	GWAS	db52489e22f515d5fb40abc845c85f79939a23a08d200663c950fea89acb79e3	Other disorders of skin and subcutaneous tissue, not elsewhere classified
+ukb	d	GWAS	2bf0ac69aef134aa21b28f8fd228bd633f2dced9f60160044d3ae8a515b05c43	FI7 : synonym
+ukb	d	GWAS	e9f19ec02191fc912a2589fb7f20a24e201acdf2c949d011c62aff7922d2a024	Calcium
+ukb	d	GWAS	8d049fa95af904bf8dcf184c3d4cbe455deacb6a34ee0fe55d5c997804b3dcfc	White blood cell (leukocyte) count
+ukb	d	GWAS	532dca4a2bbb1ccb84bf0239a1e8c6f51cd72df30c93f64ae75950fdf170ac30	Hallux valgus (acquired)
+ukb	d	GWAS	5303d877cf8196f91c24bf5158a268762d486f725826a5650b86ad6c7e2e42fc	Diagnoses - main ICD10: O70 Perineal laceration during delivery
+ukb	d	GWAS	7b531e891a428a527bbe9b7a79a058b24385543427902257f9bf0c085030b62c	Age deep-vein thrombosis (DVT, blood clot in leg) diagnosed
+ukb	d	GWAS	bbb083b5ca52fcf6a79e09a50ee55a9342be411a7f6c9a66e9d32d71850d82be	Gap coding: Unable to work due to sickness or disability
+ukb	d	GWAS	dd64c5c1226ff2bceff988e2e42414a89a71105012b7d8d5b0ede9c591071ba2	High light scatter reticulocyte percentage
+ukb	d	GWAS	fc3bcce9b9c52fb3303d46f9a90544edf78e06896768c0594c77d1a2600399b9	Diagnoses - main ICD10: K04 Diseases of pulp and periapical tissues
+ukb	d	GWAS	d30657c1f23964d8ea98d469a70d5ba9cf7c9c5478d5b8315d9098871266d150	Diagnoses - main ICD10: N60 Benign mammary dysplasia
+ukb	d	GWAS	7668a573f2e7117a4a518a7ed4c736bd54f8a7013d64aa753e1f9faa0308cb88	Malignant neoplasm of urinary organs
+ukb	d	GWAS	bc00d626587a652b934fc2f34f29910fbb663651a0b58c19f2a653a710e61e24	OCT measured (right): Measurable
+ukb	d	GWAS	06d496239b1459979e23e9ed2c1233cc3544b577aa03d5798eca7c15ffc8a5f1	Day shifts worked: Shift pattern was worked for whole of job
+ukb	d	GWAS	c604ed4efe9b94ddafc78279f86751b655a9f54393d3c41b2af2f18ec9e91814	Cystatin C
+ukb	d	GWAS	d3502dd0f6e9c5c624ace5b4b038abadcd912882f861918441ecccbd0bdb57b0	Diagnoses - main ICD10: R06 Abnormalities of breathing
+ukb	d	GWAS	d06a7a6acc155ecc12cbe024397fb7ca440e4817f3c637898046613178a9df5b	Other ILD-related CVD-co-morbidities
+ukb	d	GWAS	b83f89ede31cbb4d541fbcb2ad57df0f07a7fdb0ceef0f82271acc350889f00d	Other specific joint derangements/joint disorders
+ukb	d	GWAS	a9bd73900f375f959503350a6a5c6075e0ab155b40b2003cdc31db3ecf462817	OCT measured (right): Not performed - equipment failure
+ukb	d	GWAS	0e5347be618f7ffcaea96fe2d211785f0d61528344b5e3d95d534af55b8b00e0	Tinnitus: Yes, but not now, but have in the past
+ukb	d	GWAS	8ecadecd0d21646e86f108de303db4f219e3471cebf09871eb4a81c67874a499	Gamma glutamyltransferase
+ukb	d	GWAS	fd2939aaca28d6d9de6ac09b2e6b7d96e0d5c0c2ad4d15361775232699879eca	Gap coding: Unemployed
+ukb	d	GWAS	ea9c3491664ddfbfb2c44b97547d0a683905a9aa3b207022a0e13e30baa932b6	Apoliprotein A
+ukb	d	GWAS	31930d35d5f58eff224610d4dac870abb336b43428672fa23044fc4d80073060	Spinal stenosis
+ukb	d	GWAS	b74df0e7e94b7dc3055a006a8762ce33a5fdc91cc2599c459a2b217d2ed74320	Diagnoses - main ICD10: K42 Umbilical hernia
+ukb	d	GWAS	f79a2b29a5a50fa48733ba61587ab6923f81604fc0ab12e64ce6b219b52c7d73	Diagnoses - main ICD10: R22 Localised swelling, mass and lump of skin and subcutaneous tissue
+ukb	d	GWAS	210c8ff7575cb9315aa719c2302e6debf2dfd2133ceea031cc3c9666ed86e502	Mixture of day and night shifts worked: Shift pattern was worked for whole of job
+ukb	d	GWAS	04de12026484df43d84b7f6acc4249b2b16f24b74187191022339b94ce74ab9d	Neoplasms
+ukb	d	GWAS	474555b66b9257c341f04d4dd894d75db5cf52ff380b98360c641fa66dc6c763	Conduction disorders
+ukb	d	GWAS	38c05484cbe51debd6f4efd90d0caeeadbf0c9e4fa8e79b28d6b3078d4628354	Lymphocyte count
+ukb	d	GWAS	fcf7d544341375b0b4d3ba10e7a168394b8db6f669359d3d912b33d267e28c5f	Mean corpuscular haemoglobin concentration
+ukb	d	GWAS	9402b367b51d94fd06b1f2638516441efa85b15b4f0ec6b9ada8412405f9a640	Other and unspecified disorders of skin and subcutaneous tissue
+ukb	d	GWAS	4dbfec42a80fab5a22f9043231badcc7f7ce74a019301d392df0b6ec3d76fd0e	Own or rent accommodation lived in: Own outright (by you or someone in your household)
+ukb	d	GWAS	c7b843811318c37df999af246fb95b935b15cb37c86c19853b41ac1daee11da2	SHBG
+ukb	d	GWAS	685458a3d69c0c271281eaedea79722886a174d0e1db71298b317dd4275b21f9	Other disorders of eyelid
+ukb	d	GWAS	1bd0725a8f97b2fd987bdbfc24df4a49ad6f79be7afb4cc4f3582a8ddfff066a	Diagnoses - main ICD10: M47 Spondylosis
+ukb	d	GWAS	608d2cf325370534dfde5c1cfb1af039627242c9e41bc9132295b33469877308	Asthma, hospital admissions 1
+ukb	d	GWAS	8bc665a1a19f0762ee095bd4cbc9ca8d9b7ac734aa56c1f30375bdc1742213bc	Oestradiol
+ukb	d	GWAS	03154f58ca2629cdb507bb3883cd064c2da9918738d02ffbe574288b2a80e2ef	#Polyarthropathies
+ukb	d	GWAS	040c5a60bbe0d6bd024f2e55609b4cb70448e8ae33716d392966a71fbc314f95	Own or rent accommodation lived in: Rent - from private landlord or letting agency
+ukb	d	GWAS	e8ce8759e08de35150b089ccf8bbf1ec1dc4a4089b4db91269d43bebe22a6e6d	Vitamin D
+ukb	d	GWAS	732f37bc6a63792956bf0b3cc3fae92b75849a5396f7742c8e4c24744422af9f	Actinic keratosis
+ukb	d	GWAS	89d241c13c161c339431f5234dd04d7a79d48475c96ed9f3319a1ebf18491c52	Diagnoses - main ICD10: K26 Duodenal ulcer
+ukb	d	GWAS	dc645d04dfb230bb8e3dc3bc947303d5a9100d77dce833ae4cbb20db9bdcbcd5	Heart failure, not strict
+ukb	d	GWAS	2ae35e5179d5012a93f69eaa69f93594d5d5b206c04ab69114d9764d36c37c58	Breathing problems improved/stopped away from workplace or on holiday: Yes
+ukb	d	GWAS	7cbeb0ee62eefdc099aba58d5fdeb23c591075b99e7b02707653dbcc15b0d5ee	Job SOC coding: Educational assistants
+ukb	d	GWAS	21e0e904447efcb895a1de691fcd5e29716752bafb0603c30fa641f65ba4b511	Lung cancer and mesothelioma
+ukb	d	GWAS	d47228cd39e62ad1473358b11ce1542be32fcab07c3bbc25eecd5fd9c11bb217	Stroke, excluding SAH
+ukb	d	GWAS	9251a68738d243b94d5d2f69ce3eebab2acc932b95a3a8f2a3a4e018eb161ba0	Gap coding: Retired
+ukb	d	GWAS	37498053f5c8d17c89345e76462b74d2ff4f303d754bd7bd5a7a92cc97ffc31f	Job SOC coding: Metal working production and maintenance fitters
+ukb	d	GWAS	6f6b5ff794831f5a4cd6ec573261fbfbaa86e454e1c8baa9933a018e0263d96f	Immature reticulocyte fraction
+ukb	d	GWAS	ebed7b04ebd1c88666fa03003b7cb2b097ec8d4dc41d04ef09b13288f52d79d9	Diagnoses - main ICD10: R19 Other symptoms and signs involving the digestive system and abdomen
+ukb	d	GWAS	5adea7f8e9ec780c46e03e0fcadba88d32667b93d0533b4f2e34e7cff6c22e3e	Cancer of urinary tract
+ukb	d	GWAS	b4a59ecb9e32e43ecf55ca579acef99f60826cb43abf15b691913bba3da70a7c	Diagnoses - main ICD10: O68 Labour and delivery complicated by foetal stress [distress]
+ukb	d	GWAS	3941679b35847a0285378f3bd1cf4b58e73f4848c6bb9ddcf3045320bbf172ab	Major coronary heart disease event
+ukb	d	GWAS	cf558c5aa7bf5b4a81e6093a2c2acb69a70a8cdae08ce66b27d0767521700c7f	Diagnoses - main ICD10: O02 Other abnormal products of conception
+ukb	d	GWAS	a816c96b07087d82e57359e438db3002f059ceefc568aed62b56387316ba78ac	Reason former drinker stopped drinking alcohol: Illness or ill health
+ukb	d	GWAS	afc20175998063926145a8563a8b85081f4bcc042b8f5a2eb150622783136a1f	Mental and behavioural disorders
+ukb	d	GWAS	0a33ae8f5ff783bd4da30e593c9e2ce389c52fdc21d76ad6f9f1c85ced514806	Both eyes present: Yes
+ukb	d	GWAS	5a65459d19d172e741624517365eca2f6855b8a6d4e00fb7362501910cc62a3d	Diagnoses - main ICD10: K58 Irritable bowel syndrome
+ukb	d	GWAS	3415ace1c5ab98558d3f45583387f200acb93f00f22851b4d0203e5093d5c840	Diseases of the eye and adnexa
+ukb	d	GWAS	13d34b2976d0eeee600278e8a399e81b6ceb5e56a6d65d4f91271bf762d082eb	Diagnoses - main ICD10: M48 Other spondylopathies
+ukb	d	GWAS	c577279819e24e0052a95c5e1c530e7b01138c39fe8a18d48ed4f8456d0dc9e0	Alkaline phosphatase
+ukb	d	GWAS	fd60d34f008249c390afcf2d687d5459aacca19322dc088a42c9de21e7949d88	FI10 : arithmetic sequence recognition
+ukb	d	GWAS	cedbfbaba121d25a517198f2326d3215db56a236cdbc561f14a437dd07496131	Vitamin D
+ukb	d	GWAS	60a24c055bd0e70c4a417cf5543bb2df84881927070b0821660e14ce6f2ea878	Non-butter spread type details: Other low or reduced fat spread
+ukb	d	GWAS	c702ec570aa8a34106e4ab017b9e9b49f8dd0bb22d85d29354eb25307fb46aad	Medication related adverse effects (Asthma/COPD)
+ukb	d	GWAS	fee54f3dc7aefed7bc96ac08c09818a5e03049a6b13b6d3437325147030ee3bf	Creatinine
+ukb	d	GWAS	7be1deda278a88afacc756dd722dcf214a05d98ee138afeeceebc2cd3343c5ad	Number of night shifts worked monthly during mixed shift periods
+ukb	d	GWAS	9b431c675330543ee4191aeb493f842709db8906b19f30fbc0b671ed33b92473	Final attempt correct: yes
+ukb	d	GWAS	91de3a90e0c3dbdeab8054de6b6a898d768c306e48d63e38ddda9f718809baab	Diagnoses - main ICD10: M79 Other soft tissue disorders, not elsewhere classified
+ukb	d	GWAS	887ade3ae9143b6598e5b734b35a0a5da1a66aaa822943b88a089e3e10cc4aa4	Diagnoses - main ICD10: M19 Other arthrosis
+ukb	d	GWAS	bcaadb2d17ad217eba4048963b4cb85ca3dcb460d1c4cfdce0bcc2f4c80d97de	Diagnoses - main ICD10: O03 Spontaneous abortion
+ukb	d	GWAS	216ea2faaca744b141991565482b48420421b62c5487f2433e97eab7ed6b25fe	Total protein
+ukb	d	GWAS	c5084afdf4de57db44dd3e4c90d14d11c714d549de4ecae3d9aa2207fe50b594	Diagnoses - main ICD10: M51 Other intervertebral disk disorders
+ukb	d	GWAS	6587d9eff86b6a68ea174fe1ced7022d2d0d7276b5f42d21be89f8977cbb1f96	Venous thromboembolism
+ukb	d	GWAS	a0b2f2ee4b7a528d763014cd1ae645fd3a47acfd236772fecdb135f911b8a6d6	Diagnoses - main ICD10: D22 Melanocytic naevi
+ukb	d	GWAS	473d23cec2e9dfea7ed59222b86f90710adc2f1d8edb04855b8bb3f0f7c4d88a	Hypertension
+ukb	d	GWAS	28ec7cfe96691259d591dee29e29cc03f5f70967f0d6ac9d1874a047d3aca80b	Malignant neoplasm of digestive organs
+ukb	d	GWAS	8b3bd02578a5ab67db58523c9488df27a4e58376e6cd0dff6f7a103ce113c00d	Other malignant neoplasms of skin
+ukb	d	GWAS	49a562de0e1f545bb04c8fe633820604df4ba8b5a4f2735fe9c081d5f46e6ede	Phosphate
+ukb	d	GWAS	cd0a048cda28cd280d30944c4caddf0f91553b69cd9b644e23950757e148bde6	Haemoglobin concentration
+ukb	d	GWAS	1e4759b0de31c8c7620591cc8ffb8db9fa16ac83275e1b7ea42f745275990f82	Noninfectious colitis NAS
+ukb	d	GWAS	b1c767c73d09426bc2dc69ae81d7ea40e94032d83f7a1f342197e85c725e51ee	Diagnoses - main ICD10: D64 Other anaemias
+ukb	d	GWAS	4a66a52136c13afcab3b4d9354afcdb9f57b7074f7b19a523959b1b3f84171c9	Diagnoses - main ICD10: R63 Symptoms and signs concerning food and fluid intake
+ukb	d	GWAS	bb185d9738db209ad210b6c40848712851431f8fdeb0d4cef1601d54f885fe1e	Lipoprotein A
+ukb	d	GWAS	78e9e45164e7594b3de7cbdd505e59f0bf4ccd5b642fb81ac1458eae772ef711	Age stroke diagnosed
+ukb	d	GWAS	ef9b2412c4fd75961985fbebed2da72ebb7ff55d309a5eacf88efde5c087cd2f	Disorders of lens
+ukb	d	GWAS	bc2d230e8af4ebe3df9ce2a2ce54f63898c9bad1149b420142338c202c7e31d8	Diagnoses - main ICD10: T81 Complications of procedures, not elsewhere classified
+ukb	d	GWAS	aa718e099d561915affdf684a125b0187faa12931519248d417bdc878521706f	FI4 : positional arithmetic
+ukb	d	GWAS	377d8145efc93cd2b136ef03d35647ce817cb6f919de53b016932062dcdc0172	Adhesive capsulitis of shoulder
+ukb	d	GWAS	e7744ed1c4c67dfdc4f5011c67765d6be115b94e6b1d15cca09441c1bd084e20	Diagnoses - main ICD10: O26 Maternal care for other conditions predominantly related to pregnancy
+ukb	d	GWAS	fba566f876e79854e168592859d67b843ab29abad10cfd9b88840b8404b03582	Chalazion
+ukb	d	GWAS	9e4939c8518f437d0a84290f7a1a5062427f90276d9e91e194c56d960aea8c5b	Diagnoses - main ICD10: L57 Skin changes due to chronic exposure to nonionising radiation
+ukb	d	GWAS	6dfe37ba21c6d5478221bcff05147addf6d360945893cdffd4dcaffbcea1a145	Reason former drinker stopped drinking alcohol: Health precaution
+ukb	d	GWAS	02460a7d2eb7a82c7d57fa05546c7a99aeabb071d0f8d43e8a7ee88918fa04af	FI5 : family relationship calculation
+ukb	d	GWAS	6b28cd212373c172fd864fe687794f41c3160d68faf901867ff3c40a6ad9c77c	Glycated haemoglobin
+ukb	d	GWAS	087b72f8dc280dcdac05cf584898278358e0c2e8c8f93529a9d386175c52daf8	Lymphocyte percentage
+ukb	d	GWAS	4fbe7c039a7619be28435205c1b9366a4c78b5b6643264f19273e2d3594b619e	Albumin
+ukb	d	GWAS	74c44c375a53eaa01235ec9e768aecc7a299328ffbe47831ec7bb83ba8477ac2	Diagnoses - main ICD10: G45 Transient cerebral ischaemic attacks and related syndromes
+ukb	d	GWAS	53f326754dd5769a974d3603fdf70ae8209d405df9305a649fd1685ba12b4e8f	Diagnoses - main ICD10: D50 Iron deficiency anaemia
+ukb	d	GWAS	1a17c6eb0ef7fb8a83effae9cb4f5943cbc1b530e81636f920f699d7f37237ce	General pain for 3+ months
+ukb	d	GWAS	1ae79416cdd07288c802f58fac734e02dbeae7028015b15271caf3c93256e99e	Urea
+ukb	d	GWAS	318bf938eecb003d7c2b30255f23a812765e3490d38f584c425e36bc66594606	Diseases of the nervous system
+ukb	d	GWAS	0ff5f30cce628eed3eefbb55575cf50ffaf0291a4d913460b00e21378f016bc9	Diagnoses - main ICD10: K61 Abscess of anal and rectal regions
+ukb	d	GWAS	03a44323f29860f8b72cd11f1870a13ea8831566caff388975cacf0a202a0495	Other anaemias
+ukb	d	GWAS	9e1b0460a77b46032e26240989b778a7d4b3899302382e9ef6c1f57794937c31	Other and unspecified anaemias
+ukb	d	GWAS	02f801379c3ddcfca51d3ec78b8949cd2599dafe96bbcab53bff2980c3bcb7ae	Eosinophill percentage
+ukb	d	GWAS	41fa4dc79e27250dcf107d2996ac7759dfd8c2fe04c6340e77788c61d522381e	Other viral diseases
+ukb	d	GWAS	a94617479001410aa6e9c1ea7cc2ccb01ae94579e0b50069a817d1bcae9affe8	Fibromyalgia related co-morbidities
+ukb	d	GWAS	a0ee9125991c5d53d5877c5d18d4f53142e9721da393b32f8751407f5203d74a	Diagnoses - main ICD10: C78 Secondary malignant neoplasm of respiratory and digestive organs
+ukb	d	GWAS	8b3dfdd8e2620b443dca8623bf3f63c470591573e15cef0a3091175b911fc28a	Endometriosis, IBD co-morbidity
+ukb	d	GWAS	30b7882aaa211573d2844f61d99082d61b2c0fbc2b6516e0bf4b97a49575a34e	Other/unspecified rheumatoid arthritis
+ukb	d	GWAS	3d129a9d40e95b55039a664e1ce8b033e10f3564d87b966e61a81fbb81b49fe2	Diagnoses - main ICD10: N50 Other disorders of male genital organs
+ukb	d	GWAS	61af06c4dc8ba273f21f4c89c9b62b0ec4ec4fe9e1739a2677a16de7798d7ee1	Mixture of day and night shifts worked: Shift pattern was worked for some (but not all) of job
+ukb	d	GWAS	0577051639de194f6e86da0c0378ef500febbc2e441b5ee169477c79abee7edd	Paralytic ileus and intestinal obstruction
+ukb	d	GWAS	bd76e54b5986cca971b0f98d8e5cb2e8a65c9555dd386589121d5db56b65a36e	Completion status of test: Fully completed
+ukb	d	GWAS	b15158d635bbe6ddfdc30a723ed587ecf8e77226a1afe797c0d3bb91f1f4d755	Diagnoses - main ICD10: D23 Other benign neoplasms of skin
+ukb	d	GWAS	d6f8697f57e7158bcc26e16a5738270fa228794d71a8802a616cdd681107e712	Previously smoked cigarettes on most/all days
+ukb	d	GWAS	1e93acd3e37a51814f7126646b0e1360d7c11f9b6e5c298a31178bdd285e2d0e	Platelet crit
+ukb	d	GWAS	4b6b35a42f776264be19851adbd2e450f49963d5990ce57e531881f046f52234	Asthma-related pneumonia
+ukb	d	GWAS	1dc17d2cbeb5f0bd52290e8238e2a3c5baa0aa92e1ec39d2e233425ab78d890a	Hearing test done: No, I am unable to do this
+ukb	d	GWAS	37affe60b49ddd1b59c5479ed8ba63d19460000a78ce450db3ea4c85dd582a6d	Glycated haemoglobin
+ukb	d	GWAS	d3d09995d20c83de35611e413a9ce114b8f54246641d9311883036f62ad5bfc4	Ganglion
+ukb	d	GWAS	208551b33340e9f6e1e2fafedb7d81be3b503361ec173273ea98130654d223c6	Cholesterol
+ukb	d	GWAS	d3ab4a2cf84d301a4de411852626c725e40797a6d25008da13130ed4d903a8c2	Diagnoses - main ICD10: C43 Malignant melanoma of skin
+ukb	d	GWAS	6b61b9490fa61126b9f151713bf07d1b7944e3803ff48fd4dd5c4df6e170438a	Adopted mother still alive
+ukb	d	GWAS	a7c2175ba436dfe8f65f603a1fab477c8e6d0d3c6cc3f2b2af4119f7a73e89ce	Platelet distribution width
+ukb	d	GWAS	a70e42c7084410bc84b5b1de89128182b5312665a5b611477467d4b9ad22b9ac	Total bilirubin
+ukb	d	GWAS	5d83c070854f4762124bf01f6eaf8367bc838f8934856287a2c1120a42965c56	Triglycerides
+ukb	d	GWAS	4cbbc8b3ed18efffde548822627d11aa8b995f7c85b3c1d226670cbb3f97e066	Atrophic disorders of skin
+ukb	d	GWAS	4ff4c2cf1769b3f10a2a866dfbca3946d5c483fdbadec6c05b7e23ea1642596b	Malignant melanoma of skin
+ukb	d	GWAS	1b927ac89196230fd3f7f085d7e3f7e2b86e04e5f50256f34c5426387cd61340	Diagnoses - main ICD10: C34 Malignant neoplasm of bronchus and lung
+ukb	d	GWAS	6408220ce04d7124e1aadb5d4fdb074cc28608bc095464196cfe2527a5237318	Diagnoses - main ICD10: S01 Open wound of head
+ukb	d	GWAS	8428c3080a3e9003390aabb099f3452362c1fc198600f0b8d80c8ec99609a643	IGF-1
+ukb	d	GWAS	09271ca11a7c9aef703712853d374ef1fc70a1a4fdab484f057f536c7c5cb1b9	Diagnoses - main ICD10: K02 Dental caries
+ukb	d	GWAS	ac6f9b8c43d9adfd23e51425706d46b6daafb986cefe193f4e3baa20768101f2	Diagnoses - main ICD10: N87 Dysplasia of cervix uteri
+ukb	d	GWAS	492fd98e8fa97426c27db71a1cfdcbc2cb17aa336d4efd969746fee064556c52	Consecutive night shifts during mixed shift periods
+ukb	d	GWAS	afb8c4535b33637b57465f2c55d95751fe39e896367805bf443603030a59e4d1	Diagnoses - main ICD10: K56 Paralytic ileus and intestinal obstruction without hernia
+ukb	d	GWAS	0e2fb34528a8f937d3e4db66096a8fcc315a0c7c95f450aabee1c58589dcc80f	Myocardial infarction, strict
+ukb	d	GWAS	d46b1600c154a5b8f5a4285c5975a4be854f427ca3e48548f26b9b72eedbd2d9	Other arthritis (FG)
+ukb	d	GWAS	f5d11eccd4eebdb0307c3f544ac6098cd9571e9160355a30717c694e40011e2b	Period spent working mix of day and night shifts
+ukb	d	GWAS	36072dbe89f68f3f3d882011150025146c75687897e3fdf3ca90a3fcd97164be	LDL direct
+ukb	d	GWAS	d9623490e1f80e21d5dab3b0ade7e3eebf47f6f5d38c7d10af08c5c3630de5ca	Microalbumin in urine
+ukb	d	GWAS	c5ccd006e5546bc8089b79fede9b48d019acba1bb107dae6f44a768ba24002f9	Medication related adverse effects
+ukb	d	GWAS	8722d8e9ef9e6a5216feccb10881780d1d24fbc557cf9b7600db7a0d4f4c8ca6	Diagnoses - main ICD10: N95 Menopausal and other perimenopausal disorders
+ukb	d	GWAS	7a7a2bb174aa0b5269f4289070f11f800e755aa99c7e8d0e62102beac50296aa	ILD differential diagnosis
+ukb	d	GWAS	cf3760180284baa53e7c4c14966a3b3e2c9d49f48f281b51b8f5eafacc448ba3	Type of tobacco currently smoked: Hand-rolled cigarettes
+ukb	d	GWAS	06c3dae663096a46cbfd17f052f5984c0adee2e7541820ee1b85dc9de9622779	Cystatin C
+ukb	d	GWAS	a1f33cc849dc38277d631a51001a946f5b839718d95ba3d244ffd35cc2008a57	Other/unspecified dorsalgia
+ukb	d	GWAS	686b44886d52c888762ba56a16db875f166014b81f86e0c7d07117bc832dbbab	Diagnoses - main ICD10: N35 Urethral stricture
+ukb	d	GWAS	e8bb909664effd28c24933d3f50b94bc86925981f91c78692c4c37c35f2f552f	Suggestive for eosinophilic asthma
+ukb	d	GWAS	bb620303f332dd57f45a5694003897a6e97a1d8ddac3ba49aaef179023e57b00	Other diseases of oesophagus
+ukb	d	GWAS	84417d1118e30374ece07c31c71f7efc74bab9b8c188d7d51cb974896902996e	Job SOC coding: Electricians, electrical fitters
+ukb	d	GWAS	90fe7e9fcbaa11a4e5b4d113409bc90f15d8798d641260768c4fdb1f3da66eac	Diagnoses - main ICD10: H02 Other disorders of eyelid
+ukb	d	GWAS	62091ef2527930990321921e517c05405bd3d8db1d71d6dcf3741735962334a5	Ever had refractive laser eye surgery: No
+ukb	d	GWAS	5007fc7b668a7cc7029b863316c7a8d9301fc8def1d8d596c4bde61b80a2afd3	Which eye(s) affected by presbyopia: Right eye
+ukb	d	GWAS	a2c2649f320054074c890ef51a22942411afac88377fd6f0b59fcfb6a08ed15b	Diagnoses - main ICD10: G43 Migraine
+ukb	d	GWAS	29102c23d34375669aae2b8c88f5e21fa988ba68246641270e982a0f62b02cef	Diagnoses - main ICD10: S42 Fracture of shoulder and upper arm
+ukb	d	GWAS	a132a290ab6dbba521cac009a7a2b190434affe09b50069f6fb62096b448fc9b	Hospital episode type: General episode
+ukb	d	GWAS	4672fa50881e5c96fcc8f65b421d31064d05dd89f4fd779ab24851873894bd94	Diagnoses - main ICD10: R87 Abnormal findings in specimens from female genital organs
+ukb	d	GWAS	9ee2621f77c692a91fcd001564f639dbfeb4d0652a2767c3bcdf118a295e112d	Other soft tissue disorders, not elsewhere classified
+ukb	d	GWAS	a47b4abf2ff44a6af84be4ec27f9dfb906259d95be501c76f1c8d8d71d8ca59b	Death due to cardiac causes
+ukb	d	GWAS	b9ce20449383d1d70a00d4bbd1923dcf920915ea893dcfc64537f23ffadbcf19	Iron deficiency anaemia
+ukb	d	GWAS	65fededeefbc9a0478485ae9ea5a02172eb216e289fa6eb88d0face3144bc027	Apoliprotein B
+ukb	d	GWAS	18d087989ce4afebdac2ba5d63fc6dec09e1f2ce6785c947a609df53ca172ade	Hair/balding pattern: Pattern 1
+ukb	d	GWAS	8309830430d40cb35d7594bb7c8f33f658d988f0db2cb907034cb70d93bffd94	Diagnoses - main ICD10: L98 Other disorders of skin and subcutaneous tissue, not elsewhere classified
+ukb	d	GWAS	8b3a1ef9df4a25794e2bde7a7479208b1e503541eed286799d36de1eefb2920d	Job SOC coding: Elementary office occupations n.e.c.
+ukb	d	GWAS	481ab46e08ec14281c2f2af1ba2bfeb02c6493384e43354453008361d0911729	OCT measured (left): Not performed - equipment failure
+ukb	d	GWAS	c47e47efc8f702249de240997814c012c2e88cdc2c9864c218432b4b994bd8bc	Sleep disorders (combined)
+ukb	d	GWAS	682e3d91814e1b286980b4c6b957ce99c50a01cf070dc7de6f39e04ded502fa2	Diagnoses - main ICD10: K25 Gastric ulcer
+ukb	d	GWAS	5b1a360f4a8d2d3f88435e47962a29b07cf1668d83eb44a14d4768fef940e1a0	Genetic sex
+ukb	d	GWAS	d48b51edf5c149098f581710535ec7ddf1af02d366a6a92babc605a91e541fc4	Reason for reducing amount of alcohol drunk: Illness or ill health
+ukb	d	GWAS	a499aeedf958baf0f5d07dc17090b5fb489dffab3c8ffbf08a8e675bbf020a1e	Tinnitus: No, never
+ukb	d	GWAS	44b0f038a73e32cf9bc7639ba22c44a9cac4b51043ecddda4b2c4322003ad799	#Spondylopathies
+ukb	d	GWAS	c0572cd41ffc0298a51e4189613e16c598b316743ffc59d28f140233f3b20e19	Other enthesopathies
+ukb	d	GWAS	270d5526459e474626f7dfb0a65a90c92fb247c59d360ab3e55243d775562299	Which eye(s) affected by astigmatism: Both eyes
+ukb	d	GWAS	0518a2f46ee5f0211a4490d055f0637af605eb9ef2c4f6aa9495ad4914d708cf	Glucose
+ukb	d	GWAS	6e09494fbdd4a9fe1186c4e18c57f4d9f47c370b889887a5f4207e92cda7e646	Other pulmonary diagnosis
+ukb	d	GWAS	13da3d4cc0d9dcbae2983714532603008a6faa9bdc2cef98c7049bc022d9f8fd	Bronchitis
+ukb	d	GWAS	264a6890b9ed3177625a7c0cc4aa7fc04bb77e7ee2a2e9e4ffa37316b273f361	Tinnitus: Yes, now some of the time
+ukb	d	GWAS	a059469229d78ea6f42043d12b14d6381faa34d2cbe7e0f196f1e210bb65b600	Other diseases of arteries and capillaries
+ukb	d	GWAS	2230deff34bf8dbe468519ab5acb53358a88098f0b474421a081a302d6161ec4	Victim of physically violent crime
+ukb	d	GWAS	981c9e70a012bb33a529e9d072eb3383f71206e8a03d96742b4c9e4aa14f314e	Job coding: secondary school teacher or teaching professional (including head teacher)
+ukb	d	GWAS	6763054648dba95c1de168ecd31b2d1d4f092d2997f61bdabea69b056f3239ba	Tobacco smoking: Smokes on most or all days
+ukb	d	GWAS	2e7c6a7fbc2eb32f16d54b0ebf38fc69983d81d96b40ed11aef8df2d0463c114	Waking too early
+ukb	d	GWAS	c739e7c80b648acefa4496f6dfdb6f951ce255dde2726ed79ecfc5d83a3e0cf1	Day-of-week questionnaire completion requested: Tuesday
+ukb	d	GWAS	9d1168a51a921883e1a8307e0cfeda7d8c67f4e1d264bbcc5f256dcd51350868	QRS duration
+ukb	d	GWAS	3fd5bdcf908e84122fed3f526e86ca446abf7267cfa4f93811d281c531fc5ee7	Job coding: community worker, day centre officer, youth leader, youth worker, parish worker, bail support officer
+ukb	d	GWAS	9c18f51487ef56b7eb5550ed6cce4fefb379a0f50c82f2f0d78208702c4873db	Actions taken following self-harm: See own GP
+ukb	d	GWAS	c18f3e3833213f4ad70a4bcb414c0349397ceb1a376f4cb6f66e7feba266d943	Feelings of tiredness during worst episode of depression
+ukb	d	GWAS	9c14b659ef3fda6be015b5c042336bda9fe00003c769457dd783b938f37c676b	Job SOC coding: Software professionals
+ukb	d	GWAS	946becc4e34f3c8e7434ebf13464995da20853768c98e2ad9e352bee82ce6f05	Easily tired during worst period of anxiety
+ukb	d	GWAS	d5e0cdac9223b0513e9f2c61b87ab12d7d8441f652589d4f894d64299033c4d2	Job coding: customer care adviser/officer/assistant, store guide, customer relations officer/representative
+ukb	d	GWAS	a504cb1d24ca0e8a26ceefdacfa70551a372f9e0e07a4a6cf82b1f2c92d77d6b	Job SOC coding: Shopkeepers and wholesale/retail dealers
+ukb	d	GWAS	ba4aee2b340aab769befa894974679f836a1284aecf03803c86281fe68a55ec1	Hair colour (natural, before greying): Red
+ukb	d	GWAS	65d7f1fd2a6b2eb204a576af1c883bfe63ed17388f6a15528d62dcf9de26e337	Job SOC coding: Mechanical engineers
+ukb	d	GWAS	3b5674b92ae0aef651434465c9b7e09b5ad0b4295ba04572bf2a4354ac680934	Job coding: care assistant, home care assistant, residential social worker, home carer, nursing home assistant
+ukb	d	GWAS	dd50529f0c2cd0c35d79a00233565a6954d3edae7d954599ba97af1b92a8f3a8	Job coding: registrar or senior administrator of educational establishment, bursar, registrar, university administrator
+ukb	d	GWAS	34a370cb393b5b0551c77e6e46945151fe00feff8a4011d13dcb8a62be1c90a4	Major dietary changes in the last 5 years: Yes, because of other reasons
+ukb	d	GWAS	8eac17aa0ca7ca5486442131c7a77f044a1fc5a680ff937716733ad4653520ce	Worked with pesticides: Sometimes
+ukb	d	GWAS	5e6d80f95fd9b4dfecf4140e5aaad28cfa9e256c6ed577ac15afe914144c7a8f	Job coding: financial controller, accounting/audit technician, trust officer
+ukb	d	GWAS	737f5ee71bc5b5e929a50fa2567d219c5a13e38d9dccefb20c7e13f487be7134	Substances taken for depression: Drugs or alcohol (more than once)
+ukb	d	GWAS	8f15e0616e280fa50e24577f55159b87b92c8cff1c4893fdfb6ada3d7e08077d	Job SOC coding: Public service associate professionals
+ukb	d	GWAS	ac4b2f8d0fd85562c6c7ad72bbe13af9ad0ea8acc62baeeaeb006e713c25655f	Mental health problems ever diagnosed by a professional: Any other phobia (eg disabling fear of heights or spiders)
+ukb	d	GWAS	266358e421dc3b8dcd93f5d4e981677bd398f30ee54e206f278b0765320f7ab9	Job coding: civil service senior manager outside the senior civil service (former grades 6 and 7)
+ukb	d	GWAS	343f0b4001f99c574e49e91f269ac4f1427bcc81ee2ba8f3f4d80055431adeb7	Workplace full of chemical or other fumes: Sometimes
+ukb	d	GWAS	fa47d7d253e3ad6c1a863299e8f80ca648ba9a9ee27b7f3d83b11e2908491040	Usual side of head for mobile phone use: Right
+ukb	d	GWAS	bc433cb5db0a027152c8a80274d2e5a1eabc6b8a80d39a25f23f92ee0060ef0d	Day-of-week questionnaire completion requested: Friday
+ukb	d	GWAS	eae603687a15a162d2cda6f95e3d12ffc7b1c24530ea59bbed49d4522774cd90	Ever addicted to a behaviour or miscellanous
+ukb	d	GWAS	c45bc8375442bbde163179df5a5f673a0717bec371eca66f59817bd77153f5ac	Illnesses of adopted father: None of the above (group 2)
+ukb	d	GWAS	eff2cbb95ffcfe82737f237aa93a462e4a81840fd688c9f152a83721700c62a8	Usual side of head for mobile phone use: Equally left and right
+ukb	d	GWAS	421e0c14fffe8e24e041352578f21fae9dd61c57e2b8e3ddeca2123f7ca23a37	Substances taken for depression: Unprescribed medication (more than once)
+ukb	d	GWAS	8bf6800d8bdd819f47a0ed178ff853f271ac084246b1486ae05d63c3914a573a	Workplace very dusty: Sometimes
+ukb	d	GWAS	19f94773009d920f156280f98f31f76c13e263d298c55404d0ef94954dc15f7b	Job coding: sales assistant, retail/shop assistant, counter assistant, sub post office assistant, takeaway food worker
+ukb	d	GWAS	6d042c15cd7cc1346fe54c52de9c4ff87d31b0e10d95b7ac33f734035e1f2cbf	Ever had period of mania / excitability
+ukb	d	GWAS	f8097c856da837bae9eaf5151bed210bb92cf1547d9c107f48795fbc696fd577	Hair colour (natural, before greying): Light brown
+ukb	d	GWAS	010e89dfe06a5229ef62860ddf9248fa46f2aa4872a0be3f4c44b7f31c690b48	Hair colour (natural, before greying): Blonde
+ukb	d	GWAS	8f6167eea9591841c3df69d7bbdd8b192b3b84fd8d3b2689257f3b2649c7f279	Type milk consumed: soya with calcium
+ukb	d	GWAS	62ca3de96117b38b4d72fa8c759946a4d5bb4883864aa14424e27bd9faf63b0f	Home area population density - urban or rural: England/Wales - Urban - less sparse
+ukb	d	GWAS	95e12942347d6830e48ccaf6ec0b3fa979c192922a775d09ac4ce39cb3d2bf4c	Workplace very cold: Often
+ukb	d	GWAS	4cb8c328be64a6f4fe238114af27201cec0fb17e52119f91e9386c46a4828fbe	Actions taken following self-harm: Receive help from friends / family / neighbours
+ukb	d	GWAS	7b8d1dff487f15aee991923ca572ad73eb1ca86fbbb4eda297d1e39db26d5534	Actions taken following self-harm: See anyone from psychiatric or mental health services, including liaison services
+ukb	d	GWAS	a366c83d887551707dfe9ef9d0bfafefdd55fcdebf8ac61b141c7b371822f726	Frequent trouble falling or staying asleep during worst period of anxiety
+ukb	d	GWAS	3239c5214921138074dcb55b0367c245b0f3b76a2f06f6ab4869d4665d0d8f1c	Ever heard an un-real voice
+ukb	d	GWAS	e22edb7d2b7f4c13de43cf8085b1a549d622f58d9ae6aac10d5dfc19d2b2880b	Workplace very noisy: Sometimes
+ukb	d	GWAS	25d5abb6e9eff1faa2398f1bbd8dd97b7e549a9230f42de4fe702cba3acae657	Job coding: sales or marketing representative, manufacturer's agent or representative or salesman/woman
+ukb	d	GWAS	3282ee2a6291696456c069a552ad43b63b6bf73bf9d37f7fdaf081ff43628925	Job SOC coding: Marketing and sales managers
+ukb	d	GWAS	bc6b9aa912d98f6432c5f348b8c6f0c77282241476c11f77eda2b72e7c96f24c	Bread type: Other type of bread
+ukb	d	GWAS	d8e0112f9f8c1613514eb6433266245f7e90beb8d3735159e6e6d6cfc37783d6	Job coding: it operations technician, computer operator or technician, database manager, network or web technician, web master, systems administrator or officer
+ukb	d	GWAS	785e0a847bd95bb81eb79673c5ebc78692bf6e2e5e5e3c4d86894465990cee7b	Ever had known person concerned about, or recommend reduction of, alcohol consumption: Yes, but not in the last year
+ukb	d	GWAS	8375674340de6d8ad979a7b3f55883bc8fcbd6fe5365f4e4b26442def852f35d	Cereal type: Muesli
+ukb	d	GWAS	47e0f9a1c620d9dc2f9060b8b1de9dbdb2419444887ff9df392ee73449ba10af	Age at last episode of depression
+ukb	d	GWAS	6ec118c3130430c301a3d3c07f67334b109aedde4d02395be0d3f8f2dd84e838	Job SOC coding: Accounts and wages clerks, book-keepers, other financial clerks
+ukb	d	GWAS	795cc1c28e46d2af230ba0c964eb5bb5bad7fd5c76113d0f1ff34a09b5afb58d	Job SOC coding: IT operations technicians
+ukb	d	GWAS	cf798f3998b838855c7d053c54ad25a5c5bee5bc77236063db93912bb5321929	Job coding: non-commissioned officers or other rank of armed forces
+ukb	d	GWAS	bcb341adf840dadf15d45f12de68a8f706170c0e61e54947cc4d9894be462387	Years of cough on most days
+ukb	d	GWAS	1565c758321b5e6835cf87d145bdc5abc3bd58442d7f3571bd1bc81ea1a0e3cc	More irritable than usual during worst period of anxiety
+ukb	d	GWAS	6e44673a706fee6aedb23a4abff1ff342e819142f384a182268151ccc59363a1	Bipolar and major depression status: Probable Recurrent major depression (severe)
+ukb	d	GWAS	717dcb81cf604f28cfd2652a63cb4cc843a479301dd94e8683ec56d0a4dd29f3	Bipolar and major depression status: No Bipolar or Depression
+ukb	d	GWAS	3692384b35b39bc05b8f4f63e840518255b8061593d618bf481bb028325ce466	Job SOC coding: Senior officials in local government
+ukb	d	GWAS	6d3e8ae20f57097367eab31be397d8c66611b0a5dfc7cac466ef22dbdd590b29	Job coding: chemist (analytic, developmental, industrial, research)
+ukb	d	GWAS	17f897d0f738deb7365dd6c80434489cac349e081f4144097c16b4f0288e4ce5	Workplace had a lot of cigarette smoke from other people smoking: Sometimes
+ukb	d	GWAS	8cca4c23d7b3536eb36080d777cbd1f275271b28085396fd0caf1239823bb4e1	Work hours - lumped category: 30 to 40 hours
+ukb	d	GWAS	410cf72b12fd66393341f943e173ca51fdb20d1fb81cc05d52e47042fd435b74	Job coding: nurse (of any kind, at any level)
+ukb	d	GWAS	fc79e11f8901d7cbde5bb72d2b9c114e1c180dccf8169cd53dd4a5f931276719	Ever been injured or injured someone else through drinking alcohol: No
+ukb	d	GWAS	e66354ef5295d0ffb465d6eea46335131b4475276bbaf4ca7b562fbd34142ff7	Spread type: Butter/spreadable butter
+ukb	d	GWAS	9c602cdc8e3633a31ddb50a31798f688f76139ccdf21acd292835e908b600689	Job SOC coding: Nurses
+ukb	d	GWAS	0049958bbda971f374dbb0c9bb6cefe9ca68f89f88d09a035ffbcd17836d2628	Job SOC coding: Civil Service executive officers
+ukb	d	GWAS	3d80057b12dc2c1a5d477d8b9ef27e64dc5be86c19329f17a04a1639641623b7	Job SOC coding: Education officers, school inspectors
+ukb	d	GWAS	41f20f887c392a8fe4374ee7984ce6b147802542d069e07318be8c1e4e988cc4	Workplace very cold: Sometimes
+ukb	d	GWAS	b94456012f4798b2632e57566e54511f144327236c2f79b6776a00bd3b3dc7b7	Type milk consumed: wholemilk
+ukb	d	GWAS	c5314aa9079c9a673727bc2b1231b185b08d93d0ae7ab155250c7c404ca312a4	Non-cancer illness code, self-reported: cataract
+ukb	d	GWAS	eada3bf67633b9ddad32194d381cd67b09a54f09685d76d3020b80c59848af10	Difficulty stopping worrying during worst period of anxiety
+ukb	d	GWAS	5ff8c710bee8ce30408644026b0e3ef36c18515018161bab5c1e67ff5c0b53cd	Weight change during worst episode of depression: Stayed about the same or was on a diet
+ukb	d	GWAS	9d1982b22d2c01f3550e85d6c89be1f859cdfc9a7f308febfd4e8dd5cf3b20af	Behavioural and miscellaneous addictions: A behaviour
+ukb	d	GWAS	6c96905c06bb5770a01f5ac48da2ffb4b1164920cb20fefcad2d981e3cb79ebe	Contemplated self-harm in past year
+ukb	d	GWAS	a414a7aeeec31690fcab14bc7a84a0cdfc9c735f9769bd0a4aa945c730f1d684	Ever had known person concerned about, or recommend reduction of, alcohol consumption: No
+ukb	d	GWAS	ed690f58e563cbe2e2927e94f6b815008333686779fe9b8695304d3d38e5e335	Ever had prolonged loss of interest in normal activities
+ukb	d	GWAS	f0968507cf6098e10d849be88fec30ba139553f7213d15fc8152f2cf1e6cb6d7	Milk type used: Other type of milk
+ukb	d	GWAS	1b57dec0975e71ebfdaade3f952385ff7fe5224a8c7549fbaead17519d41bf80	Illnesses of adopted mother: None of the above (group 1)
+ukb	d	GWAS	c9e0633532ae2ac812b84b42e0d591e1681e6f7fedaa57962f48a5998e3b3d62	Job SOC coding: Personnel and industrial relations officers
+ukb	d	GWAS	86e12c3aa256baee7e173bb3d1d22a0f542cc4cbd769feeb89be83d3bf52e117	Been involved in combat or exposed to war-zone
+ukb	d	GWAS	c454c588d1b2fd031be3a6a8c0e205a2555a5e1e9c82bcf78f100e19864a2a84	Substances taken for anxiety: Medication prescribed to you (for at least two weeks)
+ukb	d	GWAS	45d18c01b5d5d2da518373482e5a4c9441433b4e572b389674b713d3105d36a2	Job coding: other general office clerical tasks including: office junior, office worker, photocopy/print room operator, office machinist
+ukb	d	GWAS	4e7d39fed87a9b79de301af6784e39e72f5acbe795ca937ccff5a905a221a09f	Sleeping too much
+ukb	d	GWAS	56e201a19312065b46b3445ac8a3e1507a8c804b25258ff025aad5fbed9db800	Trouble falling asleep
+ukb	d	GWAS	cec46e7a3541b9ea698e0fd17bfd9f631793cc07f1b3f6c2bcecc3d363f54773	Mental health problems ever diagnosed by a professional: Social anxiety or social phobia
+ukb	d	GWAS	974d95a9a854d8c19c3076bc1caa7ac9b34ca5ae3e3499814ff206d78df3b294	Job SOC coding: Local government clerical officers and assistants
+ukb	d	GWAS	b2095b0bcda83dd8250fdb0292346245f68ab07b5521a14ff59090263d3f3446	Job SOC coding: Registrars and senior administrators of educational establishments
+ukb	d	GWAS	c1b4167fb3e9c6ef14fde632f469a40a19ee200e054ee095b8b23e7b232147f5	Ever worried more than most people would in similar situation
+ukb	d	GWAS	bd9e1614d6e7ce7c762f3c09c134e057fc334aa6184f8207b5b9faae9049cbf8	Bipolar and major depression status: Probable Recurrent major depression (moderate)
+ukb	d	GWAS	db8c93e9416b591916fd472d131ac21a17bcf5718ac71617bc85b4e877fbcee1	Job SOC coding: Vocational and industrial trainers and instructors
+ukb	d	GWAS	93d46dba6456559229d61718cd76e27205a8b55ebc6e8552ac5978494239f9e4	Job SOC coding: Engineering technicians
+ukb	d	GWAS	eeddfc7324828305c8fa375fac898b1467fe6d44c5cbab1979670ca273128a4b	Manifestations of mania or irritability: I was more restless than usual
+ukb	d	GWAS	58e62cccf71ff03f225efda09f60f00cbd44726d0c173a8a78a01c15c039e12f	Mental health problems ever diagnosed by a professional: Panic attacks
+ukb	d	GWAS	d6ddbead830b0ab5e2460d322064e2ef443de091c79ec7e546fdf03de5038086	Workplace very dusty: Rarely/never
+ukb	d	GWAS	969e82d9173cdae94a80866b554e795432d9fdd9ed4b88a4999b3e50f40e21a1	Job coding: chartered/certified accountant, auditor, company accountant, articled/audit clerk, official receiver
+ukb	d	GWAS	35674449694156f482daa335ecbe9058a054023c9d857bca4acabee32ccafa32	Job SOC coding: Information and communication technology managers
+ukb	d	GWAS	61a791e38da98b954a9602fd74d1be634290369e41d747679602c5e72f71cbf5	P duration
+ukb	d	GWAS	04758bee989933df4818e3c0010e32028a41da7e5e098a174c6cfc370bfd6ae7	Manifestations of mania or irritability: I was more talkative than usual
+ukb	d	GWAS	2a67aff225fc097754722d9a0153bc07675707ff77a7140d9fef2581a0461130	Manifestations of mania or irritability: My thoughts were racing
+ukb	d	GWAS	67e82a3676acf59bc75ec3defc2980881a5f6272741a27dcc32e77ac1b093e38	Workplace had a lot of cigarette smoke from other people smoking: Often
+ukb	d	GWAS	c11ba0828ce4ad2c5a4bf3dea6f11ab8a4c27fcdc23f9c7f4e77fb1ebaef3085	Cereal type: Biscuit cereal (e.g. Weetabix)
+ukb	d	GWAS	c50eabf2e7f9cd65513e64d1124441824138fdf453bf75cda3040db683b95e40	Worked with materials containing asbestos: Often
+ukb	d	GWAS	bdbd253f400e359f21cd4f389e2b5bfc3d8794e9958b8aed29a948b186e4a952	Job SOC coding: Legal secretaries
+ukb	d	GWAS	f4ab006e68a175c555d9c2ed823bd95f34cac1c2893b6545569150862f5ae2bc	Job SOC coding: Personnel, training and industrial relations managers
+ukb	d	GWAS	bb12fc1ed7c4c2eda210b2ccde9054f1298611df13382f9ccd952ece5cc62da9	Job coding: police officer (sergeant or below)
+ukb	d	GWAS	c5b4c23c0a62a1f5151fe95544b54dbbc82cd837253911517edf267065902710	Workplace very hot: Sometimes
+ukb	d	GWAS	5fce7ea10342f9b8612996af76b697e7f0babeaf040938b905ce6627a573c20f	Job coding: shopkeeper, shop owner, newsagent, wholesale/retail dealer
+ukb	d	GWAS	dea5a230038e18e3dbf858bb5c0ecd0124287ff0587a2df14aedcdba8671ccbd	Job coding: public service higher/senior executive officer, hospital administrator
+ukb	d	GWAS	83020c385bfc9ff9701baddaa75d8f519be6c81cc820322d2a4ef8f0a1d272cc	Job coding: personnel, human resources, training or industrial relations manager/director, recruitment manager/director
+ukb	d	GWAS	571b50be4acebc0b07974bddd86233414906f3785b7ee955aaba48ff0ae7fed9	Job SOC coding: Medical secretaries
+ukb	d	GWAS	a42024ad6a1fe868d8a15badd20b6e47cb0375e2ea394b80ebb0088ec84bceb7	Depression possibly related to stressful or traumatic event
+ukb	d	GWAS	53bddbf124a756797cfb34e5d187d87770c101a4b2e952187fe1e7462546c9d8	Usual side of head for mobile phone use: Left
+ukb	d	GWAS	34c28106fa267ade6624b06f1a87cc9416dfdbe6cc45e768bc724385c88feb3c	Coffee type: Ground coffee (include espresso, filter etc)
+ukb	d	GWAS	25d24628576c3f03e5d17df8470816ba0a56951e91f331957f1512792c82171d	Worked with materials containing asbestos: Rarely/never
+ukb	d	GWAS	0c262f4626e7f1e9574b03fee928b0e0a845f37f4d00fdd493ae64e108108b91	Witnessed sudden violent death
+ukb	d	GWAS	14793fc6580b8d56804caf27db20f3f3d0e84889e4f8d9761297448bd0e1cdfa	Job coding: pensions and insurance clerk/administrator, claims handler
+ukb	d	GWAS	67c3c568b769168f653cad695948e59b096f59e55012c2b3bd382a1a31bcd53c	Professional informed about depression
+ukb	d	GWAS	802a02250a31cfe92b9cd7984fd1ac5129af4be807d5bef1736f833f12875adc	Severity of problems due to mania or irritability
+ukb	d	GWAS	007581c0f26a7a9d408ca8ffc097d0a77aa3697fdfb3e61eee07820a72826f7e	Manifestations of mania or irritability: I was more active than usual
+ukb	d	GWAS	033523a2130c7e3d639cb1ca2d8fc054a0d5ce8e3b2a6ee4e9a0164d0a6c0a4d	Job coding: scientific researcher, scientific officer, medical research associate, experimental officer
+ukb	d	GWAS	7eb27dad472a6ee33a503d2d0cbcd37731359dbdc0ac5342bef7190d245b241e	Hearing difficulty/problems: No
+ukb	d	GWAS	b16b1963246d030a1ffdbf67111f0c67ffd53f174d58eea28a40b6928a8fce67	Manifestations of mania or irritability: I needed less sleep than usual
+ukb	d	GWAS	6a18c31175c4201706766755faed074e31a66c9ab291c72185a7da7930f51db3	Ever felt worried, tense, or anxious for most of a month or longer
+ukb	d	GWAS	d1df8796243afc3b310af30c169b3908206d86ece579d4116c7f8123499611d0	Cereal type: Bran cereal (e.g. All Bran, Branflakes)
+ukb	d	GWAS	cf438f8795eba6c374243153398847ab392c67300324359982f410f357f67c6f	Cereal type: Oat cereal (e.g. Ready Brek, porridge)
+ukb	d	GWAS	88732f1e5411cdba0b92a4562ec5f173db4fad492d705b33a97741fec1863f2f	Workplace very cold: Rarely/never
+ukb	d	GWAS	131b6f4456db68a59ed1a56b313b66afdee2a798fb38acaf7a3e00537e819806	Job coding: other science technician, materials technician, technical assistant, technical officer
+ukb	d	GWAS	dd578eb1ddebf8e05ac05c1efdbf9eb08e79afdc710884c31eff8dd7e1910820	Coffee type: Instant coffee
+ukb	d	GWAS	d359a382eec3d05e471585f15cff90c2d3376a5dc5a296f2619a9a5e4fed67ab	Breathing problems during period of job: Yes
+ukb	d	GWAS	b0badab2ee4b2e8551aacff96987e599caffa66c2a24e7890c69751f79254876	Stronger worrying (than other people) during period of worst anxiety
+ukb	d	GWAS	c729be98acbb9aa4109e315fb2631cb445860bdfc66b31a779ba5d58ab791d83	Job SOC coding: Chemists
+ukb	d	GWAS	a0638b17b3b4aededc4a6cb4ee311547a29326ab2d25ca6081809dee21be177e	Workplace full of chemical or other fumes: Often
+ukb	d	GWAS	4da77eb72521d582d99990d88dc114c3b75e863767c65c8d8bdb1423a19dcb39	Job coding: director or chief executive of private organisation/company, company chairman or president, general manager
+ukb	d	GWAS	bccf35c97bcb5c8fbfe331d28d5b0714100bb428a18a3be5fb1919290606f073	Job SOC coding: Higher education teaching professionals
+ukb	d	GWAS	a73b9a13d53067ab48420b283546b02c8b3a0a8188f2f11481c2298e8971b06a	Job coding: further education teaching professional, college lecturer/professor
+ukb	d	GWAS	44d0765fb9e7fa21bec0ebafd8980f45449c471ed7c3de71e08045a5cee79adf	Job coding: senior official of special interest organisation including general manager or director or executive or general secretary of charity, or trade union/association or religious organisation
+ukb	d	GWAS	9293f82e56047265558511bd23b8a977785c968383ed406008526fddfcf87f96	Coffee type: Decaffeinated coffee (any type)
+ukb	d	GWAS	2d2eada49b7211a0814d2c151fa0b7ecff162dedf687f78544620f63acc56b0e	Weight change during worst episode of depression: Gained weight
+ukb	d	GWAS	d3542cab5dcc33fe0c4b5fd15cb11627095699b0098a382fc84ecc61ca4baf4c	Worked with materials containing asbestos: Sometimes
+ukb	d	GWAS	c1d58780f8f82b646d412e73cf1bb013f0588974deef35020776e205b5806c59	Ever had prolonged feelings of sadness or depression
+ukb	d	GWAS	095c1a26cb28d358f8c05bd05f198000c9108de4a52041aa6409bd71650924b4	Job SOC coding: Directors and chief executives of major organisations
+ukb	d	GWAS	cd6bdac2ec3dbe314b011dba1ca7e6b028b2ac485cd03eb5a8ec497fc49a7e1a	Breathing problems during period of job: No
+ukb	d	GWAS	7cbfd68b6598f8ab491a30450fc0d9157e6336147538ab949ae755673d8a7b6a	Ever addicted to alcohol
+ukb	d	GWAS	9eb32218ed688d8589d36267c02b9d4180c266a4b7c59ba2bb939a3c42a4ec94	Job coding: civil service administrative officer or assistant or clerk, tax collector, prison service clerk, law courts clerk
+ukb	d	GWAS	e2f95de883367bf687c7e6396f3ca48064057ae4ef59ea8a7e4200b60f69f9f2	Longest period spent worried or anxious
+ukb	d	GWAS	3968feef2a528e41749aaf33a7a5e3cbb3e3c4b450d9b92f016e8d1bc38c0e4a	Major dietary changes in the last 5 years: No
+ukb	d	GWAS	5288f0b97086f322d7a05cf61c0dcee016be5d3903ad89f93130a2b56b6aa3ee	Job coding: officer of ngo, trade union organiser/official, charity administrator, secretary of research or charity or political or professional or trade association or trade union
+ukb	d	GWAS	f7e336787938ece0dd14e4c8c656bf77c4658da481b0c3938431844dcd19e44a	Job coding: bank manager, bank section manager, building society manager, post/sub-post office manager
+ukb	d	GWAS	783b9b22883ed086dceecab10049fc61ef7bb012a255505c5d7872245cc5b5e4	Hair colour (natural, before greying): Other
+ukb	d	GWAS	5d275337703c46eb8954d9137759726e0bf8742642191882dc5e6c9949aaa0a8	Job SOC coding: Science and engineering technicians n.e.c.
+ukb	d	GWAS	d2376b6fdb83df4045242546e00c68abefac5ecae01f122adbf056bb946112fc	Bread type: White
+ukb	d	GWAS	cc8480a6a9cf3a26f66f3f7acaf6ca4b2615be6e3603ecf10be104a1101c8d99	Job coding: research or laboratory manager
+ukb	d	GWAS	59ed8975a1d840f6bfcdfe8d1a9f187d5549808294bcf1394834e63d48b42bde	Job coding: sales or marketing manager/director, export/import manager, business development manager, advertising/commercial manager
+ukb	d	GWAS	819298e0b6e1d3f8cc4f0995b564847f8b18d66001ca368834c040be0d83b81a	Number of things worried about during worst period of anxiety
+ukb	d	GWAS	9af109a4183317f1de474f0616cb6657e37b5dbe2ab366dc36f683a5fef9e9f5	Ever talked to a health professional about unusual or psychotic experiences
+ukb	d	GWAS	99033374674dad45c498226f7ad2b62d0a2083029b1d70792a9a6e61da58dc48	Job SOC coding: Typists
+ukb	d	GWAS	9ddedcfd1e61dd47e77e35831ddf198b7b1d7efbc26a999d84ee7fc9c227742e	Ever sought or received professional help for mental distress
+ukb	d	GWAS	893ad507f302fc2d328e89b11f3a3777a785f8c4416a6c1b99bc9e87989a7d57	Worked with paints, thinners or glues: Often
+ukb	d	GWAS	8c6cf3ca52f743d77b6db74d29315f994907345fdf86fd14c53daca1beae8df3	Job SOC coding: Youth and community workers
+ukb	d	GWAS	be870e2bccbba84f33f7bd7ffd04c2c205a6ae8609b9659d51732ad566fbc174	Substances taken for anxiety: Drugs or alcohol (more than once)
+ukb	d	GWAS	a9967e44026f25ee8ac495697a55d509ecbd8be63dee6257144f1ec0994f24e8	Job SOC coding: Special needs education teaching professionals
+ukb	d	GWAS	f881582cadd15430eb9d53f3b63825aa08c40fd7354c0923e593bedbaa47c67c	Job SOC coding: Office managers
+ukb	d	GWAS	8b3324466fb5f9ef4a35105bb11963f4b37cca8aa25ccb7378823eb6a24e4bd6	Job coding: retail or wholesale shop manager, showroom manager
+ukb	d	GWAS	aed6061527266e0844f52f685c0b3ea03042b0114ffed988b6355920b97fde4b	Work hours - lumped category: Over 40 hours
+ukb	d	GWAS	2d9688a325ddbfccb6e80fb227fc00603d47f57427e6d12c1fb7548490b3942b	Alcohol drinker status: Current
+ukb	d	GWAS	05d12c7ec931f3fc3ba4d10e9fd652cf0a961b928efe03413050142abf47f4dc	Job coding: educational assistant, classroom assistant, special needs helper
+ukb	d	GWAS	0147aa1d7a9b049dfb64ad59d26661c12701103b957b179b9f3ec8f6a98eed51	Type milk consumed: did not have milk
+ukb	d	GWAS	1f5de88d0118934ef420d86e82199ddb3bcac338623752e2c8cd8e94d5c3e606	Home area population density - urban or rural: England/Wales - Hamlet and Isolated Dwelling - less sparse
+ukb	d	GWAS	b81da45c992b4afc24f6b651d0a7cc8df7601919c2eda2be7134b7382c12c5f2	Bread type: Brown
+ukb	d	GWAS	ada9cdafa5c98f52c79e8c94e362f968fba811a67cb9a13184e3b14921301486	Ever addicted to any substance or behaviour
+ukb	d	GWAS	89076849f6bf2386fe0331b4bde907f589c96964076e9c4c25727fcdbfaab9a8	Job coding: counter clerk, bank clerk, cashier, post office clerk
+ukb	d	GWAS	48e91b4c528a0833ca185f3d428bf8f6da04ec6e97422b13316514e05ed846ee	Substances taken for anxiety: Unprescribed medication (more than once)
+ukb	d	GWAS	04e57f6e5f9868da20cc6c92b977276d2091463480953967773de12bfaa52b3f	Ever had period extreme irritability
+ukb	d	GWAS	a8ff1f220973d5aa71d094fa4766bcf0135f0d307bebb6b18495004c7a61aa62	Job SOC coding: Filing and other records assistants/clerks
+ukb	d	GWAS	f93a70510140bf0ecbff405cb9abebb28713ccc0ac84048cb653af49e10d1377	Manifestations of mania or irritability: I was more confident than usual
+ukb	d	GWAS	ab485f1844308234fb96c739aab30675628c4bfd6b78167c6d703c6c0848b46c	Job coding: laboratory technician, scientific assistant, cytology screener; hospital, medical or health technician
+ukb	d	GWAS	809b7f5421043d08aeeca174fb781a6f6d1b7ca6476fd80710b95045e8c25682	Ever suffered mental distress preventing usual activities
+ukb	d	GWAS	3ff25d3a85047e5ae9315affde0771b351934fbc137065de8995e88b5b52fd0d	Job coding: manager in construction, clerk of works, site manager, contracts manager, highways manager
+ukb	d	GWAS	14e29634e0d7e306b03f395edf0cb7737ca0f0fe11c4b56edc810705fdaa321d	Bread type: Wholemeal or wholegrain
+ukb	d	GWAS	8b855d7f1eb6f3d93bce6b4074f2add90e072359bc4bbe40a063d0dff683eda1	Ever attempted suicide
+ukb	d	GWAS	033ab30adad23b407f9b7fccd745c73ce9322de2e99d8ca4dd817b7cdb927921	Tobacco smoking: Occasionally
+ukb	d	GWAS	75f5dac58253c65cbc8a4c3b52dd50bb782ee96f0993a7831e7e8ac34a463394	Day-of-week questionnaire completion requested: Thursday
+ukb	d	GWAS	18ed8863ed95f782e4565c8d390b68c2dbccf1956896477da0e05fec4e5bcbaf	Job SOC coding: Sales representatives
+ukb	d	GWAS	51c57249b1f347dd01302abfc4f75b7723ed9736340ca113db11c897563cc7fd	Actions taken following self-harm: Need hospital treatment (eg A&E)
+ukb	d	GWAS	bd923958ebeabdbfb0e3c6355588cf2095fd158c5acc2fff540ad0e8cf107722	Mental health problems ever diagnosed by a professional: Depression
+ukb	d	GWAS	3f9d5b46f3005ceba37abdb3a25bd256283c07910a0b821d4ae4cb271acad8d8	Job coding: management information officer, conference/events co-ordinator/organiser, exhibition officer, work study engineer/officer/analyst, contract adviser/agent, election agent, business system analyst
+ukb	d	GWAS	26a237103d85cb2c6f080c91ae74f4ee0a3d77f326bb9376493fe6e54153ecda	Worked with pesticides: Rarely/never
+ukb	d	GWAS	f6408855c49234e3d75841a49aa01bc5949de485d2f08abb6fec58309e464871	Type milk consumed: semiskimmed
+ukb	d	GWAS	a95901aa8ee6475a99b307f6bbbe27d865e7450d7723360325b38ac371ae1153	Manifestations of mania or irritability: I was easily distracted
+ukb	d	GWAS	b9ea69bc878363a3fb57c09707fe77dd52cd3c6cdcef3e342490d089d10f89e6	Job coding: general office assistant/clerk, clerical officer, clerk-typist, office supervisor, press/newspaper corrector/reader
+ukb	d	GWAS	5687e7470c2d660289593beaa70fd3ca7289194788766c632f96ccddf64f06b8	Job SOC coding: Pensions and insurance clerks
+ukb	d	GWAS	2c63fcc2e5011e5f408e0849c34bfec58dd4e3c15fc184d724b1b2ece1de2333	Job SOC coding: Business and related associate professionals n.e.c.
+ukb	d	GWAS	93650c15bc7d4b43e1294472fb93e5009aa9546c7aedaa5c532ebac23c4a232b	Job coding: typist, shorthand typist, transcriber, stenographer
+ukb	d	GWAS	78bfe0ed683b31ca82511787630fadd96b26a5d955d18dabfae8d2305b5c3cf6	Ever been injured or injured someone else through drinking alcohol: Yes, but not in the last year
+ukb	d	GWAS	c5af5fe7b5fcd23ee1c91d1796c03318e14f9040bb28fc284e1e874bff62af5a	Age at first episode of depression
+ukb	d	GWAS	3519ee389a0edbdcb7b55767f44a2f18413160b75fbff4c5d420c3b36144546e	Bipolar and major depression status: Single Probable major depression episode
+ukb	d	GWAS	7235731a1df3303409f531d384dc9072bfd51ac95b05abf1c6136f505744192a	Tense, sore, or aching muscles during worst period of anxiety
+ukb	d	GWAS	09642444766033ea545c815b4b6ef391d6b9d92ab33150f9b15a7c741b58cac7	Workplace full of chemical or other fumes: Rarely/never
+ukb	d	GWAS	60ddcf9383fcfcad74e33481f44d64e82b739b27ff9060a18ff5ef2a8b625a4c	Smoking status: Never
+ukb	d	GWAS	77b687b9b7e465210e701d605fd691515394deab96e133c469807b97450750c5	Job SOC coding: Financial and accounting technicians
+ukb	d	GWAS	49c1123ee0f1b369c4e6deec6cecb9d6845a3af5c2dad95269cffc3af54188d2	Worked with paints, thinners or glues: Rarely/never
+ukb	d	GWAS	1a4206f94487fe2cccbb020c19cbc036716d53cb364a2de7773238357dee812d	Job coding: other teaching professional including private tutor, tefl (teaching english as a foreign language) teacher; tutor at adult education centre, etc.
+ukb	d	GWAS	9c88e42d2e8fa414e251eb0e8fff3ec09646cc4a75cab0e54513c6fbf5a02cfd	Job SOC coding: Librarians
+ukb	d	GWAS	16113533628417633824c77b451312ee849f219ef7ec72ef26aba46ff7dad5e8	Type of fat/oil used in cooking: Low fat olive spread for
+ukb	d	GWAS	c79a4f1cb9e551b2a960506218b58a8ae3d6ca074309fa12857754869a27a6cd	Milk type used: Full cream
+ukb	d	GWAS	2bfc29ed86f60825a4b28feeec548d53827c23e4b36e660bf1ab9264db06023c	Job SOC coding: Secondary education teaching professionals
+ukb	d	GWAS	8fbde12eecdae12302a826547b73cd3b78ccdb9fb856aca146500284f07ef647	Job coding: higher education teaching professional, university lecturer/professor (including college/university head/vice chancellor)
+ukb	d	GWAS	a9954da7387549eb219f8703d2fa78870d3c64cfe41b4de1f0dea4381f06110d	Spread type: Flora Pro-Active/Benecol
+ukb	d	GWAS	1155019f9be594cf45d2bd45834e0c5fc7eb3045ad749605420aa94fe6f26be2	Job coding: all other personal assistants and secretaries
+ukb	d	GWAS	89e9dc865be9843d50a3f5fd2c7d0c3089756ca53f24a0bac9f3ffa6e0530cac	Illnesses of adopted siblings: None of the above (group 1)
+ukb	d	GWAS	13acbd63b41d42f20e129e876aa69915cf386f04efdf83926db6096706d2c917	Restless during period of worst anxiety
+ukb	d	GWAS	2290a23ce51e2844a513cb10135f836cda7aea4cc3509020dab68b1c2761035b	Job SOC coding: Police officers (sergeant and below)
+ukb	d	GWAS	0c883ced707627c34bcf49c49091d11f69103fe7b691b65862ab49d41928bf4a	Activities undertaken to treat depression: Other therapeutic activities such as mindfulness, yoga or art classes
+ukb	d	GWAS	a420c629e92c317924d5fcd3945e52d56b6ea640802d4458e535198509a9db1d	Depression possibly related to childbirth
+ukb	d	GWAS	703d758a259087a7c6dac5bfaaa0745f0e7f60b982eefc9f02ac4080e2b4d94a	Illnesses of adopted siblings: None of the above (group 2)
+ukb	d	GWAS	40cb008acb1078579a4e5d7904d99953d23cc3b9761bf4abd2fa92f698bef93c	Tobacco smoking: Never smoked
+ukb	d	GWAS	3aa963096fee2f56ef21d6a674f34e22039262b085b3b992e8ca09a1ac6ee9be	Ever had known person concerned about, or recommend reduction of, alcohol consumption: Yes, during the last year
+ukb	d	GWAS	70bbb4bc55f133708ddd7a6992ad9696d7382f99352578dd4e47b78564210f28	Handedness (chirality/laterality): Right-handed
+ukb	d	GWAS	3a8f826c2fab3c76d0c6112a508c0f13ede99fd12652a8aa7c8d4154116cea92	Job SOC coding: Management consultants, actuaries, economists and statisticians
+ukb	d	GWAS	6fdc1a24647c1000c09fb9b1bb72743a39b62ee15117ea1f5125f5b74a7689cf	Major dietary changes in the last 5 years: Yes, because of illness
+ukb	d	GWAS	91a3843cd6f456f1983bbbf457dcb3d6bc55aed334f33197ca1afc7c9cf367da	Professional informed about anxiety
+ukb	d	GWAS	b98415a58ab5cc058f9741f1dfd327fd90983cc73da1fe5e8a6b20d443833126	Workplace very hot: Rarely/never
+ukb	d	GWAS	fef4ceba964419e991fb5a6d511dc148ee7764168083b50cb8b64c070242546d	Multiple worries during worst period of anxiety
+ukb	d	GWAS	97e38d4e9447ea8b915f2eddb4009fd58055161e36901feaa199f77de1cc6897	Keyed up or on edge during worst period of anxiety
+ukb	d	GWAS	5e6adf1cbb08a6ac81a2f57618c453dc86860c65b21a8c300b08515ebb644f3d	Job SOC coding: Civil Service administrative officers and assistants
+ukb	d	GWAS	029de88dad3944635d3fbb6953221cb820bebcb9620d5662320780e6c2ab15eb	Day-of-week questionnaire completion requested: Wednesday
+ukb	d	GWAS	3831909bbbd0037f3599951fc93a3ef651968eae5b83941c57f64e995d8f3408	Day-of-week questionnaire completion requested: Monday
+ukb	d	GWAS	c28a70a31680e5ca2c3dc34f7d35e5db71825432ec667da3d67e25ed6e950345	Hair colour (natural, before greying): Black
+ukb	d	GWAS	e50b72284f06ff769444ba3a2169ce3e54b9363993bc439079789c492da08023	Job SOC coding: Counter clerks
+ukb	d	GWAS	94ad1d69ce77915ac1c884d9769994aa918c9580339cf6f1e5e5425cf853d3eb	Job coding: mechanical engineer, automobile engineer, aeronautical engineer, locomotive or marine engineer, welding engineer
+ukb	d	GWAS	28a4a9d6b069bb266cb5246e3ff13c959b870a3e667a004d7c0b794df94d53b9	Job SOC coding: General office assistants/clerks
+ukb	d	GWAS	d76a93ca3b737faa2917bfedc051648a51d2afca3691df4f14c551f292e30aaf	Spread type: Never/rarely use spread
+ukb	d	GWAS	f77d77e6e7b034451e5dc60ed0662bc54cf48fbacb2693afd02fc03262f86da4	Job coding: ict or it manager, systems/data processing manager, telecom manager
+ukb	d	GWAS	77b67e6a3d579a55f2a3bafca5862ccf1c0f100ad9282bacc3588e19e52f95c7	Job coding: senior official in local government including parish or town or county chief clerk, chief or superintendent rate collector, chief executive or director, councillor
+ukb	d	GWAS	1f295d2200054f79ff15797701fb83657090718cc9770dc26c4099347ae32664	Job SOC coding: Receptionists
+ukb	d	GWAS	22c99bcc8635c70217af8b0578fecd986989dabba114f246254cec097cfcdbdc	Job SOC coding: Scientific researchers
+ukb	d	GWAS	d30ae76f93b776bf899b2f1c288423ab5eec72e3d2b51b4662ec35926d296384	Cereal type: Other (e.g. Cornflakes, Frosties)
+ukb	d	GWAS	91f55e5131e78a623a9125cbffe12b2d183edfe27087bf938f6feed2972e46d0	Job SOC coding: Chartered and certified accountants
+ukb	d	GWAS	f9e7bee859786c5e937a4274813e17df5577725005d475e8f33a82c76d05a3e7	Home area population density - urban or rural: Scotland - Accessible Rural
+ukb	d	GWAS	c04df51fb383f8db5c4371e52a27177e5391addd7f4675ab8612cadfc17ca837	Type milk consumed: skimmed
+ukb	d	GWAS	0d94f95bc218f4b1b179b78e32f081171d531893002d80cbc3917690363fe61e	Job SOC coding: Teaching professionals n.e.c.
+ukb	d	GWAS	71eb8bc076efa64e1d61dcdf83e4678b590b04e011967355f422f737818a6e62	Job SOC coding: Research and development managers
+ukb	d	GWAS	e27a1e0094109567480dae77c358fbe3da22ff38697fbd770d05c516f0fe0a3e	Job coding: special needs teaching professional (including head teacher)
+ukb	d	GWAS	2de907477af40ffbfa8e3044c1c6c3b7e65007dde8ec4242650ff71fc1ba9ce7	Job SOC coding: Managers in construction
+ukb	d	GWAS	329a9c5c0275d9ec8801e99d610eb90a710791eeec14195ba8b9fe2bd663f25d	Workplace had a lot of cigarette smoke from other people smoking: Rarely/never
+ukb	d	GWAS	9390aabb417fc6bc8303a2ba6770c6818dd8ac6e43b61794f391875825a20148	Job SOC coding: Biological scientists and biochemists
+ukb	d	GWAS	87b729e74a355678c354a4b65436443e055bc419c6f670c282a6a0db6027691a	Work hours - lumped category: 20 to less-than-30 hours
+ukb	d	GWAS	2a51fe6a1e6bf7e35e4467bcb7c3ca085779cdde1bc814048b04921e141aa8a1	Day-of-week questionnaire completion requested: Saturday
+ukb	d	GWAS	9347315c24c811ca5fbaf27e3f43551e29a63b1b033bddcb03f005fb3e0c23a6	Job SOC coding: Solicitors and lawyers, judges and coroners
+ukb	d	GWAS	1d58b7cd5aa6462679a89936998c1666480508d681af04861dd8d8207aba30c5	Job SOC coding: NCOs and other ranks
+ukb	d	GWAS	f068cbc98aff34f3ce56e7838406f75faf9abb746409ed6d9907810e6b4d518f	Milk type used: Skimmed
+ukb	d	GWAS	6331ec6a246dba36b64e303bbbc558a20daff71edc69f3579e89a000c0914deb	Job coding: local government administrative officer or assistant or clerk
+ukb	d	GWAS	7606f5d8f5cf2f4952d18d7a756960f2e2df9b419cc43338fdf03ec9ee0fbf18	Activities undertaken to treat anxiety: Other therapeutic activities such as mindfulness, yoga or art classes
+ukb	d	GWAS	8d3472f0a32024b8aaf145a034e45ba9fcc85eb5702039e8e9858af6d624a348	Workplace had a lot of diesel exhaust: Often
+ukb	d	GWAS	e6123176142a06f960c86d3d32f893aa32ed71d04449ddabdbcac30ffe733f6b	Work hours per week - exact value
+ukb	d	GWAS	7aaf1a7d3875cbf480c79b5552ef6180a9220a744eaa55af4949e87cf326f986	Age when last took cannabis
+ukb	d	GWAS	67161c5c7b33c2c5cb4c0ede3d415cbb2a0b62bbf99c9f11b4e88c43c08ab78c	Difficulty concentrating during worst period of anxiety
+ukb	d	GWAS	cb3eebef4fe86fd181637a6df951a36a90825e5f19ee4b4a1297a65e3f47e6ca	Job coding: primary /junior school teacher or teaching professional, nursery school teacher (including head teacher)
+ukb	d	GWAS	e392efa2a58df5aa9960dee9dac5fbfd9bfc7b6dbf2c0cde513c840f5314f3f6	Illnesses of adopted mother: None of the above (group 2)
+ukb	d	GWAS	aae9f31d0e7bf2378265a2c3e48ae4f114f0a86b236c1cc1dc38022d8433df85	Job coding: nursing auxiliary or assistant, steriliser of medical equipment, occupational therapy assistant, phlebotomist, physiotherapy assistant, ward orderly, ward assistant
+ukb	d	GWAS	53e3763db1b8b48b8b8004d96481921b5be1509447078485c861170c30b82aa4	Hair colour (natural, before greying): Dark brown
+ukb	d	GWAS	e45eec17459988295bde0a4f7f76119430cc3aecb7f5c4f3ae80b9cb3d7ddfe3	Job coding: social worker, child care/protection officer, adoption officer, mental health officer, almoner, family case worker
+ukb	d	GWAS	ab559767998fb33a9ee6a151c5cb3c9bd1c1c1aa742266d4bae42791f2d6e496	Job SOC coding: Retail and wholesale managers
+ukb	d	GWAS	a5007358975ed39d3f44748a1baccdb501b4c30dcbb0c2d10703bf9468316966	Been in serious accident believed to be life-threatening
+ukb	d	GWAS	2aab88913418ec58bfd3f1cd5c32dd28786d0a8df7b4904a6721669ee46232e8	Workplace very noisy: Rarely/never
+ukb	d	GWAS	54b653c22ef4dfbdd25f0bf0f645ed19980b373f22b631cd08954f733826a979	Job SOC coding: Primary and nursery education teaching professionals
+ukb	d	GWAS	e7b204139d6cdfd3d66e68c4fd2cfd56561774d01a4152d764359222ddca3ae9	Workplace had a lot of diesel exhaust: Rarely/never
+ukb	d	GWAS	bac4e293222fbcd9ff29d9c7a06e60387f41525cce678a24e403a17a8dd6a945	Workplace very dusty: Often
+ukb	d	GWAS	a6d5e048631ba74031e6860b6e340466004a494886cf3b85bca4ceb7535980a3	Ever self-harmed
+ukb	d	GWAS	f79fcd10fd9882884624b4d97dfc248899100e5c2b269190523db6c91b4d829b	Milk type used: Never/rarely have milk
+ukb	d	GWAS	7fdd89f90090395da2c7d33578507cf842cb2eb64cc0794418b1a8b07530f103	Workplace had a lot of diesel exhaust: Sometimes
+ukb	d	GWAS	b5039fd4863dab0e73f63cbabadc43e2ca8051277110520d10e5c64a016b5220	Job SOC coding: Senior officials of special interest organisations
+ukb	d	GWAS	95c9433b182364d6d028d633c6923aadf945a54f848fd7493fd8301ef3e5381a	Ventricular rate
+ukb	d	GWAS	05f31b2a125dd598ff8929f6bf580f15735e84b89eb0cc0e186b225ac74c6f17	Ongoing addiction to alcohol
+ukb	d	GWAS	07b6727cab5b363941ec25efc4dc0171ead214989623aa02b8fadabd50ed4ecf	Job coding: accounts and wages clerk/assistant/supervisor, bookkeeper, cost or ledger clerk, audit assistant, budget officer, student loans officer, paymaster
+ukb	d	GWAS	c19a2a3ab00178459d10435efc6a15da1ab17fefd46ad47284fac753cd60afb3	Home area population density - urban or rural: Scotland - Accessible Small Town
+ukb	d	GWAS	99ae4fe738ad81d46dcfb86d9ab0798abe6e91899643102ddc73a902ce8a8501	Job SOC coding: IT strategy and planning professionals
+ukb	d	GWAS	38e30f7cea8c98b37b2a0f5d5c94e61acc251ca7cd1eae914989c0a068bf2a7d	Job SOC coding: Further education teaching professionals
+ukb	d	GWAS	534f843531625a148db37c6ba01f7bb1d26fce4fd1628deb50b6ec1c8424ef49	Activities undertaken to treat depression: Talking therapies, such as psychotherapy, counselling, group therapy or CBT
+ukb	d	GWAS	625dfcd429dd6ec9752eea028c5dc18fd4febb1cdd79ef64a5fcfb2a3411311a	Home area population density - urban or rural: England/Wales - Town and Fringe - less sparse
+ukb	d	GWAS	8cc24bd414168a7c3e61e07a8069bf1f1ace35f9423484da6142928fe59d3185	Coffee type: Other type of coffee
+ukb	d	GWAS	ca6036f055eb3aa3eb5961adf2944e60579a683c4343a1866f130c6c3fd990c4	Spread type: Other type of spread/margarine
+ukb	d	GWAS	c2452839a488a493464b9ec7a9c41012f8abdc48660c7d41a8ef9be5fde1c85a	Job coding: software professional, analyst-programmer, computer programmer, software analyst or engineer, systems designer or programmer
+ukb	d	GWAS	7f03d0a3f22803665dd0d483ff63c68bf1e28b6b08a4886245f3966d6022b683	Job coding: it strategy or planning professional, computer consultant, software consultant
+ukb	d	GWAS	75ba8b425d52ab37698a2a07142632a955aeb83d3869e4a664d1fe4c047bfb37	Job SOC coding: Researchers n.e.c.
+ukb	d	GWAS	090a702950129e339873c9860a0c1350d8890544aeac2140070380eae9d8f99f	Job SOC coding: Social workers
+ukb	d	GWAS	779a52e20f84dab43ffc6c8f2b99ab032914a39cbdf3f120cfce24f4dffec9d9	Job SOC coding: Officers of non-governmental organisations
+ukb	d	GWAS	500c2ab0f9c055e9af21870f8eed10ce07c97afea3bee071742da3715a44e0d3	Job SOC coding: Medical practitioners
+ukb	d	GWAS	8a54008f5a4ed01b6081f7bb7ba658f22233b489ae5ef9a24fcaec894207e607	Job coding: office manager, account/payrolls manager, administration manager, litigation/solicitor's office manager
+ukb	d	GWAS	9ed56f657fcaf4892059f59885b8937fdd7a9b56d9f19bc3566c42e68fb893a6	Job SOC coding: Laboratory technicians
+ukb	d	GWAS	7478af03b977c1a8a192d93aefa779b23c9edfd0dc68a9a679759ede31f3f4fc	Job SOC coding: Personal assistants and other secretaries
+ukb	d	GWAS	e11bd07051a0f9024ded6965dfe3a7e8da8f950611c751279a4a22f3f960c619	Substances taken for depression: Medication prescribed to you (for at least two weeks)
+ukb	d	GWAS	02158f7ab2cab3b82419090e276d087d1b0b83fbb2a3ff4f528c095cd7968842	Home area population density - urban or rural: Scotland - Other Urban Area
+ukb	d	GWAS	56803dba2b1052118e4c8bca66dfa8ccdd524ac00177d75cc33c8aad2c323cba	Feelings of worthlessness during worst period of depression
+ukb	d	GWAS	622e6632808d9c31918e09c3aa172537a25d4be30a1300362445aa8e427e3dd0	Job SOC coding: School secretaries
+ukb	d	GWAS	b83d7062e5d783eda612a672732e90ec04e67b79f17f1755771e844e7ecf3f1a	Workplace very noisy: Often
+ukb	d	GWAS	25aafae48539c447a7ff2a5d3f222f5819c236897d1f4c2b73138c67f5839d6c	Mental health problems ever diagnosed by a professional: Anxiety, nerves or generalized anxiety disorder
+ukb	d	GWAS	f82d0723e0ca2f0aee21595b63566d31006533f67fa315feaf2791c977e06e60	Diagnosed with life-threatening illness
+ukb	d	GWAS	c2082f1bc533d6a0c297de1492a1734e0dedd6c39984788d94f887a43187952a	Milk type used: Semi-skimmed
+ukb	d	GWAS	8be48a68d30d92b8be0d9cd8115c8c13b82f85269099653b9f887cc554e66458	Worked with paints, thinners or glues: Sometimes
+ukb	d	GWAS	b07db017549b3464b80c2cf8ff37d372680f480ed38fe0e689a1e517be5eb9be	Job coding: solicitor, lawyer, barrister, judge, coroner, articled clerk, attorney, advocate, stipendiary magistrate, fiscal/crown prosecutor, sheriff (scottish courts), legal services recorder
+ukb	d	GWAS	bc0113de37d3653aa331bb95fdbf94f5ff6e11b5e884ba7fda519d8b7251f2fc	Workplace very hot: Often
+ukb	d	GWAS	78e62902d45d0dfe0fe1bdcc0ed0bbad629ebcfc83aa49a02ca65d867bf6ce10	Job coding: medical doctor, general practitioner, hospital consultant
+ukb	d	GWAS	ccc46a898e0b32033a0a0b4c1d2a085ae19a7f21fce93e28a180b5f2b8b45b7e	Job coding: civil service executive officer, revenue/tax executive or officer, fraud inspector or officer, job centre adviser
+ukb	d	GWAS	b57aa4c17c54fe9a580b56bf2b3a1939f046db9b2ad2185a93c5b6bed71284c0	Weight change during worst episode of depression: Both gained and lost some weight during the episode
+ukb	d	GWAS	43ab56acbfdb328d7c6224b9afd7de89ed8bd49c1e03cf6ea8f115926bb312be	Worried most days during period of worst anxiety
+ukb	d	GWAS	33f6676d973cb4058969483817fc9064c012738796aadd3c7704c322954877b1	Thoughts of death during worst depression
+ukb	d	GWAS	377799dc405e8126da56d45bb2ad41e20020b2ceb01353a868d4eb642942a81f	Work hours - lumped category: 15 to less-than-20 hours
+ukb	d	GWAS	fc7d6df8496f507b6eec961a02ffce57e09c971f6b72692c7b24514df05dfde9	Did your sleep change?
+ukb	d	GWAS	3fb4d3810ef4f804e21759c80b7070a13e278a54ba6433dd55f15db92031e58c	Difficulty concentrating during worst depression
+ukb	d	GWAS	246ac0abbd8aebd80e0538a9befe030896ee81fe1f9fdd7d1673cd5001198449	Job coding: receptionist, doctor's/dental receptionist
+ukb	d	GWAS	2e006a0f723a98a9d5893db631853fd3274abcf9bb7df6d5107eb59ef6b1b8be	Ever seen an un-real vision
+ukb	d	GWAS	5f90cc245567433a9cbb30a57b2acd8d48e5ca356a74df2b5b86ded42dc0f470	Manifestations of mania or irritability: I was more creative or had more ideas than usual

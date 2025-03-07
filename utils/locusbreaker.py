@@ -73,8 +73,8 @@ def locus_breaker(
     columns = ["TRAITID","START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
 
     trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
-    
     columns = ["TRAITID", "REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
+
     all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
     
     return [trait_res_df, all_snp_df]

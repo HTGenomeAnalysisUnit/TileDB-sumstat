@@ -107,8 +107,7 @@ def export(
         client.close()
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
-        #header_pd = pd.DataFrame(columns = ["CHR","CELL","GENE","POS","P","CHR:CELL:GENE:START:END"])
-        #header_pd.to_csv(out_rg, index = False)
+        pd_region[["CELL","GENE"]] = pd_region["TRAITID"].str.split(":", expand = True)
         counter_nonempty_region = 0
         for ind, row  in pd_region.iterrows():
             region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),row["CELL"],row["GENE"],int(row["START"]):int(row["END"])]
