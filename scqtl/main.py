@@ -4,8 +4,8 @@ from dask.distributed import LocalCluster
 from dask.distributed import Client
 import click
 import cloup
-from cli.ingestion import ingestion
-from cli.export import export
+from scqtl.cli.ingestion import ingestion
+from scqtl.cli.export import export
 @cloup.group(name="main", help="Single cell analysis with TileDB", no_args_is_help=True)
 @cloup.option_group(
     "Dask cluster options",

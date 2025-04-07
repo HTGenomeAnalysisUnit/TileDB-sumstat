@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List
-from utils import compute_pheno_variance
+from scqtl.utils import compute_pheno_variance
 
 def locus_breaker(
     tiledb_data,
