@@ -25,6 +25,7 @@ To install this program run the following:
 
 ### Create a virtual environment (recommended)
 conda create --name scqtl --file conda-{linux, osx-arm}-64.lock
+
 conda activate scqtl
 
 ### Install the package
