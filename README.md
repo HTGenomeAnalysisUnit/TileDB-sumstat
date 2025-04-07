@@ -23,12 +23,12 @@ Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/
 
 To install this program run the following:
 
-# Create a virtual environment (recommended)
+### Create a virtual environment (recommended)
 conda create --name scqtl --file conda-{linux, osx-arm}-64.lock
 conda activate scqtl
 
-# Install the package
+### Install the package
 make install
 
-# Verify installation
+### Verify installation
 scqtl --version
