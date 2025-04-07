@@ -3,8 +3,8 @@ import click
 import cloup
 import pandas as pd
 from dask import delayed, compute
-from utils.process_write_chunk import process_write_chunk
-from utils.locusbreaker import locus_breaker
+from scqtl.utils.process_write_chunk import process_write_chunk
+from scqtl.utils.locusbreaker import locus_breaker
 import numpy as np
 import os
 

@@ -3,8 +3,8 @@ import numpy as np
 import os
 import click 
 import cloup
-from utils.create_tiledb_schema import create_tiledb_schema
-from utils.harmonize_ingest_data import harmonize_ingest_data
+from scqtl.utils.create_tiledb_schema import create_tiledb_schema
+from scqtl.utils.harmonize_ingest_data import harmonize_ingest_data
 import dask
 import pandas as pd
 
