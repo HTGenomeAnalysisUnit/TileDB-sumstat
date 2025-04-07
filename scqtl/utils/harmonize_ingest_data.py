@@ -19,7 +19,6 @@ def harmonize_ingest_data(chunk_size, file, uri):
         .otherwise(pl.col("start_distance"))
         .alias("start_distance2")
         )
-        vs_count = chunk_pl.filter(pl.col("start_distance2").str.contains("_vs_")).shape[0]
         chunk_pl = chunk_pl.with_columns(
         pl.col("start_distance2").cast(pl.Int64).alias("DIST")
         )
@@ -64,4 +63,15 @@ def harmonize_ingest_data(chunk_size, file, uri):
                         column_types=dict_type,
                         mode="append"
                         )
+        with tiledb.open(uri, mode="r+") as A:
+            if "GENE_CELLTYPE" not in A.meta:
+                A.meta["GENE_CELLTYPE"] = {file[1]: chunk_pl["phenotype_id"].unique().to_list()}
+            else:
+                if file[1] not in A.meta["GENE_CELLTYPE"]:
+                    A.meta["GENE_CELLTYPE"][file[1]] = chunk_pl["phenotype_id"].unique().to_list()
+                else:
+                    # Append the new cell type to the existing list
+                    A.meta["GENE_CELLTYPE"][file[1]].extend(chunk_pl["phenotype_id"].unique().to_list())
+
+            #The line on top is good but i need to append in case the cell already exists
 
