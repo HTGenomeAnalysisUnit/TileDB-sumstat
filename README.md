@@ -31,4 +31,4 @@ conda activate scqtl
 make install
 
 ### Verify installation
-scqtl --version
+scqtl --help
