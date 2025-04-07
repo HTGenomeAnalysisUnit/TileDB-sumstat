@@ -24,7 +24,7 @@ def locus_breaker(
     :return: Two DataFrames, one with loci regions and another with all SNPs in loci
     """
     # Create a copy of the original dataset before filtering
-    tiledb_data["TRAITID"] = tiledb_data['CELL'] + "_" + tiledb_data['GENE']
+    tiledb_data["TRAITID"] = tiledb_data['CELL'] + ":" + tiledb_data['GENE']
     original_data = tiledb_data.copy()
     
     if phenovar:
@@ -69,8 +69,8 @@ def locus_breaker(
     # Convert to DataFrames
     columns = ["START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
 
-    trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
+    trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P", "GENE", "CELL"])
     columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
-    all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
+    all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL", "GENE", "CELL"])
     
     return [trait_res_df, all_snp_df]
