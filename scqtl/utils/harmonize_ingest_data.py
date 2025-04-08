@@ -3,6 +3,7 @@ import pandas as pd
 import scipy.stats as stats
 import polars as pl
 import tiledb
+import json
 
 def harmonize_ingest_data(chunk_size, file, uri):
     file = file.split(",")
@@ -19,7 +20,6 @@ def harmonize_ingest_data(chunk_size, file, uri):
         .otherwise(pl.col("start_distance"))
         .alias("start_distance2")
         )
-        vs_count = chunk_pl.filter(pl.col("start_distance2").str.contains("_vs_")).shape[0]
         chunk_pl = chunk_pl.with_columns(
         pl.col("start_distance2").cast(pl.Int64).alias("DIST")
         )
@@ -64,4 +64,20 @@ def harmonize_ingest_data(chunk_size, file, uri):
                         column_types=dict_type,
                         mode="append"
                         )
+        existing_gene_celltype = {}
+        with tiledb.open(uri, mode="r") as A:
+            if "GENE_CELLTYPE" in A.meta:
+                existing_gene_celltype = json.loads(A.meta["GENE_CELLTYPE"])
+
+        with tiledb.open(uri, mode="w") as A:
+            if not existing_gene_celltype:  # If GENE_CELLTYPE doesn't exist yet
+                new_dict = {file[1]: chunk_pl["phenotype_id"].unique().to_list()}
+                A.meta["GENE_CELLTYPE"] = json.dumps(new_dict)
+            else:
+                if file[1] not in existing_gene_celltype:
+                    existing_gene_celltype[file[1]] = chunk_pl["phenotype_id"].unique().to_list()
+                else:
+                    # Append new cell types to the existing list
+                    existing_gene_celltype[file[1]].extend(chunk_pl["phenotype_id"].unique().to_list())
+                A.meta["GENE_CELLTYPE"] = json.dumps(existing_gene_celltype)
 
