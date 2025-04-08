@@ -3,6 +3,7 @@ import pandas as pd
 import scipy.stats as stats
 import polars as pl
 import tiledb
+import json
 
 def harmonize_ingest_data(chunk_size, file, uri):
     file = file.split(",")
@@ -63,15 +64,20 @@ def harmonize_ingest_data(chunk_size, file, uri):
                         column_types=dict_type,
                         mode="append"
                         )
-        with tiledb.open(uri, mode="r+") as A:
-            if "GENE_CELLTYPE" not in A.meta:
-                A.meta["GENE_CELLTYPE"] = {file[1]: chunk_pl["phenotype_id"].unique().to_list()}
-            else:
-                if file[1] not in A.meta["GENE_CELLTYPE"]:
-                    A.meta["GENE_CELLTYPE"][file[1]] = chunk_pl["phenotype_id"].unique().to_list()
-                else:
-                    # Append the new cell type to the existing list
-                    A.meta["GENE_CELLTYPE"][file[1]].extend(chunk_pl["phenotype_id"].unique().to_list())
+        existing_gene_celltype = {}
+        with tiledb.open(uri, mode="r") as A:
+            if "GENE_CELLTYPE" in A.meta:
+                existing_gene_celltype = json.loads(A.meta["GENE_CELLTYPE"])
 
-            #The line on top is good but i need to append in case the cell already exists
+        with tiledb.open(uri, mode="w") as A:
+            if not existing_gene_celltype:  # If GENE_CELLTYPE doesn't exist yet
+                new_dict = {file[1]: chunk_pl["phenotype_id"].unique().to_list()}
+                A.meta["GENE_CELLTYPE"] = json.dumps(new_dict)
+            else:
+                if file[1] not in existing_gene_celltype:
+                    existing_gene_celltype[file[1]] = chunk_pl["phenotype_id"].unique().to_list()
+                else:
+                    # Append new cell types to the existing list
+                    existing_gene_celltype[file[1]].extend(chunk_pl["phenotype_id"].unique().to_list())
+                A.meta["GENE_CELLTYPE"] = json.dumps(existing_gene_celltype)
 
