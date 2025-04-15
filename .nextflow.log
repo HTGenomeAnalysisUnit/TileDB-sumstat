@@ -1,0 +1,200 @@
+Apr-09 16:50:09.631 [main] DEBUG nextflow.cli.Launcher - $> nextflow run -r dockerfile Biostatistics-Unit-HT/Flanders -profile test,singularity --outdir test_results
+Apr-09 16:50:09.821 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 24.10.4
+Apr-09 16:50:09.944 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/bruno.ariano/.nextflow/plugins; core-plugins: nf-amazon@2.9.2,nf-azure@1.10.2,nf-cloudcache@0.4.2,nf-codecommit@0.2.2,nf-console@1.1.4,nf-google@1.15.3,nf-tower@1.9.3,nf-wave@1.7.4
+Apr-09 16:50:10.010 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Apr-09 16:50:10.012 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Apr-09 16:50:10.016 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Apr-09 16:50:10.054 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Apr-09 16:50:10.083 [main] DEBUG nextflow.scm.ProviderConfig - Using SCM config path: /home/bruno.ariano/.nextflow/scm
+Apr-09 16:50:10.985 [main] DEBUG nextflow.scm.ProviderConfig - Detected SCM config: [providers:[github:[user:bruno-ariano, password:ghp****]]]
+Apr-09 16:50:11.136 [main] DEBUG nextflow.scm.RepositoryFactory - Found Git repository result: [RepositoryFactory]
+Apr-09 16:50:11.847 [main] DEBUG nextflow.scm.AssetManager - Git config: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/.git/config; branch: null; remote: origin; url: https://github.com/Biostatistics-Unit-HT/Flanders.git
+Apr-09 16:50:11.905 [main] DEBUG nextflow.scm.AssetManager - Git config: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/.git/config; branch: null; remote: origin; url: https://github.com/Biostatistics-Unit-HT/Flanders.git
+Apr-09 16:50:13.398 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/nextflow.config
+Apr-09 16:50:13.401 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/nextflow.config
+Apr-09 16:50:13.426 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/bruno.ariano/.nextflow/secrets/store.json
+Apr-09 16:50:13.429 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@3cc79c02] - activable => nextflow.secret.LocalSecretsProvider@3cc79c02
+Apr-09 16:50:13.456 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test,singularity`
+Apr-09 16:50:14.092 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [shifter, test, mamba, charliecloud, apptainer, conda, singularity, test_long, wave, docker, podman]
+Apr-09 16:50:14.176 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Apr-09 16:50:14.176 [main] DEBUG nextflow.cli.CmdRun - Launching `https://github.com/Biostatistics-Unit-HT/Flanders` [maniac_cantor] DSL2 - revision: 7d5372ad8c [dockerfile]
+Apr-09 16:50:14.178 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins declared=[nf-schema@2.0.0]
+Apr-09 16:50:14.178 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Apr-09 16:50:14.178 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[nf-schema@2.0.0]
+Apr-09 16:50:14.179 [main] DEBUG nextflow.plugin.PluginUpdater - Installing plugin nf-schema version: 2.0.0
+Apr-09 16:50:14.218 [main] INFO  org.pf4j.AbstractPluginManager - Plugin 'nf-schema@2.0.0' resolved
+Apr-09 16:50:14.219 [main] INFO  org.pf4j.AbstractPluginManager - Start plugin 'nf-schema@2.0.0'
+Apr-09 16:50:14.231 [main] DEBUG nextflow.plugin.BasePlugin - Plugin started nf-schema@2.0.0
+Apr-09 16:50:14.334 [main] DEBUG nextflow.Session - Session UUID: b9193b35-f08c-4206-8bdd-be41fdbb823d
+Apr-09 16:50:14.335 [main] DEBUG nextflow.Session - Run name: maniac_cantor
+Apr-09 16:50:14.339 [main] DEBUG nextflow.Session - Executor pool size: 2
+Apr-09 16:50:14.362 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Apr-09 16:50:14.367 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Apr-09 16:50:14.436 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 24.10.4 build 5934
+  Created: 20-01-2025 16:47 UTC (17:47 CEST)
+  System: Linux 4.18.0-477.13.1.el8_8.x86_64
+  Runtime: Groovy 4.0.23 on OpenJDK 64-Bit Server VM 17.0.8.1+1
+  Encoding: UTF-8 (UTF-8)
+  Process: 2309657@cnode41 [192.168.104.156]
+  CPUs: 1 - Mem: 39.1 GB (38.7 GB) - Swap: 0 (0)
+Apr-09 16:50:14.515 [main] DEBUG nextflow.Session - Work-dir: /home/bruno.ariano/TileDB-SC-QTL/work [nfs]
+Apr-09 16:50:14.590 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Apr-09 16:50:14.623 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Apr-09 16:50:14.949 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Apr-09 16:50:14.981 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 2; maxThreads: 1000
+Apr-09 16:50:15.139 [main] DEBUG nextflow.Session - Session start
+Apr-09 16:50:15.142 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /home/bruno.ariano/TileDB-SC-QTL/test_results/pipeline_info/execution_trace_2025-04-09_16-50-14.txt
+Apr-09 16:50:15.866 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Apr-09 16:50:17.045 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [samplesheetToList:samplesheetToList]; plugin Id: nf-schema
+Apr-09 16:50:17.750 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name INPUT_COLUMNS_VALIDATION
+Apr-09 16:50:17.791 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:17.802 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:17.809 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Apr-09 16:50:17.829 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=1; memory=39.1 GB; capacity=1; pollInterval=100ms; dumpInterval=5m
+Apr-09 16:50:17.835 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Apr-09 16:50:18.134 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name MUNG_AND_LOCUS_BREAKER
+Apr-09 16:50:18.139 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:18.140 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:18.355 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name SUSIE_FINEMAPPING
+Apr-09 16:50:18.372 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:18.373 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:18.419 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name COJO_AND_FINEMAPPING
+Apr-09 16:50:18.432 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:18.432 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:18.471 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name APPEND_TO_IND_SNPS_TAB
+Apr-09 16:50:18.480 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:18.493 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:18.523 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name APPEND_TO_MASTER_COLOC
+Apr-09 16:50:18.526 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Apr-09 16:50:18.526 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Apr-09 16:50:18.532 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: MUNG_AND_LOCUS_BREAKER, INPUT_COLUMNS_VALIDATION, COJO_AND_FINEMAPPING, APPEND_TO_IND_SNPS_TAB, SUSIE_FINEMAPPING, APPEND_TO_MASTER_COLOC
+Apr-09 16:50:18.533 [main] DEBUG nextflow.Session - Igniting dataflow network (7)
+Apr-09 16:50:18.533 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > INPUT_COLUMNS_VALIDATION
+Apr-09 16:50:18.557 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MUNG_AND_LOCUS_BREAKER
+Apr-09 16:50:18.580 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SUSIE_FINEMAPPING
+Apr-09 16:50:18.580 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > COJO_AND_FINEMAPPING
+Apr-09 16:50:18.595 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > APPEND_TO_IND_SNPS_TAB
+Apr-09 16:50:18.596 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > APPEND_TO_MASTER_COLOC
+Apr-09 16:50:18.598 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_7d184d9a86a75a7e: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/cojo_and_finemapping/main.nf
+  Script_23ceb8a3c8bd2ace: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/input_columns_validation/main.nf
+  Script_3c768a58e365278b: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/append_to_master_coloc/main.nf
+  Script_90c1944a17048a1b: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/main.nf
+  Script_effe267448269d5f: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/susie_finemapping/main.nf
+  Script_3fd0fef16fcece2d: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/append_to_ind_snps_tab/main.nf
+  Script_1a15f8335c01a52e: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/./modules/local/mung_and_locus_breaker/main.nf
+Apr-09 16:50:18.598 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Apr-09 16:50:18.598 [main] DEBUG nextflow.Session - Session await
+Apr-09 16:50:18.730 [Actor Thread 6] WARN  nextflow.container.SingularityCache - Singularity cache directory has not been defined -- Remote image will be stored in the path: /home/bruno.ariano/TileDB-SC-QTL/work/singularity -- Use the environment variable NXF_SINGULARITY_CACHEDIR to specify a different location
+Apr-09 16:50:18.731 [Actor Thread 6] INFO  nextflow.container.SingularityCache - Pulling Singularity image docker://htgenomeanalysisunit/figaro-pipeline:v2.0 [cache /home/bruno.ariano/TileDB-SC-QTL/work/singularity/htgenomeanalysisunit-figaro-pipeline-v2.0.img]
+Apr-09 16:50:29.862 [Actor Thread 6] DEBUG nextflow.container.SingularityCache - Singularity pull complete image=docker://htgenomeanalysisunit/figaro-pipeline:v2.0 path=/home/bruno.ariano/TileDB-SC-QTL/work/singularity/htgenomeanalysisunit-figaro-pipeline-v2.0.img
+Apr-09 16:50:29.941 [Actor Thread 1] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/example_data_finemapping_input_table.tsv
+Apr-09 16:50:29.946 [Actor Thread 1] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/bin/validate_columns.py
+Apr-09 16:50:30.138 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:50:30.153 [Task submitter] INFO  nextflow.Session - [67/ebd3e0] Submitted process > INPUT_COLUMNS_VALIDATION
+Apr-09 16:50:32.785 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: INPUT_COLUMNS_VALIDATION; status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/67/ebd3e0de96dd1422346637f861eaa5]
+Apr-09 16:50:32.785 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Apr-09 16:50:32.960 [Actor Thread 8] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-b-10787.tsv.gz
+Apr-09 16:50:32.961 [Actor Thread 3] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-b-16446.tsv.gz
+Apr-09 16:50:32.963 [Actor Thread 8] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/assets/hg19ToHg38.over.chain
+Apr-09 16:50:33.014 [Actor Thread 3] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/bin/s02_sumstat_munging_and_aligning.R
+Apr-09 16:50:33.052 [Actor Thread 3] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-b-19953.tsv.gz
+Apr-09 16:50:33.069 [Actor Thread 2] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-b-6358.tsv.gz
+Apr-09 16:50:33.078 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:50:33.079 [Task submitter] INFO  nextflow.Session - [49/074126] Submitted process > MUNG_AND_LOCUS_BREAKER (height)
+Apr-09 16:50:33.186 [Actor Thread 8] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-b-8875.tsv.gz
+Apr-09 16:50:33.217 [Actor Thread 2] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/example_data/gwas/ukb-d-2395_1.tsv.gz
+Apr-09 16:50:47.537 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 3; name: MUNG_AND_LOCUS_BREAKER (height); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/49/074126b6f2902f47b2b7da63e7b904]
+Apr-09 16:50:47.565 [TaskFinalizer-2] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=10; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Apr-09 16:50:47.602 [Actor Thread 2] DEBUG nextflow.util.HashBuilder - Hash asset file sha-256: /home/bruno.ariano/.nextflow/assets/Biostatistics-Unit-HT/Flanders/bin/s04_susie_finemapping.R
+Apr-09 16:50:47.615 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:50:47.615 [Task submitter] INFO  nextflow.Session - [5f/c17f20] Submitted process > MUNG_AND_LOCUS_BREAKER (bmi)
+Apr-09 16:51:01.832 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: MUNG_AND_LOCUS_BREAKER (bmi); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/5f/c17f201444b5e75ed210798f438a13]
+Apr-09 16:51:01.886 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:51:01.887 [Task submitter] INFO  nextflow.Session - [f5/6ff94c] Submitted process > MUNG_AND_LOCUS_BREAKER (basal_metabolic_rate)
+Apr-09 16:51:16.136 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 5; name: MUNG_AND_LOCUS_BREAKER (basal_metabolic_rate); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/f5/6ff94cb670801198352b45165060a1]
+Apr-09 16:51:16.144 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process `MUNG_AND_LOCUS_BREAKER (basal_metabolic_rate)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/f5/6ff94cb670801198352b45165060a1/basal_metabolic_rate_loci_NO_HLA.tsv` (pattern: `basal_metabolic_rate_loci_NO_HLA.tsv`)
+Apr-09 16:51:16.145 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process `MUNG_AND_LOCUS_BREAKER (basal_metabolic_rate)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/f5/6ff94cb670801198352b45165060a1/basal_metabolic_rate_loci.tsv` (pattern: `basal_metabolic_rate_loci.tsv`)
+Apr-09 16:51:16.215 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process MUNG_AND_LOCUS_BREAKER > Skipping output binding because one or more optional files are missing: fileoutparam<1>
+Apr-09 16:51:16.215 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process MUNG_AND_LOCUS_BREAKER > Skipping output binding because one or more optional files are missing: fileoutparam<3>
+Apr-09 16:51:16.227 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:51:16.227 [Task submitter] INFO  nextflow.Session - [c0/c1d857] Submitted process > MUNG_AND_LOCUS_BREAKER (stroke)
+Apr-09 16:51:30.704 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 4; name: MUNG_AND_LOCUS_BREAKER (stroke); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/c0/c1d857be3569bf5376faf0f3347b8b]
+Apr-09 16:51:30.810 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:51:30.811 [Task submitter] INFO  nextflow.Session - [30/6c3dc5] Submitted process > MUNG_AND_LOCUS_BREAKER (heel_bone_mineral_density)
+Apr-09 16:51:45.342 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 6; name: MUNG_AND_LOCUS_BREAKER (heel_bone_mineral_density); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/30/6c3dc5e80cbd491a25f2c1382e7f38]
+Apr-09 16:51:45.401 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:51:45.402 [Task submitter] INFO  nextflow.Session - [43/f254f6] Submitted process > MUNG_AND_LOCUS_BREAKER (balding_pattern_1)
+Apr-09 16:51:59.229 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 7; name: MUNG_AND_LOCUS_BREAKER (balding_pattern_1); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/43/f254f698361a7923239cd10ae59aa3]
+Apr-09 16:51:59.264 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:51:59.265 [Task submitter] INFO  nextflow.Session - [42/fec791] Submitted process > SUSIE_FINEMAPPING (height)
+Apr-09 16:51:59.376 [Actor Thread 3] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 1; slices: 1; internal sort time: 0.002 s; external sort time: 0.097 s; total time: 0.099 s
+Apr-09 16:51:59.428 [Actor Thread 3] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /home/bruno.ariano/TileDB-SC-QTL/work/collect-file/66b218860224da7f1ea3446b28a67a1e
+Apr-09 16:51:59.440 [Actor Thread 3] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /localscratch/19582249.bruno.ariano/nxf-6789088410849713924
+Apr-09 16:52:23.708 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 8; name: SUSIE_FINEMAPPING (height); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/42/fec791a0b6ba3dfb192add41d8fd22]
+Apr-09 16:52:23.753 [TaskFinalizer-8] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (height)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/42/fec791a0b6ba3dfb192add41d8fd22/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:52:23.754 [TaskFinalizer-8] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:52:23.755 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:52:23.755 [Task submitter] INFO  nextflow.Session - [39/848327] Submitted process > SUSIE_FINEMAPPING (bmi)
+Apr-09 16:52:40.462 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 9; name: SUSIE_FINEMAPPING (bmi); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/39/8483273d5e6ba166e84ff25c5f164a]
+Apr-09 16:52:40.479 [TaskFinalizer-9] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (bmi)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/39/8483273d5e6ba166e84ff25c5f164a/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:52:40.480 [TaskFinalizer-9] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:52:40.494 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:52:40.494 [Task submitter] INFO  nextflow.Session - [71/930636] Submitted process > SUSIE_FINEMAPPING (bmi)
+Apr-09 16:52:58.459 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 10; name: SUSIE_FINEMAPPING (bmi); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/71/930636be0ae3ac100ba27a9dc8734d]
+Apr-09 16:52:58.478 [TaskFinalizer-10] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (bmi)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/71/930636be0ae3ac100ba27a9dc8734d/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:52:58.479 [TaskFinalizer-10] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:52:58.480 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:52:58.481 [Task submitter] INFO  nextflow.Session - [6b/14426b] Submitted process > SUSIE_FINEMAPPING (stroke)
+Apr-09 16:53:19.822 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 11; name: SUSIE_FINEMAPPING (stroke); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/6b/14426b0ee979077483296e6c8542cc]
+Apr-09 16:53:19.845 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (stroke)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/6b/14426b0ee979077483296e6c8542cc/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:53:19.846 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<0>
+Apr-09 16:53:19.846 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Apr-09 16:53:19.846 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<2:1>
+Apr-09 16:53:19.846 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:53:19.850 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:19.851 [Task submitter] INFO  nextflow.Session - [87/673927] Submitted process > SUSIE_FINEMAPPING (heel_bone_mineral_density)
+Apr-09 16:53:37.322 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 13; name: SUSIE_FINEMAPPING (heel_bone_mineral_density); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/87/6739270186a359a61d0d5588a3e6bf]
+Apr-09 16:53:37.341 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (heel_bone_mineral_density)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/87/6739270186a359a61d0d5588a3e6bf/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:53:37.343 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<0>
+Apr-09 16:53:37.343 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Apr-09 16:53:37.343 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<2:1>
+Apr-09 16:53:37.343 [TaskFinalizer-2] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:53:37.352 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:37.352 [Task submitter] INFO  nextflow.Session - [33/71c752] Submitted process > SUSIE_FINEMAPPING (heel_bone_mineral_density)
+Apr-09 16:53:53.593 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 12; name: SUSIE_FINEMAPPING (heel_bone_mineral_density); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/33/71c7521e199e540db67b1ba101b53d]
+Apr-09 16:53:53.601 [TaskFinalizer-3] DEBUG nextflow.processor.TaskProcessor - Process `SUSIE_FINEMAPPING (heel_bone_mineral_density)` is unable to find [UnixPath]: `/home/bruno.ariano/TileDB-SC-QTL/work/33/71c7521e199e540db67b1ba101b53d/failed_susie.txt` (pattern: `failed_susie.txt`)
+Apr-09 16:53:53.603 [TaskFinalizer-3] DEBUG nextflow.processor.TaskProcessor - Process SUSIE_FINEMAPPING > Skipping output binding because one or more optional files are missing: fileoutparam<3:5>
+Apr-09 16:53:53.684 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:53.684 [Task submitter] INFO  nextflow.Session - [49/4116bc] Submitted process > APPEND_TO_MASTER_COLOC (bmi)
+Apr-09 16:53:54.116 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 15; name: APPEND_TO_MASTER_COLOC (bmi); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/49/4116bcd14eaafd096d0650332bd47c]
+Apr-09 16:53:54.141 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:54.142 [Task submitter] INFO  nextflow.Session - [f6/cb135b] Submitted process > APPEND_TO_MASTER_COLOC (height)
+Apr-09 16:53:54.548 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 14; name: APPEND_TO_MASTER_COLOC (height); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/f6/cb135b2385a315c00738be4ee88287]
+Apr-09 16:53:54.569 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:54.570 [Task submitter] INFO  nextflow.Session - [83/dfec89] Submitted process > APPEND_TO_IND_SNPS_TAB (height)
+Apr-09 16:53:54.971 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 17; name: APPEND_TO_IND_SNPS_TAB (height); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/83/dfec89126a02425d99238f7b0617da]
+Apr-09 16:53:55.000 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:55.001 [Task submitter] INFO  nextflow.Session - [b5/7cc62f] Submitted process > APPEND_TO_IND_SNPS_TAB (bmi)
+Apr-09 16:53:55.395 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 18; name: APPEND_TO_IND_SNPS_TAB (bmi); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/b5/7cc62f84badd7dea1e638f73a8c8e7]
+Apr-09 16:53:55.426 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:55.427 [Task submitter] INFO  nextflow.Session - [64/33836f] Submitted process > APPEND_TO_IND_SNPS_TAB (heel_bone_mineral_density)
+Apr-09 16:53:55.867 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 19; name: APPEND_TO_IND_SNPS_TAB (heel_bone_mineral_density); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/64/33836f9fe5c737f5770f19e2670d4d]
+Apr-09 16:53:55.893 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Apr-09 16:53:55.894 [Task submitter] INFO  nextflow.Session - [b1/21502b] Submitted process > APPEND_TO_MASTER_COLOC (heel_bone_mineral_density)
+Apr-09 16:53:56.289 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 16; name: APPEND_TO_MASTER_COLOC (heel_bone_mineral_density); status: COMPLETED; exit: 0; error: -; workDir: /home/bruno.ariano/TileDB-SC-QTL/work/b1/21502b83ab2f2f5ba064b8d3135eec]
+Apr-09 16:53:56.293 [main] DEBUG nextflow.Session - Session await > all processes finished
+Apr-09 16:53:56.389 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Apr-09 16:53:56.390 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Apr-09 16:53:56.394 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'TaskFinalizer' shutdown completed (hard=false)
+Apr-09 16:53:56.395 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'PublishDir' shutdown completed (hard=false)
+Apr-09 16:53:56.399 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=19; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=3m 16s; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=32 GB; ]
+Apr-09 16:53:56.400 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Apr-09 16:53:56.402 [main] DEBUG nextflow.trace.ReportObserver - Workflow completed -- rendering execution report
+Apr-09 16:53:57.210 [main] DEBUG nextflow.trace.TimelineObserver - Workflow completed -- rendering execution timeline
+Apr-09 16:53:57.569 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Apr-09 16:53:57.594 [main] INFO  org.pf4j.AbstractPluginManager - Stop plugin 'nf-schema@2.0.0'
+Apr-09 16:53:57.594 [main] DEBUG nextflow.plugin.BasePlugin - Plugin stopped nf-schema
+Apr-09 16:53:57.595 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'FileTransfer' shutdown completed (hard=false)
+Apr-09 16:53:57.595 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

@@ -20,7 +20,7 @@ Query TileDB database and export data.
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
     cloup.option("--table_regions", default = None, type=str, help = "Regions to interrogate from a table"),
-    cloup.option("--attr", default = None, type=str, help = "Regions to interrogate from a table"),
+    cloup.option("--attr", default = "P,SNP,DIST,AF,BETA,SE,N", type=str, help = "Attributes to output"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
@@ -100,10 +100,10 @@ def export(
                 return_incomplete=True
             ).df[chrom_list, cell_list ,gene_list ,unique_positions]
             #Open a streaming connection with output and run the function
-            with open(output_path + ".csv", mode="a") as f:
+            with open(out_rg + ".csv", mode="a") as f:
                 for chunk in tiledb_iterator:
                     process_write_chunk(chunk, snp_list, f)
-        print(f"Saved filtered summary statistics by SNPs in {output_path}.csv")
+        print(f"Saved filtered summary statistics by SNPs in {out_rg}.csv")
         client.close()
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
@@ -111,7 +111,9 @@ def export(
         counter_nonempty_region = 0
         for ind, row  in pd_region.iterrows():
             region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),row["CELL"],row["GENE"],int(row["START"]):int(row["END"])]
-            region["CHR_CELL_GENE_START_END"] = str(row["CHR"]) + ":" + row["CELL"] + ":" + row["GENE"] + ":" + str(row["START"]) + ":" + str(row["END"])
+            region["TRAITID"] = str(row["CELL"] + ":" + row["GENE"])
+            region["START"] = str(row["START"])
+            region["END"] = str(row["END"])
             if len(region)>0:
                 if counter_nonempty_region==0:
                     region.to_csv(out_rg, mode='a', index = False, header = True)

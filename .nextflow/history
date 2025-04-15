@@ -1,0 +1,1 @@
+2025-04-09 16:50:14	3m 44s	maniac_cantor	OK	7d5372ad8c9cda34e0e88bfd97256126c7d056c5	b9193b35-f08c-4206-8bdd-be41fdbb823d	nextflow run -r dockerfile Biostatistics-Unit-HT/Flanders -profile test,singularity --outdir test_results
