@@ -35,7 +35,7 @@ Query TileDB database and export data.
     cloup.option("--pvalue_limit", default = 1e-5, type=float, help = "P-value threshold for loci borders"),
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
-    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker"),
+    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
     cloup.option("--category",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
 )
@@ -133,19 +133,20 @@ def export(
         @delayed
         def query_gene(uri, chrom, cell, gene):
             with tiledb.open(uri, mode="r") as tiledb_data:
-                tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N', 'DIST']).df[chrom, cell ,gene , :]
+                
+                tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N', 'DIST'],cond=f"AF >= {maf} and AF <= {1-maf}").df[chrom, cell ,gene , :]
                 return tiledb_filtered
             
         @delayed
-        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar, maf, category):
+        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar, category):
             # Call locus_breaker with the computed tiledb_data
-            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar, maf = maf, category = category)
+            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar, category = category)
             
         for ind, row in traits.iterrows():
             chrom = row["CHR"]
             cell = row["CELL"]
             gene = row["GENE"]
-            task = delayed_locus_breaker(query_gene(uri, chrom, cell, gene),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole, phenovar = phenovar, maf = maf, category = category)
+            task = delayed_locus_breaker(query_gene(uri, chrom, cell, gene),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole, phenovar = phenovar, category = category)
             tasks.append(task)
 
         #The batch size to use which is set to the number of workers if Dask is run

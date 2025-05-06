@@ -8,7 +8,6 @@ def locus_breaker(
     pvalue_limit: float = 5e-6,
     hole_size: int = 250000,
     phenovar: bool = False,
-    maf: float = 0.01,
     category: bool = False
 ) -> pd.DataFrame:
     """
@@ -18,7 +17,6 @@ def locus_breaker(
     :param pvalue_limit: P-value threshold for defining loci
     :param hole_size: Minimum base-pair distance to separate loci
     :param phenovar: Compute phenotypic variance or not
-    :param maf: Minor allele frequency threshold
     :param category: cis/trans filter for SNPs based on distance
     :param expansion_size: Number of base pairs to expand loci boundaries
     :return: Two DataFrames, one with loci regions and another with all SNPs in loci
@@ -51,7 +49,12 @@ def locus_breaker(
         group = gaps.cumsum()
         for _, group_df in gene_df.groupby(group):
             if group_df["P"].min() < pvalue_sig:
-                start_pos = group_df["POS"].min() - 100000
+                
+                lower_pos = group_df["POS"].min()
+                if int(lower_pos) - 100000 < 0:
+                    start_pos = 1
+                else:
+                    start_pos = lower_pos - 100000
                 end_pos = group_df["POS"].max() + 100000
                 best_snp = group_df.loc[group_df["P"].idxmin()]
                 region = f"{group_df['CHR'].iloc[0]}:{start_pos}:{end_pos}"
