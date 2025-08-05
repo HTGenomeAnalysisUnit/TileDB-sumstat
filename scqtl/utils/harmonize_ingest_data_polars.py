@@ -39,6 +39,7 @@ def harmonize_ingest_data(chunk_size: int, file: str, uri: str, pvar_file: str) 
             "af": pl.Float32,
             "pval_nominal": pl.Float64,
             "ma_count": pl.Int64,
+            "nsamples" : pl.Int64,
         }
         columns = list(dtypes.keys())
 
@@ -49,7 +50,7 @@ def harmonize_ingest_data(chunk_size: int, file: str, uri: str, pvar_file: str) 
             "GENE": str,
             "POS": np.uint32,
             "SNP": str,
-            "RSID": str,
+            #"RSID": str,
             "DIST": np.int64,
             "AF": np.float32,
             "BETA": np.float32,
@@ -79,17 +80,17 @@ def harmonize_ingest_data(chunk_size: int, file: str, uri: str, pvar_file: str) 
                 .otherwise(pl.col("start_distance"))
                 .cast(pl.Int64, strict=False)
                 .alias("DIST"),
-                pl.lit(None, pl.Utf8).alias("RSID"),
+                #pl.lit(None, pl.Utf8).alias("RSID"),
             )        
         # Create SNP identifier
         chunk_pl = chunk_pl.with_columns(
                 pl.col("CHR").str.replace(r"chr", "").cast(pl.Utf8),
-                pl.col("POS").cast(pl.Utf8),
-                pl.when(pl.col("af") > 0)
-                .then(pl.col("ma_count") / (pl.col("af") * 2))
-                .otherwise(None)
-                .cast(pl.Int64)
-                .alias("N"),
+                pl.col("POS").cast(pl.Utf8)
+                #pl.when(pl.col("af") > 0)
+                #.then(pl.col("ma_count") / (pl.col("af") * 2))
+                #.otherwise(None)
+                #.cast(pl.Int64)
+                #.alias("N"),
             )
         
         pvar_df = pl.read_csv(
@@ -116,6 +117,7 @@ def harmonize_ingest_data(chunk_size: int, file: str, uri: str, pvar_file: str) 
                 (pl.lit("chr") + pl.col("variant_id")).alias("SNP"),
                 pl.col("phenotype_id").alias("GENE"),
                 pl.col("slope_se").alias("SE"),
+                pl.col("nsamples").alias("N"),
                 pl.col("pval_nominal").alias("P"),
                 pl.lit(cell_type).alias("CELL"),
             )
