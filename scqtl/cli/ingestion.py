@@ -4,8 +4,8 @@ import os
 import click 
 import cloup
 from scqtl.utils.create_tiledb_schema import create_tiledb_schema
-from scqtl.utils.harmonize_ingest import harmonize_ingest_gwas, harmonize_ingest_sc
-import dask
+from scqtl.utils.harmonize_ingest import harmonize_ingest
+#import dask
 import pandas as pd
 
 @cloup.command("ingestion", no_args_is_help=True, help="Ingest single cell QTL with TileDB")
@@ -27,12 +27,9 @@ def ingestion(ctx, uri: str, chunk_size: int, batch_size: int, list_files:str, p
         create_tiledb_schema(uri, type_sumstat=type_sumstat)
     file_list = open(list_files, "r").read().splitlines()
 
-
+    #This could be optimized with Dask
     for i in range(0, len(file_list), batch_size):
         batch_files = file_list[i:i + batch_size]
         for file in batch_files:
-            if type_sumstat == "gwas":
-                harmonize_ingest_data_gwas(chunk_size, file, uri, pvar_file, type_sumstat="gwas")
-            elif type_sumstat == "scqtl":
-                harmonize_ingest_sc(chunk_size, file, uri, pvar_file, type_sumstat="scqtl")
+                harmonize_ingest(chunk_size, file, uri, pvar_file, type_sumstat="gwas")
         print(f"Batch {i // batch_size + 1} completed.")   

@@ -15,11 +15,9 @@ class HarmonizationError(Exception):
     pass
 
 class Harmonize():
-
-    def __init__(self, file_mapping: str, chunk_size: int, file_path: str, celltype: str, uri: str, pvar_file: str, type_sumstat: str):
+    def __init__(self, file_mapping: str, chunk_size: int, file_path: str, uri: str, pvar_file: str, type_sumstat: str):
         self.chunk_size = chunk_size
         self.file_path = file_path
-        self.celltype = celltype
         self.uri = uri
         self.pvar_file = pvar_file
         self.type_sumstat = type_sumstat
@@ -30,7 +28,6 @@ class Harmonize():
         df = pd.read_csv("data.txt", sep="\s+", header=None, names=["key", "value"])
         # Convert to dictionary
         self.mapping_types = dict(zip(df["key"], df["value"]))  
-
         # Define the dtypes for TileDB
         # This is a dictionary mapping column names to their types
         # The types are defined based on the expected data types in the file
@@ -130,7 +127,6 @@ class Harmonize():
                     column_types=self.tiledb_types,
                     mode="append",
                     )
-       
                 logger.info(f"Successfully appended chunk to TileDB")
             except Exception as e:
                 logger.error(f"Failed to append chunk to TileDB: {e}")
@@ -140,10 +136,42 @@ class Harmonize():
             """Create metadata for the TileDB array."""
             metadata = {
                 "file_path": self.file_path,
-                "celltype": self.celltype,
                 "pvar_file": self.pvar_file,
                 "type_sumstat": self.type_sumstat,
             }
+            if self.type_sumstat == "scqtl":
+                celltype = chunk_pl["CELL"].unique().to_list()
+                gene_list = chunk_pl["GENE"].unique().to_list()
+                if not celltype:
+                    raise HarmonizationError("No cell types found in the data")
+                if metadata.get("cell_type") is None:
+                    # Initialize cell_type if it doesn't exist
+                    metadata["cell_type"] = celltype
+                else:
+                    # Append cell types to existing list
+                    metadata["cell_type"] += celltype
+                if not gene_list:
+                    raise HarmonizationError("No genes found in the data")
+                if metadata.get(celltype) is None:
+                    # Initialize gene if it doesn't exist
+                    metadata[celltype] = gene_list
+                else:
+                    # Append genes to existing list
+                    metadata[celltype] += gene_list
+            else:
+                # For GWAS, we just need the TRAIT
+                if "TRAIT" not in chunk_pl.columns:
+                    raise HarmonizationError("TRAIT column is missing in the data")
+                if chunk_pl["TRAIT"].is_empty():
+                    raise HarmonizationError("TRAIT column is empty in the data")
+                if metadata.get("trait") is None:
+                    # Initialize trait if it doesn't exist
+                    metadata["trait"] = chunk_pl["TRAIT"].unique().to_list()
+                else:
+                    # Append traits to existing list
+                    metadata["trait"] += chunk_pl["TRAIT"].unique().to_list()
+            
+            # Write metadata to TileDB array
             with tiledb.open(self.uri, mode='w') as array:
                 array.meta["metadata"] = json.dumps(metadata)
             logger.info("Metadata created successfully")

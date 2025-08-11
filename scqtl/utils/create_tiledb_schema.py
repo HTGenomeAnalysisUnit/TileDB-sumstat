@@ -1,4 +1,3 @@
-
 import tiledb
 import numpy as np
 
@@ -18,7 +17,7 @@ def create_tiledb_schema(uri:str, type_sumstat:str):
         # For scQTL, we need to define additional dimensions for CELL and GENE
         dom = tiledb.Domain(
                 tiledb.Dim(name="CHR", domain=chr_domain, dtype=np.uint16, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
-                tiledb.Dim(name="TRAIT", dtype="ascii", var=True, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
+                tiledb.Dim(name="CELL", dtype="ascii", var=True, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Dim(name="GENE", dtype="ascii", var=True, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Dim(name="POS", domain=pos_domain, dtype=np.uint32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)]))
             )
