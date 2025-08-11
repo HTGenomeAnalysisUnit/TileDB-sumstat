@@ -26,7 +26,12 @@ def ingestion(ctx, uri: str, chunk_size: int, batch_size: int, list_files:str, p
     if not os.path.exists(uri):
         create_tiledb_schema(uri, type_sumstat=type_sumstat)
     file_list = open(list_files, "r").read().splitlines()
-
+    ctx.obj = {
+        "uri": uri,
+        "chunk_size": chunk_size,
+        "pvar_file": pvar_file,
+        "type_sumstat": type_sumstat
+    }
     #This could be optimized with Dask
     for i in range(0, len(file_list), batch_size):
         batch_files = file_list[i:i + batch_size]
