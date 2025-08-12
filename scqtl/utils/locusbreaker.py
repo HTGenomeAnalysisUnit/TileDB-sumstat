@@ -8,7 +8,8 @@ def locus_breaker(
     pvalue_limit: float = 5e-6,
     hole_size: int = 250000,
     phenovar: bool = False,
-    category: bool = False
+    category: bool = False,
+    type_sumstat: str = "scqtl",
 ) -> pd.DataFrame:
     """
     Breaking genome in loci and returning all SNPs within the defined loci boundaries.
@@ -19,10 +20,10 @@ def locus_breaker(
     :param phenovar: Compute phenotypic variance or not
     :param category: cis/trans filter for SNPs based on distance
     :param expansion_size: Number of base pairs to expand loci boundaries
+    :param type_sumstat: Type of summary statistics, either "gwas" or "scqtl"
     :return: Two DataFrames, one with loci regions and another with all SNPs in loci
     """
     # Create a copy of the original dataset before filtering
-    tiledb_data["TRAITID"] = tiledb_data['CELL'] + ":" + tiledb_data['GENE']
     original_data = tiledb_data.copy()
     
     if phenovar:
@@ -37,14 +38,20 @@ def locus_breaker(
         return []
     
     # Apply cis/trans filtering if needed
-    if category == "cis":
-        loci_snps = loci_snps[(loci_snps["DIST"] > -1000000) & (loci_snps["DIST"] < 1000000)]
-    elif category == "trans":
-        loci_snps = loci_snps[(loci_snps["DIST"] < -1000000) | (loci_snps["DIST"] > 1000000)]
+    if type_sumstat == "scqtl":
+        if category == "cis":
+            loci_snps = loci_snps[(loci_snps["DIST"] > -1000000) & (loci_snps["DIST"] < 1000000)]
+        elif category == "trans":
+            loci_snps = loci_snps[(loci_snps["DIST"] < -1000000) | (loci_snps["DIST"] > 1000000)]
     
     trait_res = []
     all_snp_res = []
-    for gene, gene_df in loci_snps.groupby("GENE"):
+    if type_sumstat == "gwas":
+        grouped_loci = loci_snps.groupby(["CHR", "TRAIT"])
+    else:
+        grouped_loci = loci_snps.groupby(["CHR", "CELL", "GENE"])
+
+    for gene, gene_df in grouped_loci:
         gaps = gene_df["POS"].diff() > hole_size
         group = gaps.cumsum()
         for _, group_df in gene_df.groupby(group):
@@ -71,9 +78,13 @@ def locus_breaker(
 
     # Convert to DataFrames
     columns = ["START", "END", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
-
-    trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P", "GENE", "CELL"])
-    columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
-    all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL", "GENE", "CELL"])
+    if type_sumstat == "gwas":
+        trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P", "TRAIT"])
+        columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
+        all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL", "TRAIT"])
+    else:
+        trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P", "GENE", "CELL"])
+        columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
+        all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL", "GENE", "CELL"])
     
     return [trait_res_df, all_snp_df]

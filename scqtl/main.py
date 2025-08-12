@@ -4,7 +4,7 @@ from dask.distributed import LocalCluster
 from dask.distributed import Client
 import click
 import cloup
-from scqtl.cli.ingestion import ingestion
+from scqtl.cli.ingestion import ingest
 from scqtl.cli.export import export
 @cloup.group(name="main", help="Single cell analysis with TileDB", no_args_is_help=True)
 @cloup.option_group(
@@ -36,7 +36,7 @@ def cli_init(ctx, workers: int, cores_w: int, memory_w: str, local_cluster: bool
 		return ctx.obj
 
 def main():
-    cli_init.add_command(ingestion)
+    cli_init.add_command(ingest)
     cli_init.add_command(export)
     cli_init(obj={})
 
