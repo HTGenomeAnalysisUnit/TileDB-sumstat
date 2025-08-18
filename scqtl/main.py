@@ -6,7 +6,8 @@ import click
 import cloup
 from scqtl.cli.ingestion import ingest
 from scqtl.cli.export import export
-@cloup.group(name="main", help="Single cell analysis with TileDB", no_args_is_help=True)
+
+@cloup.group(name="scqtl", help="Single cell analysis with TileDB", no_args_is_help=True)
 @cloup.option_group(
     "Dask cluster options",
     cloup.option("--workers", default = None, type=int, help = "Number of workers to use in the Dask cluster"),

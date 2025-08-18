@@ -13,7 +13,7 @@ import pandas as pd
     cloup.option("--uri-path", default = None, type=str, help = "Where to store the TileDB"),
     cloup.option("--file-path", default = None, type=str, help = "List of the files to ingest"),
     cloup.option("--mapping-file", default = None, type=str, help = "List of the files to ingest"),
-    cloup.option("--type-sumstat", default = "scqtl", type=str, help = "Either gwas or scqtl, to specify the type of summary statistics being ingested. This is used to harmonize the data accordingly.")
+    cloup.option("--type-sumstat", default = "qtl", type=str, help = "Either gwas or qtl, to specify the type of summary statistics being ingested. This is used to harmonize the data accordingly.")
 )
 @cloup.option_group(
     "Optional parameters",
@@ -44,10 +44,12 @@ def ingest(uri_path: str, mapping_file: str, chunk_size: int, batch_size: int, f
         file = record["FILE"]
         if "N" in file_list.columns:
             N = record["N"]
-        if type_sumstat == "scqtl":
-            if ["CELL", "GENE"] in file_list.columns:
+        if type_sumstat == "qtl":
+            if "CELL" in file_list.columns:
                 cell = record["CELL"]
+            if "GENE" in file_list.columns:
                 gene = record["GENE"]
+            
         if type_sumstat == "gwas":
             if "TRAIT" in file_list.columns:
                 trait = record["TRAIT"]

@@ -32,8 +32,6 @@ class Harmonize:
         if df.empty:
             raise HarmonizationError("Mapping file is empty or not formatted correctly.")
         self.mapping_types = dict(zip(df["key"], df["value"]))
-        print(f"Mapping types: {self.mapping_types}")
-        print(f"Mapping values: {self.mapping_types.values()}")
         #check that "BETA", "SE", "AF" are in the vlaues of the mapping_types
         if not all(col in self.mapping_types.values() for col in ["BETA", "SE", "AF"]):
             raise HarmonizationError("Mapping file must contain BETA, SE, and AF columns.")
@@ -57,18 +55,7 @@ class Harmonize:
             ]
     
         if self.type_sumstat == "gwas":
-            self.tiledb_types = {
-                "CHR": np.uint16,
-                "TRAIT": str,
-                "POS": np.uint32,
-                "SNP": str,
-                "RSID": str,
-                "AF": np.float32,
-                "BETA": np.float32,
-                "SE": np.float32,
-                "P": np.float64,
-                "N": np.int64,
-            }
+            
             self.dimension_tiledb = ["CHR", "TRAIT", "POS"]
             dom = tiledb.Domain(
             tiledb.Dim(name="CHR", domain = chr_domain, dtype=np.uint16,  filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
@@ -76,20 +63,7 @@ class Harmonize:
             tiledb.Dim(name="POS", domain = pos_domain, dtype=np.uint32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)]))
             )
         else:
-            self.tiledb_types = {
-                "CHR": np.uint16,
-                "CELL": str,
-                "GENE": str,
-                "POS": np.uint32,
-                "SNP": str,
-                "RSID": str,
-                "DIST": np.int64,
-                "AF": np.float32,
-                "BETA": np.float32,
-                "SE": np.float32,
-                "P": np.float64,
-                "N": np.int64,
-            }
+            
             self.dimension_tiledb = ["CHR", "CELL", "GENE", "POS"]
             dom = tiledb.Domain(
                 tiledb.Dim(name="CHR", domain = chr_domain, dtype=np.uint16,  filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
@@ -98,7 +72,7 @@ class Harmonize:
                 tiledb.Dim(name="POS", domain = pos_domain, dtype=np.uint32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)]))
                 )
             
-            attributes = attributes + [
+            attrs = attrs + [
             tiledb.Attr(name="DIST", dtype=np.float32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)]))
             ]
         schema = tiledb.ArraySchema(
@@ -115,8 +89,8 @@ class Harmonize:
         self.chunk_pl = pl.read_csv(
             file_path,
             separator="\t",
-            columns=list(self.mapping_types.keys()),
-            low_memory=True,
+            #columns=list(self.mapping_types.keys()),
+            low_memory=True
         )
         self.chunk_pl = self.chunk_pl.rename(self.mapping_types)
 
@@ -161,11 +135,38 @@ class Harmonize:
 
         
         if self.type_sumstat=="gwas":
+
+            self.tiledb_types = {
+                "CHR": np.uint16,
+                "TRAIT": str,
+                "POS": np.uint32,
+                "SNP": str,
+                "RSID": str,
+                "AF": np.float32,
+                "BETA": np.float32,
+                "SE": np.float32,
+                "P": np.float64,
+                "N": np.int64,
+            }
             if "TRAIT" not in self.chunk_pl.columns:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(trait).alias("TRAIT")
                 )
         else:
+            self.tiledb_types = {
+                "CHR": np.uint16,
+                "CELL": str,
+                "GENE": str,
+                "POS": np.uint32,
+                "SNP": str,
+                "RSID": str,
+                "DIST": np.int64,
+                "AF": np.float32,
+                "BETA": np.float32,
+                "SE": np.float32,
+                "P": np.float64,
+                "N": np.int64,
+            }
             if "CELL" not in self.chunk_pl.columns:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(cell).alias("CELL")
@@ -173,6 +174,10 @@ class Harmonize:
             if "GENE" not in self.chunk_pl.columns:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(gene).alias("GENE")
+                )
+            if "RSID" not in self.chunk_pl.columns:
+                self.chunk_pl = self.chunk_pl.with_columns(
+                    pl.lit("None").alias("RSID")
                 )
         
 
@@ -205,8 +210,7 @@ class Harmonize:
 
     def ingest_data(self):
         """Append harmonized data to TileDB."""
-        pl.Config.set_tbl_cols(-1) 
-        print(self.chunk_pl)
+        pl.Config.set_tbl_cols(-1)
         self.chunk_pl = self.chunk_pl.select(self.tiledb_types.keys())
         try:
             tiledb.from_pandas(
@@ -223,24 +227,53 @@ class Harmonize:
 
     def create_metadata(self, file_path: str, pvar_file: str = None):
         """Create and store metadata in TileDB."""
-        metadata = {
+        tiledb_existing = tiledb.open(self.uri)
+        if "metadata" in tiledb_existing.meta:
+            metadata = json.loads(tiledb_existing.meta["metadata"])
+        else:
+            metadata = {
             "file_path": file_path,
             "type_sumstat": self.type_sumstat,
-        }
+            "celltype": [],
+            "trait": []
+            }
 
-        if self.type_sumstat == "scqtl":
-            celltype = self.chunk_pl["CELL"].unique().to_list()
-            gene_list = self.chunk_pl["GENE"].unique().to_list()
-            if not celltype:
+        if self.type_sumstat == "qtl":
+        # Get unique cell types
+            celltypes = self.chunk_pl["CELL"].unique().to_list()
+            if not celltypes:
                 raise HarmonizationError("No cell types found in the data")
-            metadata["cell_type"] = celltype
-            metadata["genes"] = gene_list
+
+            # Loop over each cell type
+            for cell in celltypes:
+                if cell not in metadata["celltype"]:
+                    metadata["celltype"].append(cell)
+                    metadata[cell] = {}
+
+                # Filter by this cell type
+                df_cell = self.chunk_pl.filter(self.chunk_pl["CELL"] == cell)
+
+                # Group by chromosome and collect unique genes
+            
+                chr_gene_map = df_cell.group_by("CHR").agg(pl.col("GENE").unique().alias("genes"))
+                # Append to metadata, making sure we extend if already exists
+                for row in chr_gene_map.iter_rows(named=True):
+                    chrom = row["CHR"]
+                    genes = row["genes"]
+                    if chrom in metadata[cell]:
+                        existing = set(metadata[cell][chrom])
+                        metadata[cell][chrom].extend([g for g in genes if g not in existing])
+                    else:
+                        metadata[cell][chrom] = genes   
         else:
             if "TRAIT" not in self.chunk_pl.columns:
                 raise HarmonizationError("TRAIT column is missing in the data")
             if self.chunk_pl["TRAIT"].is_empty():
                 raise HarmonizationError("TRAIT column is empty in the data")
-            metadata["trait"] = self.chunk_pl["TRAIT"].unique().to_list()
+            traits = self.chunk_pl["TRAIT"].unique().to_list()
+            for record in traits:
+                if record not in metadata["trait"]:
+                    metadata["trait"].append(record)
 
         with tiledb.open(self.uri, mode='w') as array:
             array.meta["metadata"] = json.dumps(metadata)

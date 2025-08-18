@@ -127,11 +127,11 @@ def export(
         for ind, row  in pd_region.iterrows():
             if type_sumstat == "gwas":
                 trait = row["TRAIT"]
-                region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),trait,int(row["START"]):int(row["END"])]
+                region = tiledb_export.query(dims = ["CHR","POS", "TRAIT"], attrs = attr.split(",")).df[int(row["CHR"]),trait,int(row["START"]):int(row["END"])]
             
             else:
                 cell,gene = row["TRAIT"].split(":")
-                region = tiledb_export.query(dims = ["CHR","POS","TRAIT"], attrs = attr.split(",")).df[int(row["CHR"]),cell,gene,int(row["START"]):int(row["END"])]
+                region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),cell,gene,int(row["START"]):int(row["END"])]
             if len(region)>0:
                 if counter_nonempty_region==0:
                     region.to_csv(out_rg, mode='a', index = False, header = True)
@@ -166,8 +166,8 @@ def export(
             if type_sumstat == "gwas":
                 trait = row["TRAIT"]
             else:
-                cell = row["CELL"]
-                gene = row["GENE"]
+                cell,gene = row["TRAIT"].split(":")
+                
             task = delayed_locus_breaker(query_spec(uri_path, chrom,trait = trait, cell = cell, gene = gene, type_sumstat = type_sumstat),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
             tasks.append(task)
 
@@ -181,6 +181,7 @@ def export(
                 batch = tasks[i:i+batch_size]
                 batch_results = compute(*batch)  # Compute the batch
                 for result in batch_results:
+                    print(result)
                     #if not len(result) == 0 and not result[0].empty:
                     if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
                         interval = result[0]

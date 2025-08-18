@@ -24,7 +24,7 @@ deploy:
 	poetry install
 
 install: build
-	pip install dist/*.whl
+	pip install dist/*.whl --force-reinstall
 
 editable_install: build
 	pip install --editable .
