@@ -6,6 +6,7 @@ import cloup
 from scqtl.utils.harmonize_ingest import Harmonize
 #import dask
 import pandas as pd
+import polars as pl
 
 @cloup.command("ingest", no_args_is_help=True, help="Ingest single cell QTL with TileDB")
 @cloup.option_group(
@@ -20,13 +21,16 @@ import pandas as pd
     cloup.option("--pvar-file", default = None, type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--batch-size", default = 1, type=int, help = "The number of files to ingest at once"),
     cloup.option("--chunk-size", default = 50000000, type=int, help = "The number of rows to ingest at once"),
+    cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
+    cloup.option("--format-qc", type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
 )
 
-def ingest(uri_path: str, mapping_file: str, chunk_size: int, batch_size: int, file_path:str, type_sumstat:str, pvar_file:str = None):
+def ingest(uri_path: str, mapping_file: str, chunk_size: int, batch_size: int, file_path:str, type_sumstat:str, pvar_file:str = None, qc:bool = False, format_qc:str = "tensorqtl"):
     file_list = pd.read_csv(file_path, sep="\t", header=0, dtype=str)
     #This could be optimized with Dask
     # Create a Harmonize object
     harmonized_object = Harmonize(mapping_file= mapping_file, chunk_size=chunk_size , uri=uri_path, type_sumstat=type_sumstat)
+   
     #CHeck if the tiledb already exists, if not create it
     if not os.path.exists(uri_path):
         print(f"Creating TileDB at {uri_path}")
@@ -60,7 +64,16 @@ def ingest(uri_path: str, mapping_file: str, chunk_size: int, batch_size: int, f
         print(f"Processing file: {file}")
         # Harmonize the data
         print(f"Harmonizing file: {file}")
-        harmonized_object.harmonize(file, trait, cell, gene, N = N)
+        chunk_pl = pl.read_csv(
+                file,
+                separator="\t",
+                #columns=list(self.mapping_types.keys()),
+                low_memory=True
+            )
+            
+        harmonized_object.harmonize(file_path = file_path,  sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, N = N)
+        if qc:
+            harmonized_object.qc_sumstat(file_path = file)
         # Ingest the data
         print(f"Ingesting data: {file}")
         harmonized_object.ingest_data()

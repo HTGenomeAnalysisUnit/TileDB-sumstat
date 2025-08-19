@@ -9,7 +9,7 @@ def locus_breaker(
     hole_size: int = 250000,
     phenovar: bool = False,
     category: bool = False,
-    type_sumstat: str = "scqtl",
+    type_sumstat: str = "qtl",
 ) -> pd.DataFrame:
     """
     Breaking genome in loci and returning all SNPs within the defined loci boundaries.
@@ -38,7 +38,7 @@ def locus_breaker(
         return []
     
     # Apply cis/trans filtering if needed
-    if type_sumstat == "scqtl":
+    if type_sumstat == "qtl":
         if category == "cis":
             loci_snps = loci_snps[(loci_snps["DIST"] > -1000000) & (loci_snps["DIST"] < 1000000)]
         elif category == "trans":

@@ -21,7 +21,7 @@ Query TileDB database and export data.
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
     cloup.option("--table_regions", default = None, type=str, help = "Regions to interrogate from a table"),
-    cloup.option("--attr", default = "P,SNP,AF,BETA,SE,N", type=str, help = "Attributes to output"),
+    cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE,N", type=str, help = "Attributes to output"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
@@ -151,9 +151,9 @@ def export(
         def query_spec(uri_path, chrom, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
             with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N']).df[chrom, trait, :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS'], attrs=['SNPID', 'EAF' , 'BETA', 'SE', 'P', 'N']).df[chrom, trait, :]
                 else:
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNP', 'AF' , 'BETA', 'SE', 'P', 'N', 'DIST']).df[chrom, cell ,gene , :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNPID', 'EAF' , 'BETA', 'SE', 'P', 'N', 'DIST']).df[chrom, cell ,gene , :]
                 return tiledb_filtered
             
         @delayed

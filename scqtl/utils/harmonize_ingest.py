@@ -1,11 +1,12 @@
 import logging
 import json
 from pathlib import Path
-
+import os
 import pandas as pd
 import polars as pl
 import numpy as np
 import tiledb
+import gwaslab as gl
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -25,7 +26,6 @@ class Harmonize:
         self.mapping_types = {}
         self.tiledb_types = {}
         self.dimension_tiledb = []
-        self.chunk_pl = None  # will hold the harmonized dataframe
     
     def create_mapping(self):
         df = pd.read_csv(self.mapping_file, header=None, names=["key", "value"])
@@ -33,21 +33,21 @@ class Harmonize:
             raise HarmonizationError("Mapping file is empty or not formatted correctly.")
         self.mapping_types = dict(zip(df["key"], df["value"]))
         #check that "BETA", "SE", "AF" are in the vlaues of the mapping_types
-        if not all(col in self.mapping_types.values() for col in ["BETA", "SE", "AF"]):
-            raise HarmonizationError("Mapping file must contain BETA, SE, and AF columns.")
+        if not all(col in self.mapping_types.values() for col in ["BETA", "SE", "EAF"]):
+            raise HarmonizationError("Mapping file must contain BETA, SE, and EAF columns.")
         # Check if CHR and POS or SNP are present
         if not all(col for col in ["CHR", "POS"] if col in self.mapping_types.values()):
-            if "SNP" not in self.mapping_types.values():
-                raise HarmonizationError("Mapping file must contain either CHR, and POS or SNP columns.")
+            if "SNPID" not in self.mapping_types.values():
+                raise HarmonizationError("Mapping file must contain either CHR, and POS or SNPID columns.")
         
     def create_tiledb(self):
         """Create the mapping and dtype definitions."""
         pos_domain = (1, 300000000)  # Example range for genomic positions
         chr_domain = (1, 24)  # Example range for genomic positions
         attrs=[
-                tiledb.Attr(name="SNP", dtype="ascii", filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
+                tiledb.Attr(name="SNPID", dtype="ascii", filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Attr(name="RSID", dtype="ascii", filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
-                tiledb.Attr(name="AF", dtype=np.float32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
+                tiledb.Attr(name="EAF", dtype=np.float32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Attr(name="BETA", dtype=np.float32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Attr(name="SE", dtype=np.float32, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
                 tiledb.Attr(name="P", dtype=np.float64, filters=tiledb.FilterList([tiledb.ZstdFilter(level=5)])),
@@ -84,15 +84,9 @@ class Harmonize:
         tiledb.Array.create(self.uri, schema)
         
 
-    def harmonize(self, file_path, trait: str = None, cell: str = None, gene: str = None, N: int = None):
+    def harmonize(self, file_path, sumstat, trait: str = None, cell: str = None, gene: str = None, N: int = None, qc:bool = False):
         """Load and rename columns, and ensure CHR/POS exist."""
-        self.chunk_pl = pl.read_csv(
-            file_path,
-            separator="\t",
-            #columns=list(self.mapping_types.keys()),
-            low_memory=True
-        )
-        self.chunk_pl = self.chunk_pl.rename(self.mapping_types)
+        self.chunk_pl = sumstat.rename(self.mapping_types)
 
         if not "N" in self.chunk_pl.columns:
             if N is not None:
@@ -105,19 +99,19 @@ class Harmonize:
         # If CHR/POS missing, extract from SNP ID
         if "CHR" not in self.chunk_pl.columns or "POS" not in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.with_columns(
-                pl.col("SNP")
+                pl.col("SNPID")
                 .str.split_exact(":", 4)
                 .struct.rename_fields(["CHR", "POS", "REF", "ALT"])
                 .alias("fields")
             ).unnest("fields")
-        if "SNP" not in self.chunk_pl.columns:
+        if "SNPID" not in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.with_columns(
             pl.when(pl.col("REF") > pl.col("ALT"))
             .then(pl.col("BETA"))
             .otherwise(-pl.col("BETA")),
             pl.when(pl.col("REF") > pl.col("ALT"))
-            .then(pl.col("AF"))
-            .otherwise(1.0 - pl.col("AF"))
+            .then(pl.col("EAF"))
+            .otherwise(1.0 - pl.col("EAF"))
             )
             self.chunk_pl = self.chunk_pl.with_columns(
                 pl.concat_str(
@@ -130,7 +124,7 @@ class Harmonize:
                     pl.col("ALT"),
                     pl.col("REF"),
                     separator=":"
-                    ).alias("SNP")
+                    ).alias("SNPID")
                 )
 
         
@@ -140,9 +134,9 @@ class Harmonize:
                 "CHR": np.uint16,
                 "TRAIT": str,
                 "POS": np.uint32,
-                "SNP": str,
+                "SNPID": str,
                 "RSID": str,
-                "AF": np.float32,
+                "EAF": np.float32,
                 "BETA": np.float32,
                 "SE": np.float32,
                 "P": np.float64,
@@ -158,10 +152,10 @@ class Harmonize:
                 "CELL": str,
                 "GENE": str,
                 "POS": np.uint32,
-                "SNP": str,
+                "SNPID": str,
                 "RSID": str,
                 "DIST": np.int64,
-                "AF": np.float32,
+                "EAF": np.float32,
                 "BETA": np.float32,
                 "SE": np.float32,
                 "P": np.float64,
@@ -179,7 +173,42 @@ class Harmonize:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit("None").alias("RSID")
                 )
-        
+    
+    def qc_sumstat(self, file_path:str):
+        directory = self.uri + "_logs"
+        filename = os.path.basename(file_path)   # "test.csv.gz"
+        # Remove all extensions
+        file_name = filename.split('.')[0]       # "test"
+    
+        if not os.path.isdir(directory):
+            os.mkdir(directory)
+        sumstat_preqc = self.chunk_pl.to_pandas()
+        if self.type_sumstat == "gwas":
+            sumstat_gl =gl.Sumstats(sumstat_preqc,
+                 snpid="SNPID",
+                 chrom="CHR",
+                 pos="POS",
+                 eaf="EAF",
+                 beta="BETA",
+                 se="SE",
+                 p="P",
+                 n="N",
+                 other = ["TRAIT"])
+        else:
+            sumstat_gl =gl.Sumstats(sumstat_preqc,
+                 snpid="SNPID",
+                 chrom="CHR",
+                 pos="POS",
+                 eaf="EAF",
+                 beta="BETA",
+                 se="SE",
+                 p="P",
+                 n="N",
+                 other = ["CELL","GENE","RSID","DIST"])
+        sumstat_gl.basic_check()
+        sumstat_gl.log.save(directory + "/" + file_name)
+        self.chunk_pl = pl.from_pandas(sumstat_gl.data)
+
 
     def align_alleles(self, pvar_file: str):
         """Align alleles based on pvar file."""
@@ -192,20 +221,20 @@ class Harmonize:
             self.pvar_file,
             separator="\t",
             has_header=True,
-            new_columns=["CHROM", "POS", "SNP", "REF", "ALT", "INFO"],
-            dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNP": pl.Utf8,
+            new_columns=["CHROM", "POS", "SNPID", "REF", "ALT", "INFO"],
+            dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNPID": pl.Utf8,
                     "REF": pl.Utf8, "ALT": pl.Utf8, "INFO": pl.Utf8},
         )
 
-        self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNP", how="inner", suffix="_pvar")
+        self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNPID", how="inner", suffix="_pvar")
 
         self.chunk_pl = self.chunk_pl.with_columns(
             pl.when(pl.col("REF") > pl.col("ALT"))
             .then(pl.col("BETA"))
             .otherwise(-pl.col("BETA")),
             pl.when(pl.col("REF") > pl.col("ALT"))
-            .then(pl.col("AF"))
-            .otherwise(1.0 - pl.col("AF"))
+            .then(pl.col("EAF"))
+            .otherwise(1.0 - pl.col("EAF"))
         )
 
     def ingest_data(self):
