@@ -101,15 +101,15 @@ class Harmonize:
             self.chunk_pl = self.chunk_pl.with_columns(
                 pl.col("SNPID")
                 .str.split_exact(":", 4)
-                .struct.rename_fields(["CHR", "POS", "REF", "ALT"])
+                .struct.rename_fields(["CHR", "POS", "NEA", "EA"])
                 .alias("fields")
             ).unnest("fields")
         if "SNPID" not in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.with_columns(
-            pl.when(pl.col("REF") > pl.col("ALT"))
+            pl.when(pl.col("NEA") > pl.col("EA"))
             .then(pl.col("BETA"))
             .otherwise(-pl.col("BETA")),
-            pl.when(pl.col("REF") > pl.col("ALT"))
+            pl.when(pl.col("NEA") > pl.col("EA"))
             .then(pl.col("EAF"))
             .otherwise(1.0 - pl.col("EAF"))
             )
@@ -121,8 +121,8 @@ class Harmonize:
                     pl.concat_str(
                     pl.col("chr_SNP"),
                     pl.col("POS"),
-                    pl.col("ALT"),
-                    pl.col("REF"),
+                    pl.col("EA"),
+                    pl.col("NEA"),
                     separator=":"
                     ).alias("SNPID")
                 )
@@ -169,9 +169,13 @@ class Harmonize:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(gene).alias("GENE")
                 )
-            if "RSID" not in self.chunk_pl.columns:
+        if "RSID" not in self.chunk_pl.columns:
                 self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit("None").alias("RSID")
+                )
+        if "LOG10P" in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(
+                    (10 ** (-pl.col("LOG10P"))).alias("P")
                 )
     
     def qc_sumstat(self, file_path:str):
@@ -193,7 +197,9 @@ class Harmonize:
                  se="SE",
                  p="P",
                  n="N",
-                 other = ["TRAIT"])
+                 ea = "EA",
+                 nea = "NEA",
+                 other = ["TRAIT","RSID"])
         else:
             sumstat_gl =gl.Sumstats(sumstat_preqc,
                  snpid="SNPID",
@@ -205,7 +211,19 @@ class Harmonize:
                  p="P",
                  n="N",
                  other = ["CELL","GENE","RSID","DIST"])
-        sumstat_gl.basic_check()
+        sumstat_gl.fix_id()
+        sumstat_gl.fix_chr(remove=True)
+        sumstat_gl.fix_pos(remove=True)
+        sumstat_gl.fix_allele(remove=True)
+        sumstat_gl.check_sanity()
+        sumstat_gl.check_data_consistency()
+        sumstat_gl.remove_dup(mode="m")
+
+
+
+
+        #sumstat_gl.basic_check(n_cores = 4, remove=True, remove_dup=True)
+
         sumstat_gl.log.save(directory + "/" + file_name)
         self.chunk_pl = pl.from_pandas(sumstat_gl.data)
 
@@ -221,7 +239,7 @@ class Harmonize:
             self.pvar_file,
             separator="\t",
             has_header=True,
-            new_columns=["CHROM", "POS", "SNPID", "REF", "ALT", "INFO"],
+            new_columns=["CHROM", "POS", "SNPID", "NEA", "EA", "INFO"],
             dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNPID": pl.Utf8,
                     "REF": pl.Utf8, "ALT": pl.Utf8, "INFO": pl.Utf8},
         )
@@ -229,15 +247,15 @@ class Harmonize:
         self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNPID", how="inner", suffix="_pvar")
 
         self.chunk_pl = self.chunk_pl.with_columns(
-            pl.when(pl.col("REF") > pl.col("ALT"))
+            pl.when(pl.col("NEA") > pl.col("EA"))
             .then(pl.col("BETA"))
             .otherwise(-pl.col("BETA")),
-            pl.when(pl.col("REF") > pl.col("ALT"))
+            pl.when(pl.col("NEA") > pl.col("EA"))
             .then(pl.col("EAF"))
             .otherwise(1.0 - pl.col("EAF"))
         )
 
-    def ingest_data(self):
+    def ingest_data(self, file_path):
         """Append harmonized data to TileDB."""
         pl.Config.set_tbl_cols(-1)
         self.chunk_pl = self.chunk_pl.select(self.tiledb_types.keys())
@@ -249,9 +267,9 @@ class Harmonize:
                 column_types=self.tiledb_types,
                 mode="append",
             )
-            logger.info(f"Successfully appended chunk to TileDB")
+            logger.info(f"Successfully appended chunk to TileDB for file {file_path}")
         except Exception as e:
-            logger.error(f"Failed to append chunk to TileDB: {e}")
+            logger.error(f"Failed to append chunk to TileDB for file {file_path}: {e}")
             raise
 
     def create_metadata(self, file_path: str, pvar_file: str = None):
