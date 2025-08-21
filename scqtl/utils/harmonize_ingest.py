@@ -265,6 +265,7 @@ class Harmonize:
                 dataframe=self.chunk_pl.to_pandas(),
                 index_dims=self.dimension_tiledb,
                 column_types=self.tiledb_types,
+                allows_duplicates = False,
                 mode="append",
             )
             logger.info(f"Successfully appended chunk to TileDB for file {file_path}")
