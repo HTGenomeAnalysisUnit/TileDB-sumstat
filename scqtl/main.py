@@ -13,15 +13,15 @@ from scqtl.cli.export import export
     cloup.option("--workers", default = None, type=int, help = "Number of workers to use in the Dask cluster"),
     cloup.option("--cores_w", default = 4, type=int, help = "Number of core to use per single worker"),
     cloup.option("--memory_w", default = "8", type=str, help = "Number of GB to give as memory for each worker"),
-	cloup.option("--local_cluster", default = False, is_flag = True, type=bool, help = "If you need to run on local cluster or distributed on different nodes"),
+	cloup.option("--type_cluster", default = "local",  help = "If you need to run on local cluster or distributed on different nodes"),
 
 )
 
 @click.pass_context
-def cli_init(ctx, workers: int, cores_w: int, memory_w: str, local_cluster: bool):
+def cli_init(ctx, workers: int, cores_w: int, memory_w: str, type_cluster: str):
 	#Create Dask cluster
 	if not workers is None:
-		if local_cluster:
+		if type_cluster == 'local':
 			cluster = LocalCluster(n_workers=workers, threads_per_worker=cores_w, memory_limit=f"{memory_w}GB", processes = 1)
 		else:
 			cluster = Cluster(cores = cores_w, memory=f"{memory_w}GB")

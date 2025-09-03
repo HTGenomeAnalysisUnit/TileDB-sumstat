@@ -79,7 +79,7 @@ class Harmonize:
                 domain=dom,
                 attrs=attrs,
                 sparse=True,
-                allows_duplicates=True
+                allows_duplicates=False
         )
         tiledb.Array.create(self.uri, schema)
         
@@ -105,27 +105,32 @@ class Harmonize:
                 .alias("fields")
             ).unnest("fields")
         if "SNPID" not in self.chunk_pl.columns:
-            self.chunk_pl = self.chunk_pl.with_columns(
-            pl.when(pl.col("NEA") > pl.col("EA"))
-            .then(pl.col("BETA"))
-            .otherwise(-pl.col("BETA")),
-            pl.when(pl.col("NEA") > pl.col("EA"))
-            .then(pl.col("EAF"))
-            .otherwise(1.0 - pl.col("EAF"))
-            )
+            swap = pl.col("NEA") < pl.col("EA")
+            self.chunk_pl = self.chunk_pl.with_columns([
+            # flip the sign of BETA when swapping
+            pl.when(swap).then(-pl.col("BETA")).otherwise(pl.col("BETA")).alias("BETA"),
+            # flip EAF to 1 - EAF when swapping
+            pl.when(swap).then(1.0 - pl.col("EAF")).otherwise(pl.col("EAF")).alias("EAF"),
+            # set EA to the smaller allele
+            pl.when(swap).then(pl.col("NEA")).otherwise(pl.col("EA")).alias("EA"),
+            # set NEA to the larger allele
+            pl.when(swap).then(pl.col("EA")).otherwise(pl.col("NEA")).alias("NEA"),
+            ])
             self.chunk_pl = self.chunk_pl.with_columns(
                 pl.concat_str(
                     pl.lit("chr"),
                     pl.col("CHR")).alias("chr_SNP"))
             self.chunk_pl = self.chunk_pl.with_columns(
-                    pl.concat_str(
-                    pl.col("chr_SNP"),
-                    pl.col("POS"),
-                    pl.col("EA"),
-                    pl.col("NEA"),
-                    separator=":"
-                    ).alias("SNPID")
-                )
+                pl.concat_str(
+                [
+                pl.col("chr_SNP"),
+                pl.col("POS").cast(pl.Utf8),            # cast POS if numeric
+                pl.col("EA"),       # lexicographically smaller
+                pl.col("NEA")      # lexicographically larger
+                ],
+                separator=":"
+                ).alias("SNPID")
+            )
 
         
         if self.type_sumstat=="gwas":
@@ -211,7 +216,7 @@ class Harmonize:
                  p="P",
                  n="N",
                  other = ["CELL","GENE","RSID","DIST"])
-        sumstat_gl.fix_id()
+        #sumstat_gl.fix_id()
         sumstat_gl.fix_chr(remove=True)
         sumstat_gl.fix_pos(remove=True)
         sumstat_gl.fix_allele(remove=True)
@@ -259,6 +264,18 @@ class Harmonize:
         """Append harmonized data to TileDB."""
         pl.Config.set_tbl_cols(-1)
         self.chunk_pl = self.chunk_pl.select(self.tiledb_types.keys())
+        if self.type_sumstat == "gwas":
+            dedup_keys = ["CHR", "POS", "TRAIT"]
+        else:
+            dedup_keys = ["CHR", "POS", "CELL", "GENE"]
+
+        # Option A (recommended): window count -> keep only rows whose group count == 1
+        self.chunk_pl = (
+            self.chunk_pl
+                .with_columns(pl.count().over(dedup_keys).alias("_grp_count"))
+                .filter(pl.col("_grp_count") == 1)
+                .drop("_grp_count")
+                )        
         try:
             tiledb.from_pandas(
                 uri=self.uri,
@@ -266,7 +283,7 @@ class Harmonize:
                 index_dims=self.dimension_tiledb,
                 column_types=self.tiledb_types,
                 allows_duplicates = False,
-                mode="append",
+                mode="append"
             )
             logger.info(f"Successfully appended chunk to TileDB for file {file_path}")
         except Exception as e:

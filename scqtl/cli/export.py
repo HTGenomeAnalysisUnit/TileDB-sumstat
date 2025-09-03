@@ -32,11 +32,12 @@ Query TileDB database and export data.
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
-    cloup.option("--pvalue_sig", default = 5e-8, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
-    cloup.option("--pvalue_limit", default = 1e-5, type=float, help = "P-value threshold for loci borders"),
+    cloup.option("--pvalue-sig", default = 5e-8, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
+    cloup.option("--pvalue-limit", default = 1e-5, type=float, help = "P-value threshold for loci borders"),
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
-    cloup.option("--maf", default = 0.01, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
+    cloup.option("--maf", default = 0.001, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
+    cloup.option("--locus-max-size", default = 1000000, type=float, help = "The maximum size allowed for the locus. Default: 1Mb"),
     cloup.option("--category",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
     cloup.option("--type-sumstat", default = None, type=str, help = "Path of the table to provide"),
@@ -69,11 +70,15 @@ def export(
         pvalue_limit: float,
         hole: int,
         out_lb: str,
-        out_rg: str
+        out_rg: str,
+        locus_max_size: int
         ):
     
     #Open connection with TileDB
     tiledb_export = tiledb.open(uri_path, mode="r")
+    if "SNP" in tiledb_export.schema.attr_names and "SNPID" in attr.split(","):
+        attr.replace("SNPID", "SNP")
+
     client = ctx.obj.get("dask_cluster", None)
     #Print only the schema of the tiledb
 
@@ -151,15 +156,15 @@ def export(
         def query_spec(uri_path, chrom, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
             with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS'], attrs=['SNPID', 'EAF' , 'BETA', 'SE', 'P', 'N']).df[chrom, trait, :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, :]
                 else:
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], attrs=['SNPID', 'EAF' , 'BETA', 'SE', 'P', 'N', 'DIST']).df[chrom, cell ,gene , :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS']).df[chrom, cell ,gene , :]
                 return tiledb_filtered
             
         @delayed
-        def delayed_locus_breaker(tiledb_data, pvalue_sig, pvalue_limit, hole_size, phenovar, category, type_sumstat = "scqtl"):
+        def delayed_locus_breaker(tiledb_data, maf, pvalue_sig, pvalue_limit, locus_max_size, hole_size, phenovar, category, type_sumstat = "scqtl"):
             # Call locus_breaker with the computed tiledb_data
-            return locus_breaker(tiledb_data, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, hole_size=hole_size, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
+            return locus_breaker(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole_size, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
             
         for ind, row in traits.iterrows():
             chrom = row["CHR"]
@@ -168,7 +173,7 @@ def export(
             else:
                 cell,gene = row["TRAIT"].split(":")
                 
-            task = delayed_locus_breaker(query_spec(uri_path, chrom,trait = trait, cell = cell, gene = gene, type_sumstat = type_sumstat),pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit,hole_size=hole, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
+            task = delayed_locus_breaker(query_spec(uri_path, chrom,trait = trait, cell = cell, gene = gene, type_sumstat = type_sumstat),maf = maf, pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
             tasks.append(task)
 
         #The batch size to use which is set to the number of workers if Dask is run
@@ -181,15 +186,14 @@ def export(
                 batch = tasks[i:i+batch_size]
                 batch_results = compute(*batch)  # Compute the batch
                 for result in batch_results:
-                    print(result)
                     #if not len(result) == 0 and not result[0].empty:
                     if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
                         interval = result[0]
                         segments = result[1]
-                        write_header_interval = not os.path.exists(out_lb + "_interval.csv")
-                        write_header_segment = not os.path.exists(out_lb + "_segment.csv")
-                        interval.to_csv(out_lb + "_interval.csv", mode="a", index=False, header = write_header_interval)
-                        segments.to_csv(out_lb + "_segment.csv", mode="a", index=False, header = write_header_segment)
+                        write_header_interval = not os.path.exists(f"{out_lb}_batch_{str(i)}_interval.csv")
+                        write_header_segment = not os.path.exists(f"{out_lb}_batch_{str(i)}_segment.csv")
+                        interval.to_csv(f"{out_lb}_batch_{str(i)}_interval.csv", mode="a", index=False, header = write_header_interval)
+                        segments.to_csv(f"{out_lb}_batch_{str(i)}_segment.csv", mode="a", index=False, header = write_header_segment)
         if client:
             print("Shutting down Dask cluster...")
             client.close()

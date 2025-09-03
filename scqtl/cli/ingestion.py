@@ -13,7 +13,7 @@ import polars as pl
     "Essential parameters",
     cloup.option("--uri-path", default = None, type=str, help = "Where to store the TileDB"),
     cloup.option("--file-path", default = None, type=str, help = "List of the files to ingest"),
-    cloup.option("--mapping-file", default = None, type=str, help = "List of the files to ingest"),
+    cloup.option("--mapping-file", default = None, type=str, help = "Mapping between columns and TileDB types"),
     cloup.option("--type-sumstat", default = "qtl", type=str, help = "Either gwas or qtl, to specify the type of summary statistics being ingested. This is used to harmonize the data accordingly.")
 )
 @cloup.option_group(
@@ -22,11 +22,10 @@ import polars as pl
     cloup.option("--sep", default = "\t", type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--batch-size", default = 1, type=int, help = "The number of files to ingest at once"),
     cloup.option("--chunk-size", default = 50000000, type=int, help = "The number of rows to ingest at once"),
-    cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
-    cloup.option("--format-qc", type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
+    cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab")
 )
 
-def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:int, file_path:str, type_sumstat:str, pvar_file:str = None, qc:bool = False, format_qc:str = "tensorqtl"):
+def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:int, file_path:str, type_sumstat:str, pvar_file:str = None, qc:bool = False):
     file_list = pd.read_csv(file_path, sep=",", header=0, dtype=str)
     #This could be optimized with Dask
     # Create a Harmonize object
