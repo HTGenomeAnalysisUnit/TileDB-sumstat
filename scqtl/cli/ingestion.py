@@ -29,7 +29,7 @@ def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:i
     file_list = pd.read_csv(file_path, sep=",", header=0, dtype=str)
     #This could be optimized with Dask
     # Create a Harmonize object
-    harmonized_object = Harmonize(mapping_file= mapping_file, chunk_size=chunk_size , uri=uri_path, type_sumstat=type_sumstat)
+    harmonized_object = Harmonize(mapping_file= mapping_file, chunk_size=chunk_size , uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file)
    
     #CHeck if the tiledb already exists, if not create it
     if not os.path.exists(uri_path):
@@ -66,6 +66,7 @@ def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:i
         print(f"Harmonizing file: {file}")
         chunk_pl = pl.read_csv(file,separator=sep,low_memory=True ,null_values="NA")
         harmonized_object.harmonize(file_path = file_path,  sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, N = N)
+        #Performing QC using GWASLAB
         if qc:
             harmonized_object.qc_sumstat(file_path = file)
         # Ingest the data

@@ -18,10 +18,11 @@ class HarmonizationError(Exception):
 
 
 class Harmonize:
-    def __init__(self, mapping_file: str, chunk_size: int, uri: str, type_sumstat: str):
+    def __init__(self, mapping_file: str, chunk_size: int, uri: str, type_sumstat: str, pvar_file: str):
         self.mapping_file = mapping_file
         self.chunk_size = chunk_size
         self.uri = uri
+        self.pvar_file = pvar_file
         self.type_sumstat = type_sumstat
         self.mapping_types = {}
         self.tiledb_types = {}
@@ -82,7 +83,30 @@ class Harmonize:
                 allows_duplicates=False
         )
         tiledb.Array.create(self.uri, schema)
-        
+    
+    def align_alleles(self):
+        """Align alleles based on pvar file."""
+        if not self.pvar_file:
+            raise HarmonizationError("pvar_file must be provided to verify alleles order")
+        if not Path(self.pvar_file).is_file():
+            raise FileNotFoundError(f"pvar_file {self.pvar_file} does not exist")
+
+        pvar_df = pl.read_csv(
+            self.pvar_file,
+            separator="\t",
+            has_header=True,
+            dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNPID": pl.Utf8,
+                    "REF": pl.Utf8, "ALT": pl.Utf8},
+        )
+
+        self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNPID", how="inner", suffix="_pvar")
+
+        swap = pl.col("ALT")< pl.col("REF")
+
+        self.chunk_pl = self.chunk_pl.with_columns([
+            pl.when(swap).then(pl.col("BETA")).otherwise(-pl.col("BETA")),
+            pl.when(swap).then(pl.col("EAF")).otherwise(1.0-pl.col("EAF"))
+            ])
 
     def harmonize(self, file_path, sumstat, trait: str = None, cell: str = None, gene: str = None, N: int = None, qc:bool = False):
         """Load and rename columns, and ensure CHR/POS exist."""
@@ -101,36 +125,52 @@ class Harmonize:
             self.chunk_pl = self.chunk_pl.with_columns(
                 pl.col("SNPID")
                 .str.split_exact(":", 4)
-                .struct.rename_fields(["CHR", "POS", "NEA", "EA"])
+                .struct.rename_fields(["CHR", "POS", "A1", "A2"])
                 .alias("fields")
             ).unnest("fields")
-        if "SNPID" not in self.chunk_pl.columns:
-            swap = pl.col("NEA") < pl.col("EA")
-            self.chunk_pl = self.chunk_pl.with_columns([
-            # flip the sign of BETA when swapping
-            pl.when(swap).then(-pl.col("BETA")).otherwise(pl.col("BETA")).alias("BETA"),
-            # flip EAF to 1 - EAF when swapping
-            pl.when(swap).then(1.0 - pl.col("EAF")).otherwise(pl.col("EAF")).alias("EAF"),
-            # set EA to the smaller allele
-            pl.when(swap).then(pl.col("NEA")).otherwise(pl.col("EA")).alias("EA"),
-            # set NEA to the larger allele
-            pl.when(swap).then(pl.col("EA")).otherwise(pl.col("NEA")).alias("NEA"),
-            ])
-            self.chunk_pl = self.chunk_pl.with_columns(
+    
+        if "SNPID" in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.drop("SNPID")
+                
+        swap = pl.col("A1") < pl.col("A2")
+
+        #Start by creating new SNPID aligned
+        self.chunk_pl = self.chunk_pl.with_columns([
+        pl.when(swap).then(pl.col("A1")).otherwise(pl.col("A2")).alias("EA"),
+        # set NEA to the larger allele
+        pl.when(swap).then(pl.col("A2")).otherwise(pl.col("A1")).alias("NEA")]
+        )
+
+        self.chunk_pl = self.chunk_pl.with_columns(
                 pl.concat_str(
-                    pl.lit("chr"),
-                    pl.col("CHR")).alias("chr_SNP"))
-            self.chunk_pl = self.chunk_pl.with_columns(
-                pl.concat_str(
-                [
-                pl.col("chr_SNP"),
-                pl.col("POS").cast(pl.Utf8),            # cast POS if numeric
-                pl.col("EA"),       # lexicographically smaller
-                pl.col("NEA")      # lexicographically larger
-                ],
-                separator=":"
-                ).alias("SNPID")
+                    [
+                    pl.col("CHR"),
+                    pl.col("POS").cast(pl.Utf8),            # cast POS if numeric
+                    pl.col("EA"),       # lexicographically smaller
+                    pl.col("NEA")      # lexicographically larger
+                    ],
+                    separator=":"
+                    ).alias("SNPID")
             )
+
+        if self.pvar_file:
+            self.align_alleles()
+            self.chunk_pl.drop(["REF","ALT"])
+        else:
+            # flip the sign of BETA when swapping
+            self.chunk_pl = self.chunk_pl.with_columns([
+                pl.when(swap).then(-pl.col("BETA")).otherwise(pl.col("BETA")).alias("BETA"),
+                # flip EAF to 1 - EAF when swapping
+                pl.when(swap).then(1.0 - pl.col("EAF")).otherwise(pl.col("EAF")).alias("EAF"),
+                # set EA to the smaller allele
+            ])
+        self.chunk_pl = self.chunk_pl.drop(["A1","A2"])
+
+        self.chunk_pl = self.chunk_pl.with_columns(
+                    pl.concat_str(
+                        pl.lit("chr"),
+                        pl.col("SNPID")).alias("SNPID"))
+
 
         
         if self.type_sumstat=="gwas":
@@ -222,7 +262,8 @@ class Harmonize:
         sumstat_gl.fix_allele(remove=True)
         sumstat_gl.check_sanity()
         sumstat_gl.check_data_consistency()
-        sumstat_gl.remove_dup(mode="m")
+
+        #sumstat_gl.remove_dup(mode="m")
 
 
 
@@ -231,34 +272,6 @@ class Harmonize:
 
         sumstat_gl.log.save(directory + "/" + file_name)
         self.chunk_pl = pl.from_pandas(sumstat_gl.data)
-
-
-    def align_alleles(self, pvar_file: str):
-        """Align alleles based on pvar file."""
-        if not self.pvar_file:
-            raise HarmonizationError("pvar_file must be provided to verify alleles order")
-        if not Path(self.pvar_file).is_file():
-            raise FileNotFoundError(f"pvar_file {self.pvar_file} does not exist")
-
-        pvar_df = pl.read_csv(
-            self.pvar_file,
-            separator="\t",
-            has_header=True,
-            new_columns=["CHROM", "POS", "SNPID", "NEA", "EA", "INFO"],
-            dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNPID": pl.Utf8,
-                    "REF": pl.Utf8, "ALT": pl.Utf8, "INFO": pl.Utf8},
-        )
-
-        self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNPID", how="inner", suffix="_pvar")
-
-        self.chunk_pl = self.chunk_pl.with_columns(
-            pl.when(pl.col("NEA") > pl.col("EA"))
-            .then(pl.col("BETA"))
-            .otherwise(-pl.col("BETA")),
-            pl.when(pl.col("NEA") > pl.col("EA"))
-            .then(pl.col("EAF"))
-            .otherwise(1.0 - pl.col("EAF"))
-        )
 
     def ingest_data(self, file_path):
         """Append harmonized data to TileDB."""
@@ -290,7 +303,7 @@ class Harmonize:
             logger.error(f"Failed to append chunk to TileDB for file {file_path}: {e}")
             raise
 
-    def create_metadata(self, file_path: str, pvar_file: str = None):
+    def create_metadata(self, file_path: str):
         """Create and store metadata in TileDB."""
         tiledb_existing = tiledb.open(self.uri)
         if "metadata" in tiledb_existing.meta:
