@@ -1,11 +1,13 @@
 import os
-from dask import delayed, compute
+from dask import delayed
 import pyarrow as pa
 import pyarrow.csv
 import pyarrow.parquet as pq
-import gc
-import scipy.stats as stats
 import polars as pl
+import numpy as np
+import math
+from scipy.stats import chi2
+
 
 @delayed
 def batch_query_tiledb(array, queries, output_dir, batch_index):
@@ -38,3 +40,72 @@ def compute_pheno_variance(df):
     median_value = median_pl.item()
     median_str = str(median_value)
     return median_str
+
+def acat_optimized(pvals_series: pl.Series, small: float = 1e-15) -> float:
+    """
+    Optimized ACAT implementation using vectorized operations with Polars.
+    
+    Parameters
+    ----------
+    pvals_series : pl.Series
+        Series of p-values in (0, 1]. NaNs are ignored.
+    small : float, optional
+        Threshold below which we use the approximation.
+        
+    Returns
+    -------
+    float
+        ACAT p-value in [0, 1].
+    """
+    # Convert to numpy array for vectorized operations
+    p = pvals_series.to_numpy()
+    
+    # Remove NaNs
+    valid_mask = ~np.isnan(p)
+    if not np.any(valid_mask):
+        return float("nan")
+        
+    p = p[valid_mask]
+    
+    # Validate p-values
+    if np.any(p < 0) or np.any(p > 1):
+        raise ValueError("All p-values must be in the interval [0, 1].")
+    
+    # Vectorized computation of transformed values
+    t = np.empty_like(p)
+    
+    # Create masks
+    small_mask = p < small
+    regular_mask = ~small_mask
+    
+    # Apply transformations based on masks
+    if np.any(regular_mask):
+        t[regular_mask] = np.tan((0.5 - p[regular_mask]) * math.pi)
+    
+    if np.any(small_mask):
+        t[small_mask] = 1.0 / (math.pi * p[small_mask])
+    
+    # Compute ACAT statistic
+    cct_stat = np.mean(t)
+    
+    # Calculate ACAT p-value
+    p_acat = 0.5 - math.atan(cct_stat) / math.pi
+    
+    # Clamp to [0,1] for numerical stability
+    return max(0.0, min(p_acat, 1.0))
+
+
+def z_to_p_via_chi2(z):
+    """
+    Convert z-score to p-value using chi-square distribution (df=1).
+
+    Parameters:
+        z (float): The z-score
+
+    Returns:
+        float: Two-tailed p-value
+    """
+    chi2_stat = z**2
+    p_value = chi2.sf(chi2_stat, df=1)  # one-tailed
+    return p_value
+    

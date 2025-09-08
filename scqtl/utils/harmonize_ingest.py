@@ -5,8 +5,11 @@ import os
 import pandas as pd
 import polars as pl
 import numpy as np
+from scipy import stats
 import tiledb
 import gwaslab as gl
+from scqtl.utils import acat_optimized,z_to_p_via_chi2
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -108,7 +111,7 @@ class Harmonize:
             pl.when(swap).then(pl.col("EAF")).otherwise(1.0-pl.col("EAF"))
             ])
 
-    def harmonize(self, file_path, sumstat, trait: str = None, cell: str = None, gene: str = None, N: int = None, qc:bool = False):
+    def harmonize(self, sumstat, trait: str = None, cell: str = None, gene: str = None, N: int = None, qc:bool = False):
         """Load and rename columns, and ensure CHR/POS exist."""
         self.chunk_pl = sumstat.rename(self.mapping_types)
 
@@ -170,9 +173,7 @@ class Harmonize:
                     pl.concat_str(
                         pl.lit("chr"),
                         pl.col("SNPID")).alias("SNPID"))
-
-
-        
+    
         if self.type_sumstat=="gwas":
 
             self.tiledb_types = {
@@ -222,6 +223,15 @@ class Harmonize:
             self.chunk_pl = self.chunk_pl.with_columns(
                     (10 ** (-pl.col("LOG10P"))).alias("P")
                 )
+        
+        #Calculate p-value from z-score
+        self.chunk_pl = self.chunk_pl.drop('P')
+        self.chunk_pl = self.chunk_pl.with_columns(
+            (pl.col("BETA") / pl.col("SE")).pow(2).map_batches(
+            lambda x: pl.Series(stats.chi2.sf(x.to_numpy(), df=1)),
+            return_dtype=pl.Float64
+            ).alias('P')
+            )
     
     def qc_sumstat(self, file_path:str):
         directory = self.uri + "_logs"
@@ -261,18 +271,13 @@ class Harmonize:
         sumstat_gl.fix_pos(remove=True)
         sumstat_gl.fix_allele(remove=True)
         sumstat_gl.check_sanity()
-        sumstat_gl.check_data_consistency()
-
+        #sumstat_gl.check_data_consistency()
         #sumstat_gl.remove_dup(mode="m")
-
-
-
-
         #sumstat_gl.basic_check(n_cores = 4, remove=True, remove_dup=True)
 
         sumstat_gl.log.save(directory + "/" + file_name)
         self.chunk_pl = pl.from_pandas(sumstat_gl.data)
-
+    
     def ingest_data(self, file_path):
         """Append harmonized data to TileDB."""
         pl.Config.set_tbl_cols(-1)
@@ -318,6 +323,16 @@ class Harmonize:
 
         if self.type_sumstat == "qtl":
         # Get unique cell types
+
+            self.chunk_pl = self.chunk_pl.group_by(["CHR" ,"CELL", "GENE"]).agg(
+                pl.col("P").map_batches(
+                    lambda s: pl.Series([acat_optimized(s)]),
+                    return_dtype=pl.Float64
+                ).alias("ACAT_P")
+                )
+            self.chunk_pl = self.chunk_pl.with_columns(
+                self.chunk_pl["ACAT_P"].list.first().alias("ACAT_P_scalar")
+            )
             celltypes = self.chunk_pl["CELL"].unique().to_list()
             if not celltypes:
                 raise HarmonizationError("No cell types found in the data")
@@ -333,16 +348,21 @@ class Harmonize:
 
                 # Group by chromosome and collect unique genes
             
-                chr_gene_map = df_cell.group_by("CHR").agg(pl.col("GENE").unique().alias("genes"))
+                chr_gene_map = df_cell.group_by("CHR").agg([
+                    pl.struct(["GENE", "ACAT_P_scalar"]).alias("gene_acat_pairs")
+                    ])
                 # Append to metadata, making sure we extend if already exists
                 for row in chr_gene_map.iter_rows(named=True):
                     chrom = row["CHR"]
-                    genes = row["genes"]
+                    gene_acat_pairs = [
+                            [entry["GENE"], entry["ACAT_P_scalar"]] for entry in row["gene_acat_pairs"]
+                            ]
                     if chrom in metadata[cell]:
-                        existing = set(metadata[cell][chrom])
-                        metadata[cell][chrom].extend([g for g in genes if g not in existing])
+                        existing = set(tuple(x) for x in metadata[cell][chrom])
+                        new_items = [pair for pair in gene_acat_pairs if tuple(pair) not in existing]
+                        metadata[cell][chrom].extend(new_items)
                     else:
-                        metadata[cell][chrom] = genes   
+                        metadata[cell][chrom] = gene_acat_pairs
         else:
             if "TRAIT" not in self.chunk_pl.columns:
                 raise HarmonizationError("TRAIT column is missing in the data")
