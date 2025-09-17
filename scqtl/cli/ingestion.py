@@ -47,7 +47,7 @@ def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:i
         #batch_files = file_list[i:i + batch_size]
         file = record["FILE"]
         if "N" in file_list.columns:
-            N = record["N"]
+            N = record["N"]            
         if type_sumstat == "qtl":
             if "CELL" in file_list.columns:
                 cell = record["CELL"]

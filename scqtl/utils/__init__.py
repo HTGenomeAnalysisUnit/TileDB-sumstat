@@ -6,7 +6,8 @@ import pyarrow.parquet as pq
 import polars as pl
 import numpy as np
 import math
-from scipy.stats import chi2
+from scipy.stats import chi2, cauchy
+
 
 
 @delayed
@@ -89,7 +90,7 @@ def acat_optimized(pvals_series: pl.Series, small: float = 1e-15) -> float:
     cct_stat = np.mean(t)
     
     # Calculate ACAT p-value
-    p_acat = 0.5 - math.atan(cct_stat) / math.pi
+    p_acat = cauchy.sf(cct_stat)
     
     # Clamp to [0,1] for numerical stability
     return max(0.0, min(p_acat, 1.0))

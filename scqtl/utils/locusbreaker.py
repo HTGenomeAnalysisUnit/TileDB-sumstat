@@ -9,7 +9,7 @@ def locus_breaker(
     hole_size: int = 250000,
     phenovar: bool = False,
     category: bool = False,
-    type_sumstat: str = "qtl",
+    type_sumstat: str = "scqtl",
     maf: float = 0.001,
     locus_max_size = 1000000
 ) -> pd.DataFrame:
@@ -43,7 +43,7 @@ def locus_breaker(
         return []
     
     # Apply cis/trans filtering if needed
-    if type_sumstat == "qtl":
+    if type_sumstat == "scqtl":
         if category == "cis":
             loci_snps = loci_snps[(loci_snps["DIST"] > -1000000) & (loci_snps["DIST"] < 1000000)]
         elif category == "trans":
@@ -93,7 +93,7 @@ def locus_breaker(
         all_snp_df[['TYPE']] =  'gwas'
     else:
         trait_res_df = pd.DataFrame(trait_res, columns=columns).drop(columns=["POS", "P"])
-        columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist() + ["S"]
+        columns = ["REGION", "SNP_POS", "SNP_PVAL"] + tiledb_data.columns.tolist()
         all_snp_df = pd.DataFrame(all_snp_res, columns=columns).drop(columns=["SNP_POS", "SNP_PVAL"])
         trait_res_df["TRAIT"] = trait_res_df["CELL"] + ":" + trait_res_df["GENE"]
         all_snp_df["TRAIT"] = all_snp_df["CELL"] + ":" + all_snp_df["GENE"]

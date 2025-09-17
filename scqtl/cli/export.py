@@ -32,8 +32,6 @@ Query TileDB database and export data.
 @cloup.option_group(
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
-    cloup.option("--pvalue-sig", default = 5e-8, type=float, help = "P-value threshold used to create the regions around significant SNPs (default: )"),
-    cloup.option("--pvalue-limit", default = 1e-5, type=float, help = "P-value threshold for loci borders"),
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
     cloup.option("--maf", default = 0.001, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
@@ -66,8 +64,6 @@ def export(
         category: str,
         phenovar: bool,
         table: str,
-        pvalue_sig: float,
-        pvalue_limit: float,
         hole: int,
         out_lb: str,
         out_rg: str,
@@ -172,7 +168,9 @@ def export(
                 trait = row["TRAIT"]
             else:
                 cell,gene = row["TRAIT"].split(":")
-                
+            if "SIG" in traits.columns:
+                pvalue_sig = row["SIG"]
+                pvalue_limit = row["LIM"]
             task = delayed_locus_breaker(query_spec(uri_path, chrom,trait = trait, cell = cell, gene = gene, type_sumstat = type_sumstat),maf = maf, pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
             tasks.append(task)
 

@@ -271,7 +271,7 @@ class Harmonize:
         sumstat_gl.fix_pos(remove=True)
         sumstat_gl.fix_allele(remove=True)
         sumstat_gl.check_sanity()
-        #sumstat_gl.check_data_consistency()
+        sumstat_gl.check_data_consistency()
         #sumstat_gl.remove_dup(mode="m")
         #sumstat_gl.basic_check(n_cores = 4, remove=True, remove_dup=True)
 
@@ -310,13 +310,12 @@ class Harmonize:
 
     def create_metadata(self, file_path: str):
         """Create and store metadata in TileDB."""
-        tiledb_existing = tiledb.open(self.uri)
-        if "metadata" in tiledb_existing.meta:
-            metadata = json.loads(tiledb_existing.meta["metadata"])
-        else:
-            metadata = {
+        #tiledb_existing = tiledb.open(self.uri)
+        #if "metadata" in tiledb_existing.meta:
+        #    metadata = json.loads(tiledb_existing.meta["metadata"])
+        #else:
+        metadata = {
             "file_path": file_path,
-            "type_sumstat": self.type_sumstat,
             "celltype": [],
             "trait": []
             }
@@ -372,8 +371,11 @@ class Harmonize:
             for record in traits:
                 if record not in metadata["trait"]:
                     metadata["trait"].append(record)
+        f = open(f'{self.uri}_metadata.json', 'a')
 
-        with tiledb.open(self.uri, mode='w') as array:
-            array.meta["metadata"] = json.dumps(metadata)
+        with open(f'{self.uri}_metadata.json', 'a') as f:
+            json.dump(metadata, f)
+        #with tiledb.open(self.uri, mode='w') as array:
+        #    array.meta["metadata"] = json.dumps(metadata)
 
         logger.info("Metadata created successfully")
