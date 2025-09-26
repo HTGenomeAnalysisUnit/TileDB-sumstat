@@ -1,7 +1,7 @@
 import pandas as pd
 import tiledb
 rows = []
-tdb = tiledb.open('/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/TileDB_f3_Bangladeshi_cis_celltype1', 'w')
+tdb = tiledb.open('/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/Bangladeshi/TileDB_f3_Bangladeshi_cis_celltype1', 'w')
 # Loop over all celltypes in metadata
 for celltype in merged_metadata["celltype"]:
     if celltype in merged_metadata:  # make sure the key exists in dict
@@ -17,4 +17,4 @@ for celltype in merged_metadata["celltype"]:
 df = pd.DataFrame(rows)
 
 tdb.meta["metadata"] = json.dumps(merged_metadata)
-df.to_csv("/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/metadata_gh_bangladeshi_f3_celltype1_acat.csv",index = False)
+df.to_csv("/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/Bangladeshi/metadata_gh_bangladeshi_f3_celltype1_acat.csv",index = False)

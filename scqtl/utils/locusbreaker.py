@@ -11,7 +11,7 @@ def locus_breaker(
     category: bool = False,
     type_sumstat: str = "scqtl",
     maf: float = 0.001,
-    locus_max_size = 1000000
+    locus_max_size = 3000000
 ) -> pd.DataFrame:
     """
     Breaking genome in loci and returning all SNPs within the defined loci boundaries.
@@ -38,7 +38,6 @@ def locus_breaker(
         tiledb_data["S"] = 1.0
     
     loci_snps = tiledb_data[tiledb_data["P"] < pvalue_limit].copy()
-    
     if loci_snps.empty:
         return []
     

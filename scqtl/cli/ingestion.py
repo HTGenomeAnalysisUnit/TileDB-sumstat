@@ -41,13 +41,19 @@ def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:i
     cell = None
     gene = None
     trait = None
-    N = None
+    n = None
+    n_cases = None
+    n_controls = None
     #for i in range(0, len(file_list), batch_size):
     for record_index, record in file_list.iterrows():
         #batch_files = file_list[i:i + batch_size]
         file = record["FILE"]
         if "N" in file_list.columns:
-            N = record["N"]            
+            n = record["N"]
+        if "n_cases" in file_list.columns:
+            n_cases = record["N_CASE"]
+        if "N_CONTROSL" in file_list.columns:
+            n_controls = record["n_controls"]       
         if type_sumstat == "qtl":
             if "CELL" in file_list.columns:
                 cell = record["CELL"]
@@ -65,7 +71,7 @@ def ingest(uri_path:str, sep:str, mapping_file:str, chunk_size:int, batch_size:i
         # Harmonize the data
         print(f"Harmonizing file: {file}")
         chunk_pl = pl.read_csv(file,separator=sep,low_memory=True ,null_values="NA")
-        harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, N = N)
+        harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, n = n, n_cases = n_controls, n_cases = n_cases)
         #Performing QC using GWASLAB
         if qc:
             harmonized_object.qc_sumstat(file_path = file)

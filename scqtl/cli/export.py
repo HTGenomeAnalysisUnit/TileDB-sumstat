@@ -4,7 +4,7 @@ import cloup
 import pandas as pd
 from dask import delayed, compute
 #from scqtl.utils.process_write_chunk import process_write_chunk
-from scqtl.utils.locusbreaker import locus_breaker
+from scqtl.utils.locusbreaker_plpl import locusbreaker_plpl
 import numpy as np
 import os
 
@@ -35,10 +35,11 @@ Query TileDB database and export data.
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
     cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
     cloup.option("--maf", default = 0.001, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
-    cloup.option("--locus-max-size", default = 1000000, type=float, help = "The maximum size allowed for the locus. Default: 1Mb"),
+    cloup.option("--locus-max-size", default = 3000000, type=float, help = "The maximum size allowed for the locus. Default: 1Mb"),
     cloup.option("--category",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
     cloup.option("--type-sumstat", default = None, type=str, help = "Path of the table to provide"),
+    cloup.option("--batch-name", default = None, type=str, help = "Path of the table to provide"),
 )
 @cloup.option_group(
     "Options for output",
@@ -67,7 +68,8 @@ def export(
         hole: int,
         out_lb: str,
         out_rg: str,
-        locus_max_size: int
+        locus_max_size: int,
+        batch_name:str
         ):
     
     #Open connection with TileDB
@@ -75,7 +77,13 @@ def export(
     if "SNP" in tiledb_export.schema.attr_names and "SNPID" in attr.split(","):
         attr.replace("SNPID", "SNP")
 
-    client = ctx.obj.get("dask_cluster", None)
+    client = ctx.obj.get("dask_cluster", None)   
+    if client:
+        print(f"Dask client: {client}")
+        print(f"Cluster info: {client.scheduler_info()}")
+        print(f"Active workers: {len(client.scheduler_info()['workers'])}")
+    else:
+        print("WARNING: Running in sequential mode - no Dask client found!")
     #Print only the schema of the tiledb
 
     #Get list of genes, cell type and positions or create ones
@@ -147,51 +155,81 @@ def export(
         print("Starting LocusBreaker")
         tasks = []
         #Defining the Dask functions for delayed
-        traits = pd.read_csv(table)
         @delayed
         def query_spec(uri_path, chrom, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
             with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
                     tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, :]
                 else:
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS']).df[chrom, cell ,gene , :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], return_arrow=True).df[chrom, cell ,gene , :]
                 return tiledb_filtered
             
         @delayed
         def delayed_locus_breaker(tiledb_data, maf, pvalue_sig, pvalue_limit, locus_max_size, hole_size, phenovar, category, type_sumstat = "scqtl"):
             # Call locus_breaker with the computed tiledb_data
-            return locus_breaker(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole_size, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
-            
-        for ind, row in traits.iterrows():
-            chrom = row["CHR"]
-            if type_sumstat == "gwas":
-                trait = row["TRAIT"]
-            else:
-                cell,gene = row["TRAIT"].split(":")
-            if "SIG" in traits.columns:
-                pvalue_sig = row["SIG"]
-                pvalue_limit = row["LIM"]
-            task = delayed_locus_breaker(query_spec(uri_path, chrom,trait = trait, cell = cell, gene = gene, type_sumstat = type_sumstat),maf = maf, pvalue_sig=pvalue_sig,pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
-            tasks.append(task)
+            return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole_size, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
+        traits = pd.read_csv(table)
+        #for chrom, group in traits.groupby("CHR"):
+            # Process the DataFrame in chunks of 20 rows
+        for index, trait in traits.iterrows():
+                #chunk = group.iloc[i:i+1]
+                if "SIG" in traits.columns:
+                    # Assuming pvalue_sig and pvalue_limit are the same for the chunk
+                    # or we can take the first one.
+                    pvalue_sig = trait["SIG"]
+                    pvalue_limit = trait["LIM"]
 
+                if type_sumstat == "gwas":
+                    # If your sumstat type is "gwas", this collects the traits from the chunk.
+                    trait_list = trait["TRAIT"].tolist()
+            
+                    # I am assuming that for GWAS, you can pass a list of traits to query_spec.
+                    # I've used the 'trait' parameter for this.
+                    # You might need to adjust this depending on how query_spec is defined.
+                    query = query_spec(uri_path, chrom, trait=trait_list, type_sumstat=type_sumstat)
+                else:
+                    # For other sumstat types, this extracts cell and gene from the "TRAIT" column.
+                    # It assumes the 'cell' is the same for all genes in a chunk.
+                    cell,genes = trait["TRAIT"].split(":")
+                    #genes = trait["TRAIT"].split(":")[0]
+            
+                    # Taking the first cell value, assuming it's constant for the chunk.
+                    #cell = cells[0] 
+            
+                    # Here, I am assuming the 'gene' parameter of query_spec can accept a list of genes.
+                    query = query_spec(uri_path, chrom, cell=cell, gene=genes, type_sumstat=type_sumstat)
+
+                # The call to delayed_locus_breaker remains the same, but it now processes a batch.
+                task = delayed_locus_breaker(query,
+                                     maf=maf, 
+                                     pvalue_sig=pvalue_sig,
+                                     pvalue_limit=pvalue_limit, 
+                                     locus_max_size=locus_max_size, 
+                                     hole_size=hole, 
+                                     phenovar=phenovar, 
+                                     category=category, 
+                                     type_sumstat=type_sumstat)
+                tasks.append(task)
         #The batch size to use which is set to the number of workers if Dask is run
-        if ctx.obj["workers"]:
-            batch_size = ctx.obj["workers"]
-        else:
-            batch_size = 1
-        for i in range(0, len(tasks), batch_size):
-                print(f"Batch {i} of {len(tasks)}")
-                batch = tasks[i:i+batch_size]
-                batch_results = compute(*batch)  # Compute the batch
-                for result in batch_results:
-                    #if not len(result) == 0 and not result[0].empty:
-                    if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
-                        interval = result[0]
-                        segments = result[1]
-                        write_header_interval = not os.path.exists(f"{out_lb}_batch_{str(i)}_interval.csv")
-                        write_header_segment = not os.path.exists(f"{out_lb}_batch_{str(i)}_segment.csv")
-                        interval.to_csv(f"{out_lb}_batch_{str(i)}_interval.csv", mode="a", index=False, header = write_header_interval)
-                        segments.to_csv(f"{out_lb}_batch_{str(i)}_segment.csv", mode="a", index=False, header = write_header_segment)
+        #if client and ctx.obj["workers"]:
+            #results = compute(*tasks, scheduler='distributed')
+        #    batch_size = 60
+        #else:
+        #    batch_size = 60
+        #for i in range(0, len(tasks), batch_size):
+         #       if not os.path.exists(f"{out_lb}_batch_{str(i)}_interval.csv"):
+         #           print(f"Batch {i} of {len(tasks)}")
+         #           batch = tasks[i:i+batch_size]
+        batch_results = compute(*tasks,scheduler='distributed')  # Compute the batch
+        for result in batch_results:
+            if not len(result) == 0 and not result[0].empty:
+                if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
+                            interval = result[0]
+                            segments = result[1]
+                            write_header_interval = not os.path.exists(f"{out_lb}_batch_{batch_name}_interval.csv")
+                            write_header_segment = not os.path.exists(f"{out_lb}_batch_{batch_name}_segment.csv")
+                            interval.to_csv(f"{out_lb}_batch_{batch_name}_interval.csv", mode="a", index=False, header = write_header_interval)
+                            segments.to_csv(f"{out_lb}_batch_{batch_name}_segment.csv", mode="a", index=False, header = write_header_segment)
         if client:
             print("Shutting down Dask cluster...")
             client.close()

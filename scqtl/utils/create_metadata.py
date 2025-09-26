@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-input_path = "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/TileDB_f3_Bangladeshi_cis_celltype1_metadata.json"
+input_path = "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/Bangladeshi/TileDB_f3_Bangladeshi_cis_celltype1_metadata.json"
 output_path = input_path.replace(".json", "_fixed.json")
 
 objs = []
@@ -19,7 +19,7 @@ with open(output_path, "w") as f:
 print(f"✅ Salvaged {len(objs)} metadata records into {output_path}")
 
 
-fixed_path = "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/TileDB_f3_Bangladeshi_cis_celltype1_metadata_fixed.json"
+fixed_path = "/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysis/core_dataset/freeze3/tiledbs/Tensor/Bangladeshi/TileDB_f3_Bangladeshi_cis_celltype1_metadata_fixed.json"
 output_path = fixed_path.replace("_fixed.json", "_merged.json")
 
 with open(fixed_path) as f:
