@@ -36,13 +36,13 @@ def batch_query_tiledb(array, queries, output_dir, batch_index):
 
 
 def compute_pheno_variance(df, trait_type):
-    df_pl = pl.from_pandas(df)
+
     if trait_type == "binary":
-        df_pl = df_pl.with_columns(
-            (4 * pl.col("n_cases") * pl.col("n_controls"))) / (pl.col("n_cases") + pl.col("n_controls")
-            ).alias("N")
+        df = df.with_columns(
+            ((4 * pl.col("N_CASES") * pl.col("N_CONTROLS")) / ((pl.col("N_CASES") + pl.col("N_CONTROLS"))
+            )).alias("N"))
         
-    median_pl = df_pl.select(((pl.col("SE") ** 2) * pl.col("N") * (2 * pl.col("EAF") * (1 - pl.col("EAF")))).median())
+    median_pl = df.select(((pl.col("SE") ** 2) * pl.col("N") * (2 * pl.col("EAF") * (1 - pl.col("EAF")))).median())
     median_value = median_pl.item()
     median_str = str(median_value)
     return median_str

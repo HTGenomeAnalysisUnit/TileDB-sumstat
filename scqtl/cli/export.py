@@ -7,6 +7,8 @@ from dask import delayed, compute
 from scqtl.utils.locusbreaker_plpl import locusbreaker_plpl
 import numpy as np
 import os
+import json
+import polars as pl
 
 help_doc = """
 Query TileDB database and export data.
@@ -33,13 +35,12 @@ Query TileDB database and export data.
     "Options for Locusbreaker",
     cloup.option("--locusbreaker", is_flag=True, type=bool, default = False, help="Option to run locusbreaker"),
     cloup.option("--hole", default = 250000, type=int, help = "Minimum pair-base distance between SNPs in different loci (default: 250000)"),
-    cloup.option("--phenovar", is_flag = True, type=bool, default = False, help = "Compute the phenotypic variance"),
     cloup.option("--maf", default = 0.001, type=float, help = "The MAF to filter the TILEDB before locusbreaker is run"),
     cloup.option("--locus-max-size", default = 3000000, type=float, help = "The maximum size allowed for the locus. Default: 1Mb"),
     cloup.option("--category",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table", default = None, type=str, help = "Path of the table to provide"),
-    cloup.option("--type-sumstat", default = None, type=str, help = "Path of the table to provide"),
-    cloup.option("--batch-name", default = None, type=str, help = "Path of the table to provide"),
+    cloup.option("--type-sumstat", default = None, type=str, help = "Type of summary data"),
+    cloup.option("--batch-name", default = None, type=str, help = "Name of the batch"),
 )
 @cloup.option_group(
     "Options for output",
@@ -63,7 +64,6 @@ def export(
         locusbreaker: bool,
         maf: float,
         category: str,
-        phenovar: bool,
         table: str,
         hole: int,
         out_lb: str,
@@ -74,6 +74,28 @@ def export(
     
     #Open connection with TileDB
     tiledb_export = tiledb.open(uri_path, mode="r")
+    metadata = json.loads(tiledb_export.meta["metadata"])
+    rows = []
+    if type_sumstat == "qtl":
+        for cell in metadata["CELL"]:
+            for chrom, genes in metadata[cell].items():
+                for gene, stats in genes.items():
+                    rows.append({
+                        "CELL": cell,
+                        "CHR": chrom,
+                        "GENE": gene,
+                        **stats
+                    })
+    else:
+        print(metadata)
+        for trait in metadata["trait"]:
+            rows.append({
+                    "TRAIT": trait,
+                    **metadata[trait]
+                    })
+       
+
+    df_meta = pl.DataFrame(rows)
     if "SNP" in tiledb_export.schema.attr_names and "SNPID" in attr.split(","):
         attr.replace("SNPID", "SNP")
 
@@ -165,9 +187,10 @@ def export(
                 return tiledb_filtered
             
         @delayed
-        def delayed_locus_breaker(tiledb_data, maf, pvalue_sig, pvalue_limit, locus_max_size, hole_size, phenovar, category, type_sumstat = "scqtl"):
+        def delayed_locus_breaker(tiledb_data, maf, pvalue_sig, pvalue_limit, locus_max_size, hole_size, category, metadata, type_sumstat = "scqtl"):
             # Call locus_breaker with the computed tiledb_data
-            return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, hole_size=hole_size, phenovar = phenovar, category = category, type_sumstat = type_sumstat)
+            return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, 
+                                     hole_size=hole_size, category = category, type_sumstat = type_sumstat, metadata = metadata)
         traits = pd.read_csv(table)
         #for chrom, group in traits.groupby("CHR"):
             # Process the DataFrame in chunks of 20 rows
@@ -181,12 +204,13 @@ def export(
 
                 if type_sumstat == "gwas":
                     # If your sumstat type is "gwas", this collects the traits from the chunk.
-                    trait_list = trait["TRAIT"].tolist()
+                    #trait_list = trait["TRAIT"].tolist()
             
                     # I am assuming that for GWAS, you can pass a list of traits to query_spec.
                     # I've used the 'trait' parameter for this.
                     # You might need to adjust this depending on how query_spec is defined.
-                    query = query_spec(uri_path, chrom, trait=trait_list, type_sumstat=type_sumstat)
+                    
+                    query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
                 else:
                     # For other sumstat types, this extracts cell and gene from the "TRAIT" column.
                     # It assumes the 'cell' is the same for all genes in a chunk.
@@ -206,9 +230,9 @@ def export(
                                      pvalue_limit=pvalue_limit, 
                                      locus_max_size=locus_max_size, 
                                      hole_size=hole, 
-                                     phenovar=phenovar, 
                                      category=category, 
-                                     type_sumstat=type_sumstat)
+                                     type_sumstat=type_sumstat,
+                                     metadata = df_meta)
                 tasks.append(task)
         #The batch size to use which is set to the number of workers if Dask is run
         #if client and ctx.obj["workers"]:

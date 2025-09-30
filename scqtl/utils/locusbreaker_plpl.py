@@ -1,41 +1,39 @@
 import polars as pl
 from typing import List
-from scqtl.utils import compute_pheno_variance
 
 def locusbreaker_plpl(
     tiledb_data,
+    metadata:pl.DataFrame,
     pvalue_sig: float = 5e-8,
     pvalue_limit: float = 5e-6,
     hole_size: int = 250000,
-    phenovar: bool = False,
     category: bool = False,
     type_sumstat: str = "scqtl",
     maf: float = 0.001,
-    locus_max_size: int = 3000000
+    locus_max_size: int = 3000000,
 ) -> List[pl.DataFrame]:
     # Convert to Polars DataFrame
+    print("Locus-breaker")
     df = pl.from_arrow(tiledb_data)
-    
     # Filter by MAF
     df = df.with_columns(
         MAF=pl.when(pl.col("EAF") <= 0.5).then(pl.col("EAF")).otherwise(1 - pl.col("EAF"))
     ).filter(pl.col("MAF") >= maf).drop("MAF")
     
-    # Compute phenotypic variance if needed
-    if phenovar:
-        # Note: compute_pheno_variance might need adjustment for Polars
-        df = df.with_columns(S=compute_pheno_variance(df.to_pandas()))
-    else:
-        df = df.with_columns(S=pl.lit(1.0))
-    
     # Filter SNPs for locus definition
-    loci_snps = df.filter(pl.col("P") <= pvalue_limit)
     
+
+    if type_sumstat == "gwas":
+        if "N" in df.columns:
+            df = df.drop("N")
+        df = df.join(metadata, on = ["TRAIT"])
+    else:
+        df = df.join(metadata, on = ["CHR","CELL","GENE"])
+    loci_snps = df.filter(pl.col("P") <= pvalue_limit)
     if loci_snps.is_empty():
         return []
-    
     # Apply cis/trans filtering for scqtl
-    if type_sumstat == "scqtl":
+    if type_sumstat == "qtl":
         if category == "cis":
             loci_snps = loci_snps.filter(
                 (pl.col("DIST") > -1000000) & (pl.col("DIST") < 1000000)
@@ -47,13 +45,13 @@ def locusbreaker_plpl(
     
     # Define grouping keys
     if type_sumstat == "gwas":
-        group_keys = ["CHR", "TRAIT"]
+        group_keys = ["CHR", "TRAIT","PHENO_VAR"]
     else:
-        group_keys = ["CHR", "CELL", "GENE"]
+        group_keys = ["CHR", "CELL", "GENE","PHENO_VAR"]
     
     # Process groups
     loci_snps = loci_snps.sort(group_keys + ["POS"])
-    
+    print()
     # Identify groups based on hole_size
     grouped = loci_snps.with_columns(
         pl.col("POS").diff().gt(hole_size).cast(pl.UInt32).fill_null(0).cum_sum().over(group_keys).alias("group_id")
@@ -121,14 +119,17 @@ def locusbreaker_plpl(
     
     if type_sumstat == "gwas":
         trait_res_df = significant.select(
-            ["TRAIT", "start_pos", "end_pos", "POS", "P"] + [c for c in df.columns if c not in ["POS", "P"]]
+        ["TRAIT", "start_pos", "end_pos", "POS", "P"]
+        + [c for c in df.columns if c not in ["POS", "P", "TRAIT"]]
         ).rename({"start_pos": "START", "end_pos": "END", "POS": "SNP_POS", "P": "SNP_PVAL"})
+
         
         all_snp_df = all_snps.with_columns(
             REGION=pl.format("{}:{}:{}", pl.col("CHR"), pl.col("start_pos"), pl.col("end_pos"))
-        ).select(
-            ["TRAIT", "REGION", "POS", "P"] + [c for c in df.columns if c not in ["POS", "P"]]
-        ).rename({"POS": "SNP_POS", "P": "SNP_PVAL"})
+            ).select(
+            ["TRAIT", "REGION", "POS", "P"] 
+            + [c for c in df.columns if c not in ["POS", "P", "TRAIT"]]
+            ).rename({"POS": "SNP_POS", "P": "SNP_PVAL"})
         
         trait_res_df = trait_res_df.with_columns(TYPE=pl.lit("gwas"))
         all_snp_df = all_snp_df.with_columns(TYPE=pl.lit("gwas"))
@@ -145,8 +146,8 @@ def locusbreaker_plpl(
         ).select(
             ["TRAIT", "REGION", "POS", "P"] + [c for c in df.columns if c not in ["POS", "P"]]
         ).rename({"POS": "SNP_POS", "P": "SNP_PVAL"})
-        
-        trait_res_df = trait_res_df.with_columns(TYPE=pl.lit("qtl"))
-        all_snp_df = all_snp_df.with_columns(TYPE=pl.lit("qtl"))
+
+        trait_res_df = trait_res_df.with_columns(TYPE=pl.lit(type_sumstat))
+        all_snp_df = all_snp_df.with_columns(TYPE=pl.lit(type_sumstat))
     
     return [trait_res_df.to_pandas(), all_snp_df.to_pandas()]
