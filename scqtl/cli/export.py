@@ -96,8 +96,6 @@ def export(
        
 
     df_meta = pl.DataFrame(rows)
-    if "SNP" in tiledb_export.schema.attr_names and "SNPID" in attr.split(","):
-        attr.replace("SNPID", "SNP")
 
     client = ctx.obj.get("dask_cluster", None)   
     if client:
