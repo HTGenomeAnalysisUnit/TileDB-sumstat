@@ -13,7 +13,6 @@ def locusbreaker_plpl(
     locus_max_size: int = 3000000,
 ) -> List[pl.DataFrame]:
     # Convert to Polars DataFrame
-    print("Locus-breaker")
     df = pl.from_arrow(tiledb_data)
     # Filter by MAF
     df = df.with_columns(
@@ -27,6 +26,7 @@ def locusbreaker_plpl(
         if "N" in df.columns:
             df = df.drop("N")
         df = df.join(metadata, on = ["TRAIT"])
+        
     else:
         df = df.join(metadata, on = ["CHR","CELL","GENE"])
     loci_snps = df.filter(pl.col("P") <= pvalue_limit)
@@ -51,7 +51,6 @@ def locusbreaker_plpl(
     
     # Process groups
     loci_snps = loci_snps.sort(group_keys + ["POS"])
-    print()
     # Identify groups based on hole_size
     grouped = loci_snps.with_columns(
         pl.col("POS").diff().gt(hole_size).cast(pl.UInt32).fill_null(0).cum_sum().over(group_keys).alias("group_id")
@@ -68,6 +67,7 @@ def locusbreaker_plpl(
     )
     
     # Filter significant groups and expand regions
+    
     significant = aggregated.filter(pl.col("min_p") <= pvalue_sig).with_columns(
     start_pos=pl.when(pl.col("min_pos") <= 100000)
             .then(1)
@@ -76,7 +76,6 @@ def locusbreaker_plpl(
     ).filter(pl.col("end_pos") - pl.col("start_pos") < locus_max_size)
     if significant.is_empty():
         return []
-    
     hla_start = 28510120
     hla_end = 33480577
     chr17_inv_start = 44849948

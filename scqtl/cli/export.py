@@ -87,7 +87,6 @@ def export(
                         **stats
                     })
     else:
-        print(metadata)
         for trait in metadata["trait"]:
             rows.append({
                     "TRAIT": trait,
@@ -119,10 +118,6 @@ def export(
 
     if schema:
         print(tiledb_export.schema)
-        if client:
-            print("Shutting down Dask cluster...")
-            client.close()
-        exit()
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
@@ -219,7 +214,7 @@ def export(
                     #cell = cells[0] 
             
                     # Here, I am assuming the 'gene' parameter of query_spec can accept a list of genes.
-                    query = query_spec(uri_path, chrom, cell=cell, gene=genes, type_sumstat=type_sumstat)
+                    query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
 
                 # The call to delayed_locus_breaker remains the same, but it now processes a batch.
                 task = delayed_locus_breaker(query,
@@ -252,9 +247,6 @@ def export(
                             write_header_segment = not os.path.exists(f"{out_lb}_batch_{batch_name}_segment.csv")
                             interval.to_csv(f"{out_lb}_batch_{batch_name}_interval.csv", mode="a", index=False, header = write_header_interval)
                             segments.to_csv(f"{out_lb}_batch_{batch_name}_segment.csv", mode="a", index=False, header = write_header_segment)
-        if client:
-            print("Shutting down Dask cluster...")
-            client.close()
 
     #If no SNP or locusbreker is run only a filtering is done
     else:
@@ -277,6 +269,10 @@ def export(
             print("Shutting down Dask cluster...")
             client.close()
         exit()
+    if client:
+        print("Shutting down Dask cluster...")
+        client.close()
+
     
 
 
