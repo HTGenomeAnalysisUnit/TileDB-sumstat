@@ -21,19 +21,18 @@ import polars as pl
     "Optional parameters",
     cloup.option("--pvar-file", default = None, type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--sep", default = "\t", type=str, help = "pvar file used to verify the alleles order"),
-    cloup.option("--batch-size", default = 1, type=int, help = "The number of files to ingest at once"),
-    cloup.option("--chunk-size", default = 50000000, type=int, help = "The number of rows to ingest at once"),
+    cloup.option("--chunk-files", is_flag=True, type=bool, default = False, help = "If chunk files in block"),
+    cloup.option("--chunk-size", default = 20000000, type=int, help = "The approximate number of rows to ingest at once"),
     cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
     cloup.option("--only-meta", is_flag=True, type=bool, default = False, help = "Create and ingest metadata")
 )
 
-def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_size:int, batch_size:int, file_path:str, type_sumstat:str, pvar_file:str = None, qc:bool = False, only_meta:bool = False):
+def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_files:bool,  chunk_size:int, file_path:str, type_sumstat:str, pvar_file:str = None, qc:bool = False, only_meta:bool = False):
     file_list = pd.read_csv(file_path, sep=",", header=0, dtype=str)
-    #This could be optimized with Dask
     # Create a Harmonize object
-    harmonized_object = Harmonize(mapping_file= mapping_file, chunk_size=chunk_size , uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file, type_trait = type_trait)
+    harmonized_object = Harmonize(mapping_file= mapping_file, uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file, type_trait = type_trait)
    
-    #CHeck if the tiledb already exists, if not create it
+    #Check if the tiledb already exists, if not create it
     if not os.path.exists(uri_path):
         print(f"Creating TileDB at {uri_path}")
         harmonized_object.create_tiledb()
@@ -46,9 +45,9 @@ def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_size:i
     n = None
     n_cases = None
     n_controls = None
-    #for i in range(0, len(file_list), batch_size):
+    buffer_pl = None
+    buffer_count = 0
     for record_index, record in file_list.iterrows():
-        #batch_files = file_list[i:i + batch_size]
         file = record["FILE"]
         if "N" in file_list.columns:
             n = record["N"]
@@ -61,7 +60,6 @@ def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_size:i
                 cell = record["CELL"]
             if "GENE" in file_list.columns:
                 gene = record["GENE"]
-            
         if type_sumstat == "gwas":
             if "TRAIT" in file_list.columns:
                 trait = record["TRAIT"]
@@ -73,6 +71,36 @@ def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_size:i
         # Harmonize the data
         print(f"Harmonizing file: {file}")
         chunk_pl = pl.read_csv(file,separator=sep,low_memory=True ,null_values="NA")
+        if chunk_files:
+            file_len = len(chunk_pl)
+            # Start or extend the buffer
+            if buffer_pl is None:
+                buffer_pl = chunk_pl
+                buffer_count = file_len
+            else:
+                buffer_pl = pl.concat([buffer_pl, chunk_pl])
+                buffer_count += file_len
+
+            # If the buffer reached chunk_size, process it
+            if buffer_count >= chunk_size or file in file_list.iloc[-1:]["FILE"].values:
+                print(f"Processing buffered chunk of size {buffer_count}")
+                harmonized_object.harmonize(
+                    sumstat=buffer_pl, trait=trait, cell=cell, gene=gene,
+                    n=n, n_cases=n_cases, n_controls=n_controls
+                )
+                if qc:
+                    harmonized_object.qc_sumstat(file_path=file)
+                if only_meta:
+                    harmonized_object.create_metadata(file_path=file)
+                    harmonized_object.ingest_metadata()
+                else:
+                    harmonized_object.ingest_data(file_path=file)
+            
+                # Reset buffer
+                buffer_pl = None
+                buffer_count = 0
+            # Continue to next file
+            continue
         harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, n = n, n_cases = n_cases, n_controls = n_controls)
         #Performing QC using GWASLAB
         if qc:
@@ -85,4 +113,4 @@ def ingest(uri_path:str, sep:str, type_trait:str, mapping_file:str, chunk_size:i
         else:
             print(f"Ingesting data: {file}")
             harmonized_object.ingest_data(file_path = file)
-            
+

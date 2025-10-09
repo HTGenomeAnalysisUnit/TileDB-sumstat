@@ -22,9 +22,8 @@ class HarmonizationError(Exception):
 
 
 class Harmonize:
-    def __init__(self, mapping_file: str, chunk_size: int, uri: str, type_sumstat: str, pvar_file: str, type_trait: str):
+    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str):
         self.mapping_file = mapping_file
-        self.chunk_size = chunk_size
         self.uri = uri
         self.pvar_file = pvar_file
         self.type_sumstat = type_sumstat
@@ -38,9 +37,9 @@ class Harmonize:
         if df.empty:
             raise HarmonizationError("Mapping file is empty or not formatted correctly.")
         self.mapping_types = dict(zip(df["key"], df["value"]))
-        #check that "BETA", "SE", "AF" are in the vlaues of the mapping_types
-        if not all(col in self.mapping_types.values() for col in ["BETA", "SE", "EAF"]):
-            raise HarmonizationError("Mapping file must contain BETA, SE, and EAF columns.")
+        #check that "BETA", "SE" are in the vlaues of the mapping_types
+        if not all(col in self.mapping_types.values() for col in ["BETA", "SE"]):
+            raise HarmonizationError("Mapping file must contain BETA and SE columns.")
         # Check if CHR and POS or SNP are present
         if not all(col for col in ["CHR", "POS"] if col in self.mapping_types.values()):
             if "SNPID" not in self.mapping_types.values():
@@ -95,6 +94,7 @@ class Harmonize:
         if not Path(self.pvar_file).is_file():
             raise FileNotFoundError(f"pvar_file {self.pvar_file} does not exist")
 
+        #The ALT must correspond to the alternative allele
         pvar_df = pl.read_csv(
             self.pvar_file,
             separator="\t",
@@ -102,7 +102,7 @@ class Harmonize:
             dtypes={"CHROM": pl.Utf8, "POS": pl.Utf8, "SNPID": pl.Utf8,
                     "REF": pl.Utf8, "ALT": pl.Utf8},
         )
-
+        #Here we assume the SNPID is alphabetically sortedin both pvar and summary statistics
         self.chunk_pl = self.chunk_pl.join(pvar_df, on="SNPID", how="inner", suffix="_pvar")
 
         swap = pl.col("ALT")< pl.col("REF")
@@ -125,8 +125,9 @@ class Harmonize:
                 else:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
         elif self.type_trait == "binary": 
-            if not "N_CASES" in self.chunk_pl.columns and "N_CONTROLS":
-                if n_cases is not None and n_controls is not None:
+            
+            if not all(sample_size in self.chunk_pl.columns for sample_size in ["N_CASES", "N_CONTROLS"]):
+                if not None in [n_cases, n_controls]:
                     self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(float(n_cases)).alias("N_CASES"),
                     pl.lit(float(n_controls)).alias("N_CONTROLS"),
@@ -136,9 +137,6 @@ class Harmonize:
                     raise HarmonizationError("n_cases and n_controls columns are missing and were not provided")
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
-
-
-
 
         # If CHR/POS missing, extract from SNP ID
         if "CHR" not in self.chunk_pl.columns or "POS" not in self.chunk_pl.columns:
@@ -151,7 +149,13 @@ class Harmonize:
     
         if "SNPID" in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.drop("SNPID")
-                
+        
+        if "EAF" not in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(0).alias("EAF"))
+        if "DIST" not in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(1).alias("DIST"))
+        
+        #Here we always assumbe that the SNPs are in REF=A1 and ALT=A2
         swap = pl.col("A1") < pl.col("A2")
 
         #Start by creating new SNPID aligned
@@ -347,6 +351,7 @@ class Harmonize:
         #else:
         metadata = {
             "file_path": file_path,
+            "celltype":[],
             "CELL": [],
             "trait": []
             }
