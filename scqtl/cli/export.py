@@ -3,7 +3,6 @@ import click
 import cloup
 import pandas as pd
 from dask import delayed, compute
-#from scqtl.utils.process_write_chunk import process_write_chunk
 from scqtl.utils.locusbreaker_plpl import locusbreaker_plpl
 import numpy as np
 import os
@@ -23,7 +22,7 @@ Query TileDB database and export data.
     cloup.option("--cell", default = None, type=str, help = "Cell to interrogate"),
     cloup.option("--gene", default = None, type=str, help = "Genes to interrogate"),
     cloup.option("--table_regions", default = None, type=str, help = "Regions to interrogate from a table"),
-    cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE,N", type=str, help = "Attributes to output"),
+    cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE", type=str, help = "Attributes to output"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
 )
 
@@ -86,15 +85,16 @@ def export(
                         "GENE": gene,
                         **stats
                     })
+        df_meta = pl.DataFrame(rows)  
+        df_meta = df_meta.with_columns(pl.col("CHR").cast(pl.UInt16))
     else:
         for trait in metadata["trait"]:
             rows.append({
                     "TRAIT": trait,
                     **metadata[trait]
                     })
-       
+        df_meta = pl.DataFrame(rows)
 
-    df_meta = pl.DataFrame(rows)
 
     client = ctx.obj.get("dask_cluster", None)   
     if client:
@@ -121,29 +121,30 @@ def export(
 
     #Intersect the tiledb with a list of SNPs
     if snp: 
-        snp_list = pd.read_table(snp, dtype = {"CHR":str, "POS":np.uint32, "A0":str, "A1":str})
-        unique_positions = snp_list['position'].unique().tolist()
+        snp_list = pd.read_csv(snp, dtype = {"CHR":int, "POS":np.uint32, "TRAIT":str})
+        chrom_list = snp_list['CHR'].unique().tolist()
+        if type_sumstat == "gwas":
+            header_file = "CHR,TRAIT,POS,SNPID,EAF,BETA,SE,P"
+        else:
+            header_file = "CHR,CELL,GENE,POS,SNPID,EAF,BETA,SE,P"
+        trait_list = snp_list['TRAIT'].unique().tolist()
+        out_file = out_rg + ".csv"
+        with open(out_file, "w") as f:
+            f.write(header_file + "\n")
         #Open a streaming connection with TileDB
-        for chrom in chrom_list:
-            if type_sumstat == "gwas":
-                chrom_list = snp_list['CHR'].unique().tolist()
-                with tiledb_export as A:
-                    tiledb_iterator = A.query(
-                        return_incomplete=True,
-                        attrs=attr.split(",")
-                    ).df[chrom, trait ,unique_positions]
-            else:
-                chrom_list = snp_list['CHR'].unique().tolist()
-                with tiledb_export as A:
-                    tiledb_iterator = A.query(
-                        return_incomplete=True,
+        for trait in trait_list:
+            for chrom in chrom_list:
+                snp_list_chr = snp_list[snp_list['CHR']==chrom]
+                unique_positions = snp_list_chr['POS'].unique().tolist()
+                if type_sumstat == "gwas":
+                    tiledb_query = tiledb_export.query(
+                        	attrs=attr.split(",")
+                    	).df[chrom, trait ,unique_positions]
+                else:
+                    tiledb_query = tiledb_export.query(
                         attrs=attr.split(",")
                     ).df[chrom, cell , gene, unique_positions]
-            #Open a streaming connection with output and run the function
-            with open(out_rg + ".csv", mode="a") as f:
-                for chunk in tiledb_iterator:
-                    chunk.to_csv(out_rg + ".csv", mode="a", index=False, header = True)
-        print(f"Saved filtered summary statistics by SNPs in {out_rg}.csv")
+            tiledb_query.to_csv(out_rg + ".csv", mode="a", index=False, header = False)
         client.close()
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
@@ -151,8 +152,7 @@ def export(
         for ind, row  in pd_region.iterrows():
             if type_sumstat == "gwas":
                 trait = row["TRAIT"]
-                region = tiledb_export.query(dims = ["CHR","POS", "TRAIT"], attrs = attr.split(",")).df[int(row["CHR"]),trait,int(row["START"]):int(row["END"])]
-            
+                region = tiledb_export.query(dims = ["CHR","POS", "TRAIT"], attrs = attr.split(",")).df[int(row["CHR"]),trait,int(row["START"]):int(row["END"])]            
             else:
                 cell,gene = row["TRAIT"].split(":")
                 region = tiledb_export.query(dims = ["CHR","POS","CELL","GENE"], attrs = attr.split(",")).df[int(row["CHR"]),cell,gene,int(row["START"]):int(row["END"])]
@@ -171,7 +171,7 @@ def export(
         tasks = []
         #Defining the Dask functions for delayed
         @delayed
-        def query_spec(uri_path, chrom, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
+        def query_spec(uri_path, chrom:int, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
             with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
                     tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, :]
@@ -185,8 +185,8 @@ def export(
             return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, 
                                      hole_size=hole_size, category = category, type_sumstat = type_sumstat, metadata = metadata)
         traits = pd.read_csv(table)
+        traits = traits.astype({'CHR': 'int16'})
         #for chrom, group in traits.groupby("CHR"):
-            # Process the DataFrame in chunks of 20 rows
         for index, trait in traits.iterrows():
                 #chunk = group.iloc[i:i+1]
                 if "SIG" in traits.columns:
@@ -196,24 +196,9 @@ def export(
                     pvalue_limit = trait["LIM"]
 
                 if type_sumstat == "gwas":
-                    # If your sumstat type is "gwas", this collects the traits from the chunk.
-                    #trait_list = trait["TRAIT"].tolist()
-            
-                    # I am assuming that for GWAS, you can pass a list of traits to query_spec.
-                    # I've used the 'trait' parameter for this.
-                    # You might need to adjust this depending on how query_spec is defined.
-                    
                     query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
                 else:
-                    # For other sumstat types, this extracts cell and gene from the "TRAIT" column.
-                    # It assumes the 'cell' is the same for all genes in a chunk.
                     cell,genes = trait["TRAIT"].split(":")
-                    #genes = trait["TRAIT"].split(":")[0]
-            
-                    # Taking the first cell value, assuming it's constant for the chunk.
-                    #cell = cells[0] 
-            
-                    # Here, I am assuming the 'gene' parameter of query_spec can accept a list of genes.
                     query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
 
                 # The call to delayed_locus_breaker remains the same, but it now processes a batch.
@@ -227,16 +212,6 @@ def export(
                                      type_sumstat=type_sumstat,
                                      metadata = df_meta)
                 tasks.append(task)
-        #The batch size to use which is set to the number of workers if Dask is run
-        #if client and ctx.obj["workers"]:
-            #results = compute(*tasks, scheduler='distributed')
-        #    batch_size = 60
-        #else:
-        #    batch_size = 60
-        #for i in range(0, len(tasks), batch_size):
-         #       if not os.path.exists(f"{out_lb}_batch_{str(i)}_interval.csv"):
-         #           print(f"Batch {i} of {len(tasks)}")
-         #           batch = tasks[i:i+batch_size]
         batch_results = compute(*tasks,scheduler='distributed')  # Compute the batch
         for result in batch_results:
             if not len(result) == 0 and not result[0].empty:
