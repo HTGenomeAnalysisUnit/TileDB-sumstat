@@ -6,8 +6,8 @@
 
 ### Description
 
-Welcome aboard fellow developer, this is a journey we are taking for implementing a custom TileDB for single cell QTL data.
-Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/CONTRIBUTING.md) on how to contribute to this repo.
+Welcome to TileDB-sumstat. This is a custom TileDB for singel cell QTL and GWAS data.
+Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/main/CONTRIBUTING.md) on how to contribute to this repo.
 
 ## Additional link to help you get to know TileDB, Dask and Polars more
 
@@ -17,7 +17,7 @@ Please have a look [here](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/
 
 ---
 
-#### Note: When you add a new feature or modify an existing one please add it to the README guidelines [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-SC-QTL/blob/main/docs/README.md)
+#### Note: When you add a new feature or modify an existing one please add it to the README guidelines [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/main/docs/README.md)
 
 ## Installation
 

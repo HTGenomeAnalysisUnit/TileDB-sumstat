@@ -18,7 +18,7 @@ def locusbreaker_plpl(
     df = df.with_columns(
         MAF=pl.when(pl.col("EAF") <= 0.5).then(pl.col("EAF")).otherwise(1 - pl.col("EAF"))
     ).filter(pl.col("MAF") >= maf).drop("MAF")
-    
+    print(df)
     # Filter SNPs for locus definition
     
 
