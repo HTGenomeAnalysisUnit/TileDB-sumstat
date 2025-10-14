@@ -345,10 +345,6 @@ class Harmonize:
 
     def create_metadata(self, file_path: str):
         """Create and store metadata in TileDB."""
-        #tiledb_existing = tiledb.open(self.uri)
-        #if "metadata" in tiledb_existing.meta:
-        #    metadata = json.loads(tiledb_existing.meta["metadata"])
-        #else:
         metadata = {
             "file_path": file_path,
             "celltype":[],
@@ -487,7 +483,7 @@ class Harmonize:
                     if cell not in merged_metadata["celltype"]:
                         merged_metadata["celltype"].append(cell)
                     # Merge chromosome-level info if exists
-                    if cell in record:
+                    if "celltype" in record and len(record["celltype"]) > 0:
                         for chrom, genes in record[cell].items():
                             cell_chrom_data[cell][chrom] = {}
                             for g in genes:
