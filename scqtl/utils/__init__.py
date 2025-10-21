@@ -47,14 +47,14 @@ def compute_pheno_variance(df, trait_type):
     median_str = str(median_value)
     return median_str
 
-def acat_optimized(pvals_series: pl.Series, small: float = 1e-15) -> float:
+def acat_optimized(pvals, small: float = 1e-15) -> float:
     """
-    Optimized ACAT implementation using vectorized operations with Polars.
+    Optimized ACAT implementation that handles both Polars Series and lists.
     
     Parameters
     ----------
-    pvals_series : pl.Series
-        Series of p-values in (0, 1]. NaNs are ignored.
+    pvals : pl.Series or list
+        Series or list of p-values in (0, 1]. NaNs are ignored.
     small : float, optional
         Threshold below which we use the approximation.
         
@@ -63,8 +63,13 @@ def acat_optimized(pvals_series: pl.Series, small: float = 1e-15) -> float:
     float
         ACAT p-value in [0, 1].
     """
-    # Convert to numpy array for vectorized operations
-    p = pvals_series.to_numpy()
+    # Handle both Polars Series and lists
+    if isinstance(pvals, pl.Series):
+        p = pvals.to_numpy()
+    elif isinstance(pvals, list):
+        p = np.array(pvals)
+    else:
+        raise TypeError(f"Expected pl.Series or list, got {type(pvals)}")
     
     # Remove NaNs
     valid_mask = ~np.isnan(p)

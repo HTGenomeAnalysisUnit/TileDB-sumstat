@@ -1,31 +1,40 @@
 #!/usr/bin/env nextflow
 
-process LOCUS_BREAKER_TILEDB {
+process INGEST_DATA {
   label "process_multi"
-  // conda '/ssu/gassu/conda_envs/scqtl'
-  conda '/software/cardinal_analysis/ht/conda_envs/scqtl'
-
-  publishDir "${params.outdir}/results/gwas_and_loci_tables/", mode: params.publish_dir_mode
+  conda '/ssu/gassu/conda_envs/scqtl'
+  publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
 
 // Define input
   input:
-  tuple  path(traits_list_table_ingest)
+  path(tiledb)
+  each path(list_files)
+  path(mapping_file)
+  path(dummy_file)
 
 // Define output
   output:
-    path("tiledb_uri"), emit:tiledb_storage, optional: true
-    path("metadata.csv"), emit:metadata
+    path("metadata_parts_${list_files.name}"), emit: metadata_parts
+    path("ingestion_complete_${list_files.name}"), emit: ingestion_done
+    path("${tiledb}"), emit: tiledb_updated
 
 // Define the shell script to execute
   script:
+    def qc = params.qc ? "--qc" : ""
     """
-    scqtl --workers ${params.workers}  --memory_w ${params.memory_w} \
-    ingest
-    --uri-path ${params.tiledb_uri} \ 
-    --file-path ${traits_list_table_ingest} \
+    scqtl ingest \
+    --uri-path TileDB_${params.tiledb_name}\
+    --file-path ${list_files} \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat} \
-    --chunk-files ${meta}\
+    ${qc}
+
+    # Copy all metadata JSON files to a unique directory for output
+    mkdir -p metadata_parts_${list_files.name}
+    cp -v ${tiledb}_metadata_parts/*.json metadata_parts_${list_files.name}/ || true
+  
+    # Create a dummy file to signal completion
+    touch ingestion_complete_${list_files.name}
     """
 }

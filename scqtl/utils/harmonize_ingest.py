@@ -343,188 +343,269 @@ class Harmonize:
             logger.error(f"Failed to append chunk to TileDB for file {file_path}: {e}")
             raise
 
+
     def create_metadata(self, file_path: str):
-        """Create and store metadata in TileDB."""
+        """Create and store metadata as individual JSON files."""
         metadata = {
-            "file_path": file_path,
-            "celltype":[],
-            "CELL": [],
-            "trait": []
-            }
+            "traits": [],
+            "CELL": []
+        }
+    
         if self.type_sumstat == "qtl":
-        # Get unique cell types
-
-            self.chunk_pl = self.chunk_pl.group_by(["CHR" ,"CELL", "GENE"]).agg(
-                pl.col("P").map_batches(
-                    lambda s: pl.Series([acat_optimized(s)]),
-                    return_dtype=pl.Float64
-                ).alias("ACAT_P"),
-                pl.col("N").first().alias("N")
-                )
-            self.chunk_pl = self.chunk_pl.with_columns(
-                self.chunk_pl["ACAT_P"].list.first().alias("ACAT_P_scalar")
-            )
-
+            # Get unique cell types
             celltypes = self.chunk_pl["CELL"].unique().to_list()
             if not celltypes:
                 raise HarmonizationError("No cell types found in the data")
 
-            # Loop over each cell type
-            for cell in celltypes:
-                if cell not in metadata["celltype"]:
-                    metadata["celltype"].append(cell)
-                    metadata[cell] = {}
+            # Update CELL list
+            metadata["CELL"] = celltypes
 
-                # Filter by this cell type
-                df_cell = self.chunk_pl.filter(self.chunk_pl["CELL"] == cell)
-                # Group by chromosome and collect unique genes
-                if self.type_trait == "quant":
-                    chr_gene_map = df_cell.group_by(["CHR", "GENE"]).agg([
-                        pl.col("ACAT_P_scalar").first().alias("ACAT"),
-                        pl.col("N").first()
-                        ])
-                    for row in chr_gene_map.iter_rows(named=True):
-                        chrom = row["CHR"]
-                        gene = row["GENE"]
-                        acat = row["ACAT"]
-                        n = float(row["N"])
-                        if chrom not in metadata[cell]:
-                            metadata[cell][chrom] = {}
-                            metadata[cell][chrom][gene] = {
-                                "N": n,
-                                "ACAT": acat,
-                                "PHENO_VAR": 1
-                                }
-                else:
-                    chr_gene_map = df_cell.group_by(["CHR", "GENE"]).agg([
-                        pl.col("ACAT_P_scalar").first().alias("ACAT"),
-                        pl.col("N").first(),
-                        pl.col("N_CASES").first(),
-                        pl.col("N_CONTROLS").first()
-                        ])
-                    for row in chr_gene_map.iter_rows(named=True):
-                        chrom = row["CHR"]
-                        gene = row["GENE"]
-                        acat = row["ACAT"]
-                        n = float(row["N"])
-                        ncases = float(row["N_CASES"])
-                        ncontrols = float(row["N_CONTROLS"])
-                        if chrom not in metadata[cell]:
-                            metadata[cell][chrom] = {}
-                            metadata[cell][chrom][gene] = {
-                                "N": n,
-                                "N_CASES":ncases,
-                                "N_CONTROLS":ncontrols,
-                                "ACAT": acat,
-                                "PHENO_VAR": 1
-                                }                    
-        else:
+            # Process each cell type
+            for cell in celltypes:
+                # Filter by this cell type and compute ACAT per gene
+                df_cell = self.chunk_pl.filter(pl.col("CELL") == cell)
+            
+                # Group by CHR and GENE, compute ACAT for each group
+                chr_gene_agg = df_cell.group_by(["CHR", "GENE"]).agg([
+                    pl.col("P").map_batches(
+                        lambda s: pl.Series([acat_optimized(s)]),
+                        return_dtype=pl.Float64
+                    ).alias("ACAT_LIST"),
+                    pl.col("N").first().alias("N")
+                ])
+                chr_gene_agg = chr_gene_agg.with_columns(
+                    pl.col("ACAT_LIST").list.first().alias("ACAT")
+                )
+            
+                # Initialize cell structure if not exists
+                if cell not in metadata:
+                    metadata[cell] = {}
+            
+                # Populate metadata with chromosome -> gene structure
+                for row in chr_gene_agg.iter_rows(named=True):
+                    chrom = str(row["CHR"])  # Convert to string for consistency
+                    gene = row["GENE"]
+                    acat_val = row["ACAT"]
+                    n_val = float(row["N"])
+                
+                    if chrom not in metadata[cell]:
+                        metadata[cell][chrom] = {}
+                
+                    gene_metadata = {
+                        "ACAT": float(acat_val),
+                        "N": n_val,
+                        "PHENO_VAR": 1.0
+                    }
+                
+                    metadata[cell][chrom][gene] = gene_metadata
+                    
+        else:  # GWAS case
             if "TRAIT" not in self.chunk_pl.columns:
                 raise HarmonizationError("TRAIT column is missing in the data")
-            if self.chunk_pl["TRAIT"].is_empty():
-                raise HarmonizationError("TRAIT column is empty in the data")
+        
             traits = self.chunk_pl["TRAIT"].unique().to_list()
+            metadata["traits"] = traits
+        
             for trait in traits:
-                if trait not in metadata["trait"]:
-                    metadata["trait"].append(trait)
-                    df_trait = self.chunk_pl.filter(self.chunk_pl["TRAIT"] == trait)
-                    pheno_var = compute_pheno_variance(df_trait, self.type_trait)
-                    n = df_trait["N"].unique().to_list()[0]
-                    metadata[trait] = {"N":n, "PHENO_VAR":pheno_var}
-                    if self.type_trait == "binary":
-                        n_cases = df_trait["N_CASES"].unique().to_list()[0]
-                        n_controls = df_trait["N_CONTROLS"].unique().to_list()[0]
-                        metadata[trait]["N_CASES"] = n_cases
-                        metadata[trait]["N_CONTROLS"] = n_controls
-                    
-        f = open(f'{self.uri}_metadata.json', 'a')
+                df_trait = self.chunk_pl.filter(pl.col("TRAIT") == trait)
+                pheno_var = compute_pheno_variance(df_trait, self.type_trait)
+                n_val = df_trait["N"].unique().to_list()[0]
+            
+                trait_metadata = {
+                    "N": float(n_val),
+                    "PHENO_VAR": float(pheno_var)
+                }
+            
+                if self.type_trait == "binary":
+                    n_cases = df_trait["N_CASES"].unique().to_list()[0]
+                    n_controls = df_trait["N_CONTROLS"].unique().to_list()[0]
+                    trait_metadata.update({
+                        "N_CASES": float(n_cases),
+                        "N_CONTROLS": float(n_controls)
+                    })
+            
+                metadata[trait] = trait_metadata
 
-        with open(f'{self.uri}_metadata.json', 'a') as f:
-            json.dump(metadata, f)
-
-        logger.info("Metadata created successfully")
+        # Write individual metadata file instead of updating TileDB
+        self._write_individual_metadata(metadata, file_path)
     
-    def ingest_metadata(self):
-        metadata_records = []
-        with open(f'{self.uri}_metadata.json') as f:
-            text = f.read()
-        
-        tdb = tiledb.open(self.uri, 'w')
-        decoder = json.JSONDecoder()
-        idx = 0
-        while idx < len(text):
-            obj, idx = decoder.raw_decode(text, idx)
-            metadata_records.append(obj)
+        logger.info(f"Individual metadata file created for {file_path}")
 
-        # Create a merged dictionary
-        merged_metadata = {
-            "file_path": [],
-            "trait": [],
-            "celltype": []
-        }
-
-        # For storing per-cell/chromosome info if present
-        cell_chrom_data = defaultdict(lambda: defaultdict(list))
-        
-        for record in metadata_records:
-            # Merge file paths
-            if "file_path" in record and record["file_path"] not in merged_metadata["file_path"]:
-                merged_metadata["file_path"].append(record["file_path"])
-            # Merge traits
-            if "trait" in record and len(record["trait"]) > 0:
-                for t in record["trait"]:
-                    if t not in merged_metadata["trait"]:
-                        merged_metadata["trait"].append(t)
-                    if t in record:
-                        merged_metadata[t] = record[t]
-            # Merge celltypes and their per-chromosome data
-            if "cell" in record and len(record["celltype"]) > 0:
-                for cell in record["celltype"]:
-                    if cell not in merged_metadata["celltype"]:
-                        merged_metadata["celltype"].append(cell)
-                    # Merge chromosome-level info if exists
-                    if "celltype" in record and len(record["celltype"]) > 0:
-                        for chrom, genes in record[cell].items():
-                            cell_chrom_data[cell][chrom] = {}
-                            for g in genes:
-                                cell_chrom_data[cell][chrom][g] = genes[g]
-
-        # Add per-cell/chromosome info
-        for cell, chrom_dict in cell_chrom_data.items():
-            merged_metadata[cell] = chrom_dict
-
+    def _write_individual_metadata(self, metadata, file_path):
+        """Write metadata to individual JSON file."""
+        metadata_dir = f"{self.uri}_metadata_parts"
+        os.makedirs(metadata_dir, exist_ok=True)
+    
+        # Create a safe filename from the original file path
+        file_stem = Path(file_path).stem
+        metadata_file = os.path.join(metadata_dir, f"{file_stem}.json")
+    
+        with open(metadata_file, 'w') as f:
+            json.dump(metadata, f, indent=2)
+    
+        logger.info(f"Metadata written to {metadata_file}")
+    
+    def export_metadata_to_csv(self, output_path: str = None):
+        """Export metadata to CSV format."""
+        if output_path is None:
+            output_path = f"{self.uri}_metadata.csv"
+    
+        # Get the merged metadata from TileDB
+        with tiledb.open(self.uri, "r") as array:
+            merged_metadata_json = array.meta.get("merged_metadata", "{}")
+    
+        if not merged_metadata_json:
+            logger.warning("No merged metadata found in TileDB array")
+            return
+    
+        merged_metadata = json.loads(merged_metadata_json)
+    
+        # Create rows for CSV
         rows = []
-        tdb = tiledb.open(self.uri, 'w')
-        tdb.meta["metadata"] = json.dumps(merged_metadata)
-        # Loop over all celltypes in metadata
-        for celltype in merged_metadata["celltype"]:
-            if celltype in merged_metadata:  # make sure the key exists in dict
-                groups = merged_metadata[celltype]
-                for group, values in groups.items():  # e.g. group "11"
-                    for gene_id in values:
-                        if self.type_trait=="quant":
-                            rows.append({
-                                "CHR": group,
-                                "CELL": celltype,
-                                "GENE": gene_id,
-                                "N": values[gene_id]["N"],
-                                "ACAT": values[gene_id]["ACAT"],
-                                "PHENOVAR": values[gene_id]["PHENO_VAR"],
-                            })
-                        else:
-                            rows.append({
-                                "CHR": group,
-                                "CELL": celltype,
-                                "GENE": gene_id,
-                                "N": values[gene_id]["N"],
-                                "N_CASES": values[gene_id]["N_CASES"],
-                                "N_CONTROLS": values[gene_id]["N_CONTROLS"],
-                                "ACAT": values[gene_id]["ACAT"],
-                                "PHENOVAR": values[gene_id]["PHENO_VAR"],
-                            })
 
-
-        df = pd.DataFrame(rows)
-        df.to_csv(f"{self.uri}_metadata.csv",index = False)
+        # Process QTL data (cell types)
+        if "CELL" in merged_metadata and merged_metadata["CELL"]:
+            for cell_type in merged_metadata["CELL"]:
+                if cell_type in merged_metadata:
+                    cell_data = merged_metadata[cell_type]
+                    for chrom, genes in cell_data.items():
+                        for gene_id, gene_metadata in genes.items():
+                            row = {
+                                "CHR": chrom,
+                                "CELL": cell_type,
+                                "GENE": gene_id,
+                                "ACAT": gene_metadata.get("ACAT", ""),
+                                "N": gene_metadata.get("N", ""),
+                                "PHENO_VAR": gene_metadata.get("PHENO_VAR", "")
+                                }
+                            rows.append(row)
+    
+        # Process GWAS data (traits)
+        if "traits" in merged_metadata and merged_metadata["traits"]:
+            for trait in merged_metadata["traits"]:
+                if trait in merged_metadata:
+                    trait_data = merged_metadata[trait]
+                    row = {
+                    "TRAIT": trait,
+                    "N": trait_data.get("N", ""),
+                    "PHENO_VAR": trait_data.get("PHENO_VAR", ""),
+                    "N_CASES": trait_data.get("N_CASES", ""),
+                    "N_CONTROLS": trait_data.get("N_CONTROLS", "")
+                    }
+                    rows.append(row)
+    
+        # Create DataFrame and save to CSV
+        if rows:
+            df = pd.DataFrame(rows)
         
+            # Reorder columns for better readability
+            if "CELL" in df.columns:
+                # QTL format
+                column_order = ["CHR", "CELL", "GENE", "ACAT", "N", "PHENO_VAR"]
+                # Only include columns that exist in the DataFrame
+                column_order = [col for col in column_order if col in df.columns]
+                df = df[column_order]
+            else:
+                # GWAS format
+                column_order = ["TRAIT", "N", "PHENO_VAR", "N_CASES", "N_CONTROLS"]
+                column_order = [col for col in column_order if col in df.columns]
+                df = df[column_order]
+        
+            df.to_csv(output_path, index=False)
+            logger.info(f"Metadata exported to {output_path}")
+        
+            # Print summary
+            if "CELL" in df.columns:
+                logger.info(f"Exported {len(df)} gene-cell type combinations")
+                logger.info(f"Cell types: {df['CELL'].nunique()}")
+                logger.info(f"Genes: {df['GENE'].nunique()}")
+                logger.info(f"Chromosomes: {df['CHR'].nunique()}")
+            else:
+                logger.info(f"Exported {len(df)} traits")
+        
+            return df
+        else:
+            logger.warning("No metadata found to export")
+            return pd.DataFrame()
 
+    def merge_metadata_files(self):
+        """Merge all individual metadata files into final TileDB metadata."""
+        metadata_dir = f"{self.uri}_metadata_parts"
+    
+        if not os.path.exists(metadata_dir):
+            logger.warning(f"No metadata directory found at {metadata_dir}")
+            return
+    
+        merged_metadata = {
+        "traits": [],
+        "CELL": []
+        }
+    
+        # Process all individual metadata files
+        metadata_files = list(Path(metadata_dir).glob("*.json"))
+        logger.info(f"Found {len(metadata_files)} metadata files to merge")
+    
+        for metadata_file in metadata_files:
+            try:
+                with open(metadata_file, 'r') as f:
+                    file_metadata = json.load(f)
+            
+                # Merge traits (for GWAS)
+                if "traits" in file_metadata and file_metadata["traits"]:
+                    current_traits = set(merged_metadata.get("traits", []))
+                    new_traits = set(file_metadata["traits"])
+                    merged_metadata["traits"] = list(current_traits.union(new_traits))
+                
+                    for trait in file_metadata["traits"]:
+                        if trait in file_metadata:
+                            if trait not in merged_metadata:
+                                merged_metadata[trait] = file_metadata[trait]
+                            else:
+                                logger.warning(f"Trait {trait} already exists in metadata, overwriting")
+                                merged_metadata[trait] = file_metadata[trait]
+            
+                # Merge CELL and cell metadata (for QTL)
+                if "CELL" in file_metadata and file_metadata["CELL"]:
+                    current_cells = set(merged_metadata.get("CELL", []))
+                    new_cells = set(file_metadata["CELL"])
+                    merged_metadata["CELL"] = list(current_cells.union(new_cells))
+                
+                    for cell in file_metadata["CELL"]:
+                        if cell in file_metadata:
+                            if cell not in merged_metadata:
+                                merged_metadata[cell] = {}
+                        
+                            for chrom, genes in file_metadata[cell].items():
+                                if chrom not in merged_metadata[cell]:
+                                    merged_metadata[cell][chrom] = {}
+                            
+                                for gene, gene_data in genes.items():
+                                    if gene in merged_metadata[cell][chrom]:
+                                        logger.warning(f"Gene {gene} already exists in cell {cell} chromosome {chrom}, overwriting")
+                                    merged_metadata[cell][chrom][gene] = gene_data
+            
+                logger.info(f"Processed {metadata_file.name}")
+            
+            except Exception as e:
+                logger.error(f"Error processing metadata file {metadata_file}: {e}")
+                continue
+    
+        # Store the final merged metadata in TileDB
+        with tiledb.open(self.uri, "w") as array:
+            array.meta["merged_metadata"] = json.dumps(merged_metadata)
+    
+        # Export to CSV
+        self.export_metadata_to_csv()
+    
+        # Log summary
+        cell_count = len(merged_metadata.get("CELL", []))
+        trait_count = len(merged_metadata.get("traits", []))
+    
+        total_genes = 0
+        for cell_type in merged_metadata.get("CELL", []):
+            if cell_type in merged_metadata:
+                for chrom_data in merged_metadata[cell_type].values():
+                    total_genes += len(chrom_data)
+    
+        logger.info(f"Final merged metadata: {cell_count} cell types, {trait_count} traits, {total_genes} total genes")
+    

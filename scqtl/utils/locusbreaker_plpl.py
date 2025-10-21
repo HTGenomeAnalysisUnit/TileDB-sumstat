@@ -7,7 +7,7 @@ def locusbreaker_plpl(
     pvalue_sig: float = 5e-8,
     pvalue_limit: float = 5e-6,
     hole_size: int = 250000,
-    category: bool = False,
+    cis_trans_lb: str = "cis",
     type_sumstat: str = "scqtl",
     maf: float = 0.001,
     locus_max_size: int = 3000000,
@@ -34,11 +34,11 @@ def locusbreaker_plpl(
         return []
     # Apply cis/trans filtering for scqtl
     if type_sumstat == "qtl":
-        if category == "cis":
+        if cis_trans_lb == "cis":
             loci_snps = loci_snps.filter(
                 (pl.col("DIST") > -1000000) & (pl.col("DIST") < 1000000)
             )
-        elif category == "trans":
+        elif cis_trans_lb == "trans":
             loci_snps = loci_snps.filter(
                 (pl.col("DIST") < -1000000) | (pl.col("DIST") > 1000000)
             )

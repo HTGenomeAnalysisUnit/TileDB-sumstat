@@ -1,11 +1,10 @@
 #!/usr/bin/env nextflow
 
-process LOCUS_BREAKER_TILEDB {
+process EXPORT_LOCUSBREAKER {
   label "process_multi"
-  // conda '/ssu/gassu/conda_envs/scqtl'
-  conda '/software/cardinal_analysis/ht/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/scqtl'
 
-  publishDir "${params.outdir}/results/gwas_and_loci_tables/", mode: params.publish_dir_mode
+  publishDir "${params.outdir}/gwas_and_loci_tables", mode: params.publish_dir_mode
 
 
 // Define input
@@ -15,23 +14,20 @@ process LOCUS_BREAKER_TILEDB {
 // Define output
   output:
     path("*_interval.csv"), emit:locus_breaker_tdb_intervals, optional: true
-    tuple path("dummy_index"), path("*_segment.csv"), emit:locus_breaker_tdb_segments, optional: true
+    path("*_segment.csv"), emit:locus_breaker_tdb_segments, optional: true
 
 // Define the shell script to execute
   script:
     """
-    scqtl --workers ${params.workers} \
-      export \
-      --table ${traits_list_table} \
-      --uri-path ${params.tiledb_uri} \
-      --out_lb "out" \
-      --maf ${params.tiledb_lb_maf} \
-      --type-sumstat ${params.tiledb_lb_typesumstat} \
-      --hole ${params.tiledb_lb_hole} \
-      --locus-max-size ${params.tiledb_large_locus_size} \
+    scqtl export \
+      --table-lb ${traits_list_table} \
+      --tiledb-path ${params.tiledb_path} \
+      --out ${params.out} \
+      --maf-lb ${params.maf_lb} \
+      --type-sumstat ${params.type_sumstat} \
+      --hole-lb ${params.hole_lb} \
+      --locus-max-size-lb ${params.locus_max_size_lb} \
       --locusbreaker \
-      --batch-name ${batch_index}
-    
-    touch dummy_index
+      --batch-name-lb ${batch_index}
     """
 }

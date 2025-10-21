@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-process LOCUS_BREAKER_TILEDB {
+process EXPORT_REGIONS {
   label "process_multi"
   // conda '/ssu/gassu/conda_envs/scqtl'
   conda '/software/cardinal_analysis/ht/conda_envs/scqtl'
@@ -31,7 +31,5 @@ process LOCUS_BREAKER_TILEDB {
       --locus-max-size ${params.tiledb_large_locus_size} \
       --locusbreaker \
       --batch-name ${batch_index}
-    
-    touch dummy_index
     """
 }
