@@ -1,0 +1,77 @@
+Nov-11 19:40:01.890 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile test_export_snp,conda
+Nov-11 19:40:02.025 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.3
+Nov-11 19:40:02.047 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/bruno.ariano/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.0,nf-k8s@1.0.0,nf-tower@1.11.3,nf-wave@1.12.1
+Nov-11 19:40:02.074 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Nov-11 19:40:02.076 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Nov-11 19:40:02.079 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Nov-11 19:40:02.091 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Nov-11 19:40:02.115 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /group/soranzo/bruno.ariano/TileDB-sumstat/nextflow.config
+Nov-11 19:40:02.119 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /group/soranzo/bruno.ariano/TileDB-sumstat/nextflow.config
+Nov-11 19:40:02.177 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/bruno.ariano/.nextflow/secrets/store.json
+Nov-11 19:40:02.180 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@13e698c7] - activable => nextflow.secret.LocalSecretsProvider@13e698c7
+Nov-11 19:40:02.187 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test_export_snp,conda`
+Nov-11 19:40:03.079 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [test, apptainer, wave, docker, slurm, shifter, mamba, test_export_snp, charliecloud, conda, slurm_conda, test_export_lb, singularity, podman]
+Nov-11 19:40:03.115 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Nov-11 19:40:03.132 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [drunk_stonebraker] DSL2 - revision: c230c78a2a
+Nov-11 19:40:03.134 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Nov-11 19:40:03.135 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Nov-11 19:40:03.254 [main] DEBUG nextflow.Session - Session UUID: fa42aa65-847f-4cb7-9022-43bfecc43e49
+Nov-11 19:40:03.257 [main] DEBUG nextflow.Session - Run name: drunk_stonebraker
+Nov-11 19:40:03.258 [main] DEBUG nextflow.Session - Executor pool size: 8
+Nov-11 19:40:03.269 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Nov-11 19:40:03.276 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Nov-11 19:40:03.317 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.3 build 5949
+  Created: 02-06-2025 20:56 UTC (22:56 CEST)
+  System: Linux 4.18.0-477.13.1.el8_8.x86_64
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 17.0.8.1+1
+  Encoding: UTF-8 (UTF-8)
+  Process: 746088@cnode03 [192.168.104.103]
+  CPUs: 8 - Mem: 60 GB (50.5 GB) - Swap: 0 (0)
+Nov-11 19:40:03.360 [main] DEBUG nextflow.Session - Work-dir: /group/soranzo/bruno.ariano/TileDB-sumstat/work [nfs]
+Nov-11 19:40:03.361 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /group/soranzo/bruno.ariano/TileDB-sumstat/bin
+Nov-11 19:40:03.373 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Nov-11 19:40:03.385 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Nov-11 19:40:03.418 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Nov-11 19:40:03.449 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Nov-11 19:40:03.460 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+Nov-11 19:40:03.587 [main] DEBUG nextflow.Session - Session start
+Nov-11 19:40:03.591 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /group/soranzo/bruno.ariano/TileDB-sumstat/results/pipeline_info/execution_trace_2025-11-11_19-40-03.txt
+Nov-11 19:40:03.876 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Nov-11 19:40:04.429 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_multi` matches labels `process_multi` for process with name EXPORT_SNP
+Nov-11 19:40:04.445 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Nov-11 19:40:04.445 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Nov-11 19:40:04.453 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Nov-11 19:40:04.461 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=8; memory=60 GB; capacity=8; pollInterval=100ms; dumpInterval=5m
+Nov-11 19:40:04.467 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Nov-11 19:40:04.492 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'EXPORT_SNP': maxForks=0; fair=false; array=0
+Nov-11 19:40:04.528 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: EXPORT_LOCUSBREAKER, MERGE_METADATA, EXPORT_REGIONS, EXPORT_SNP, INGEST_DATA, CREATE_TILEDB
+Nov-11 19:40:04.531 [main] DEBUG nextflow.Session - Igniting dataflow network (2)
+Nov-11 19:40:04.538 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > EXPORT_SNP
+Nov-11 19:40:04.539 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_f79ff21670d5e55f: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/regions/main.nf
+  Script_7b14281b3e71c830: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/merge_metadata/main.nf
+  Script_fa94f925e889eb3d: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/create_tiledb/main.nf
+  Script_407064212709c912: /group/soranzo/bruno.ariano/TileDB-sumstat/main.nf
+  Script_9642d9956a1c233a: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/ingestion/main.nf
+  Script_db897bc2c0454a54: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/snp/main.nf
+  Script_aef310e1ce2070d7: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/locusbreaker/main.nf
+Nov-11 19:40:04.540 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Nov-11 19:40:04.540 [main] DEBUG nextflow.Session - Session await
+Nov-11 19:40:04.561 [Actor Thread 6] DEBUG n.splitter.AbstractTextSplitter - Splitter `Text` collector path: nextflow.splitter.TextFileCollector$CachePath(/group/soranzo/bruno.ariano/TileDB-sumstat/work/49/f01a03cb498729d8eb14bc7ccea16e/snps_ale.csv, null)
+Nov-11 19:40:04.741 [Actor Thread 6] DEBUG nextflow.conda.CondaCache - conda found local env for environment=/ssu/gassu/conda_envs/scqtl; path=/ssu/gassu/conda_envs/scqtl
+Nov-11 19:40:04.845 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Nov-11 19:40:04.848 [Task submitter] INFO  nextflow.Session - [50/8b6364] Submitted process > EXPORT_SNP (3)
+Nov-11 19:41:02.126 [SIGINT handler] DEBUG nextflow.Session - Session aborted -- Cause: SIGINT
+Nov-11 19:41:02.146 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Nov-11 19:41:02.148 [main] DEBUG nextflow.Session - Session await > all processes finished
+Nov-11 19:41:02.148 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Nov-11 19:41:02.153 [main] WARN  n.processor.TaskPollingMonitor - Killing running tasks (1)
+Nov-11 19:41:02.164 [main] DEBUG n.executor.local.LocalTaskHandler - Unable to kill EXPORT_SNP (3) -- command: kill -TERM 746408; exit: 1 
+ bash: line 0: kill: (746408) - No such process
+
+Nov-11 19:41:02.183 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=3; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=1; succeedDuration=0ms; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=6; peakMemory=30 GB; ]
+Nov-11 19:41:02.184 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Nov-11 19:41:02.186 [main] DEBUG nextflow.trace.ReportObserver - Workflow completed -- rendering execution report
+Nov-11 19:41:02.706 [SIGINT handler] INFO  nextflow.Session - Adieu
+Nov-11 19:41:02.723 [main] DEBUG nextflow.trace.TimelineObserver - Workflow completed -- rendering execution timeline

@@ -1,0 +1,110 @@
+Nov-11 19:48:44.911 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile test_export_snp,slurm_conda
+Nov-11 19:48:45.031 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.04.3
+Nov-11 19:48:45.052 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/bruno.ariano/.nextflow/plugins; core-plugins: nf-amazon@2.15.0,nf-azure@1.16.0,nf-cloudcache@0.4.3,nf-codecommit@0.2.3,nf-console@1.2.1,nf-google@1.21.0,nf-k8s@1.0.0,nf-tower@1.11.3,nf-wave@1.12.1
+Nov-11 19:48:45.079 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Nov-11 19:48:45.081 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Nov-11 19:48:45.084 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Nov-11 19:48:45.096 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Nov-11 19:48:45.120 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /group/soranzo/bruno.ariano/TileDB-sumstat/nextflow.config
+Nov-11 19:48:45.123 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /group/soranzo/bruno.ariano/TileDB-sumstat/nextflow.config
+Nov-11 19:48:45.176 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/bruno.ariano/.nextflow/secrets/store.json
+Nov-11 19:48:45.180 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@13e698c7] - activable => nextflow.secret.LocalSecretsProvider@13e698c7
+Nov-11 19:48:45.187 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test_export_snp,slurm_conda`
+Nov-11 19:48:46.014 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [test, apptainer, wave, docker, slurm, shifter, mamba, test_export_snp, charliecloud, conda, slurm_conda, test_export_lb, singularity, podman]
+Nov-11 19:48:46.046 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Nov-11 19:48:46.063 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [amazing_almeida] DSL2 - revision: c230c78a2a
+Nov-11 19:48:46.064 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Nov-11 19:48:46.065 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Nov-11 19:48:46.117 [main] DEBUG nextflow.Session - Session UUID: afe12e5c-4035-4ddd-a6c8-6e2cb8c68e2c
+Nov-11 19:48:46.117 [main] DEBUG nextflow.Session - Run name: amazing_almeida
+Nov-11 19:48:46.118 [main] DEBUG nextflow.Session - Executor pool size: 8
+Nov-11 19:48:46.126 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Nov-11 19:48:46.132 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Nov-11 19:48:46.159 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.04.3 build 5949
+  Created: 02-06-2025 20:56 UTC (22:56 CEST)
+  System: Linux 4.18.0-477.13.1.el8_8.x86_64
+  Runtime: Groovy 4.0.26 on OpenJDK 64-Bit Server VM 17.0.8.1+1
+  Encoding: UTF-8 (UTF-8)
+  Process: 764207@cnode03 [192.168.104.103]
+  CPUs: 8 - Mem: 60 GB (36.1 GB) - Swap: 0 (0)
+Nov-11 19:48:46.270 [main] DEBUG nextflow.Session - Work-dir: /group/soranzo/bruno.ariano/TileDB-sumstat/work [nfs]
+Nov-11 19:48:46.276 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /group/soranzo/bruno.ariano/TileDB-sumstat/bin
+Nov-11 19:48:46.298 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Nov-11 19:48:46.310 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Nov-11 19:48:46.340 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Nov-11 19:48:46.372 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Nov-11 19:48:46.382 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+Nov-11 19:48:46.476 [main] DEBUG nextflow.Session - Session start
+Nov-11 19:48:46.480 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /group/soranzo/bruno.ariano/TileDB-sumstat/results/pipeline_info/execution_trace_2025-11-11_19-48-45.txt
+Nov-11 19:48:46.738 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Nov-11 19:48:47.258 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_multi` matches labels `process_multi` for process with name EXPORT_SNP
+Nov-11 19:48:47.270 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: slurm
+Nov-11 19:48:47.270 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'slurm'
+Nov-11 19:48:47.281 [main] DEBUG nextflow.executor.Executor - [warm up] executor > slurm
+Nov-11 19:48:47.288 [main] DEBUG n.processor.TaskPollingMonitor - Creating task monitor for executor 'slurm' > capacity: 50; pollInterval: 5s; dumpInterval: 5m 
+Nov-11 19:48:47.290 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: slurm)
+Nov-11 19:48:47.294 [main] DEBUG n.executor.AbstractGridExecutor - Creating executor 'slurm' > queue-stat-interval: 1m
+Nov-11 19:48:47.316 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'EXPORT_SNP': maxForks=0; fair=false; array=0
+Nov-11 19:48:47.351 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: EXPORT_LOCUSBREAKER, MERGE_METADATA, EXPORT_REGIONS, EXPORT_SNP, CREATE_TILEDB, INGEST_DATA
+Nov-11 19:48:47.355 [main] DEBUG nextflow.Session - Igniting dataflow network (2)
+Nov-11 19:48:47.361 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > EXPORT_SNP
+Nov-11 19:48:47.362 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_f79ff21670d5e55f: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/regions/main.nf
+  Script_7b14281b3e71c830: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/merge_metadata/main.nf
+  Script_fa94f925e889eb3d: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/create_tiledb/main.nf
+  Script_9642d9956a1c233a: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/ingestion/main.nf
+  Script_407064212709c912: /group/soranzo/bruno.ariano/TileDB-sumstat/main.nf
+  Script_aef310e1ce2070d7: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/locusbreaker/main.nf
+  Script_db897bc2c0454a54: /group/soranzo/bruno.ariano/TileDB-sumstat/modules/snp/main.nf
+Nov-11 19:48:47.363 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Nov-11 19:48:47.363 [main] DEBUG nextflow.Session - Session await
+Nov-11 19:48:47.405 [Actor Thread 6] DEBUG n.splitter.AbstractTextSplitter - Splitter `Text` collector path: nextflow.splitter.TextFileCollector$CachePath(/group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/6a551b9ffe1d7ff44214b7ec90c587/snps_ale.csv, null)
+Nov-11 19:48:47.561 [Actor Thread 9] DEBUG nextflow.conda.CondaCache - conda found local env for environment=/ssu/gassu/conda_envs/scqtl; path=/ssu/gassu/conda_envs/scqtl
+Nov-11 19:48:47.728 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process EXPORT_SNP (3) > jobId: 25225022; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919
+Nov-11 19:48:47.728 [Task submitter] INFO  nextflow.Session - [75/ab754a] Submitted process > EXPORT_SNP (3)
+Nov-11 19:48:47.798 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process EXPORT_SNP (2) > jobId: 25225023; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2
+Nov-11 19:48:47.798 [Task submitter] INFO  nextflow.Session - [b4/22c1c3] Submitted process > EXPORT_SNP (2)
+Nov-11 19:48:47.849 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process EXPORT_SNP (4) > jobId: 25225024; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe
+Nov-11 19:48:47.849 [Task submitter] INFO  nextflow.Session - [fd/8a1819] Submitted process > EXPORT_SNP (4)
+Nov-11 19:48:47.901 [Task submitter] DEBUG nextflow.executor.GridTaskHandler - [SLURM] submitted process EXPORT_SNP (1) > jobId: 25225025; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9
+Nov-11 19:48:47.901 [Task submitter] INFO  nextflow.Session - [64/6e72e9] Submitted process > EXPORT_SNP (1)
+Nov-11 19:53:52.319 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor slurm > tasks to be completed: 4 -- submitted tasks are shown below
+~> TaskHandler[jobId: 25225022; id: 3; name: EXPORT_SNP (3); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919 started: 1762886932298; exited: -; ]
+~> TaskHandler[jobId: 25225023; id: 2; name: EXPORT_SNP (2); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2 started: 1762886932332; exited: -; ]
+~> TaskHandler[jobId: 25225024; id: 4; name: EXPORT_SNP (4); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe started: 1762886932336; exited: -; ]
+~> TaskHandler[jobId: 25225025; id: 1; name: EXPORT_SNP (1); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9 started: 1762886932338; exited: -; ]
+Nov-11 19:58:52.340 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor slurm > tasks to be completed: 4 -- submitted tasks are shown below
+~> TaskHandler[jobId: 25225022; id: 3; name: EXPORT_SNP (3); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919 started: 1762886932298; exited: -; ]
+~> TaskHandler[jobId: 25225023; id: 2; name: EXPORT_SNP (2); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2 started: 1762886932332; exited: -; ]
+~> TaskHandler[jobId: 25225024; id: 4; name: EXPORT_SNP (4); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe started: 1762886932336; exited: -; ]
+~> TaskHandler[jobId: 25225025; id: 1; name: EXPORT_SNP (1); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9 started: 1762886932338; exited: -; ]
+Nov-11 20:03:52.353 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor slurm > tasks to be completed: 4 -- submitted tasks are shown below
+~> TaskHandler[jobId: 25225022; id: 3; name: EXPORT_SNP (3); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919 started: 1762886932298; exited: -; ]
+~> TaskHandler[jobId: 25225023; id: 2; name: EXPORT_SNP (2); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2 started: 1762886932332; exited: -; ]
+~> TaskHandler[jobId: 25225024; id: 4; name: EXPORT_SNP (4); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe started: 1762886932336; exited: -; ]
+~> TaskHandler[jobId: 25225025; id: 1; name: EXPORT_SNP (1); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9 started: 1762886932338; exited: -; ]
+Nov-11 20:08:52.368 [Task monitor] DEBUG n.processor.TaskPollingMonitor - !! executor slurm > tasks to be completed: 4 -- submitted tasks are shown below
+~> TaskHandler[jobId: 25225022; id: 3; name: EXPORT_SNP (3); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919 started: 1762886932298; exited: -; ]
+~> TaskHandler[jobId: 25225023; id: 2; name: EXPORT_SNP (2); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2 started: 1762886932332; exited: -; ]
+~> TaskHandler[jobId: 25225024; id: 4; name: EXPORT_SNP (4); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe started: 1762886932336; exited: -; ]
+~> TaskHandler[jobId: 25225025; id: 1; name: EXPORT_SNP (1); status: RUNNING; exit: -; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9 started: 1762886932338; exited: -; ]
+Nov-11 20:10:57.390 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 25225022; id: 3; name: EXPORT_SNP (3); status: COMPLETED; exit: 0; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/75/ab754a76ea5d9a1de3cae8875c3919 started: 1762886932298; exited: 2025-11-11T19:10:08.889743Z; ]
+Nov-11 20:10:57.392 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Nov-11 20:10:57.714 [TaskFinalizer-1] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Nov-11 20:13:07.384 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 25225024; id: 4; name: EXPORT_SNP (4); status: COMPLETED; exit: 0; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/fd/8a1819d171cdc472a426515b5417fe started: 1762886932336; exited: 2025-11-11T19:12:48.015969Z; ]
+Nov-11 20:13:12.380 [Task monitor] DEBUG nextflow.file.FileHelper - FS path type (true): /group/soranzo/bruno.ariano/TileDB-sumstat/work
+Nov-11 20:13:12.422 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 25225025; id: 1; name: EXPORT_SNP (1); status: COMPLETED; exit: 0; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/64/6e72e9f7e2a1df688d0c4926ef49e9 started: 1762886932338; exited: 2025-11-11T19:12:54.453764Z; ]
+Nov-11 20:13:22.386 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[jobId: 25225023; id: 2; name: EXPORT_SNP (2); status: COMPLETED; exit: 0; error: -; workDir: /group/soranzo/bruno.ariano/TileDB-sumstat/work/b4/22c1c35b5cdbdead563b7027a28af2 started: 1762886932332; exited: 2025-11-11T19:13:20.796284Z; ]
+Nov-11 20:13:22.413 [main] DEBUG nextflow.Session - Session await > all processes finished
+Nov-11 20:13:27.380 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: slurm) - terminating tasks monitor poll loop
+Nov-11 20:13:27.381 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Nov-11 20:13:27.385 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'TaskFinalizer' shutdown completed (hard=false)
+Nov-11 20:13:27.385 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'PublishDir' shutdown completed (hard=false)
+Nov-11 20:13:27.486 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=4; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=9h 20m 16s; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=4; peakCpus=24; peakMemory=64 GB; ]
+Nov-11 20:13:27.486 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Nov-11 20:13:27.501 [main] DEBUG nextflow.trace.ReportObserver - Workflow completed -- rendering execution report
+Nov-11 20:13:28.246 [main] DEBUG nextflow.trace.TimelineObserver - Workflow completed -- rendering execution timeline
+Nov-11 20:13:28.698 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Nov-11 20:13:28.747 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'FileTransfer' shutdown completed (hard=false)
+Nov-11 20:13:28.748 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

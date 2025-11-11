@@ -7,6 +7,7 @@ import os
 import json
 import polars as pl
 import random
+import numpy as np
 
 help_doc = """
 Query TileDB database and export data.
@@ -19,7 +20,8 @@ Query TileDB database and export data.
     cloup.option("--table-regions", default = None, type=str, help = "Regions to interrogate from a table"),
     cloup.option("--trait", default = None, type=str, help = "Trait to filter the for an entire summary statistics"),
     cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE", type=str, help = "Attributes to output"),
-    cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file")
+    cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
+    cloup.option("--batch-name", default = None, type=str, help = "Name of the batch")
 )
 @cloup.option_group(
     "Options for Locusbreaker",
@@ -29,8 +31,7 @@ Query TileDB database and export data.
     cloup.option("--locus-max-size-lb", default = 3000000, type=float, help = "The maximum size allowed for the locus. Default: 1Mb"),
     cloup.option("--cis-trans-lb",default = "cis",type=str,  help = "If locusbreaker run on cis or trans QLTs"),
     cloup.option("--table-lb", default = None, type=str, help = "Path of the table to provide"),
-    cloup.option("--type-sumstat", default = None, type=str, help = "Type of summary data"),
-    cloup.option("--batch-name-lb", default = None, type=str, help = "Name of the batch"),
+    cloup.option("--type-sumstat", default = None, type=str, help = "Type of summary data")
 )
 @cloup.option_group(
     "Options for output",
@@ -53,11 +54,11 @@ def export(
         hole_lb: int,
         out: str,
         locus_max_size_lb: int,
-        batch_name_lb:str
+        batch_name:str
         ):
     #Open connection with TileDB
     tiledb_export = tiledb.open(tiledb_path, mode="r")
-    metadata = json.loads(tiledb_export.meta["merged_metadata"])
+    metadata = json.loads(tiledb_export.meta["metadata"])
     rows = []
     if type_sumstat == "qtl":
         for cell in metadata["CELL"]:
@@ -117,7 +118,9 @@ def export(
                     tiledb_query["TRAIT"] = tiledb_query["CELL"] + ":" + tiledb_query["GENE"]
                     tiledb_query = tiledb_query.drop(['CELL', 'GENE'], axis = 1)
                 merged_df = tiledb_query.merge(snp_list.drop(['CELL','GENE'], axis = 1), on = ["CHR","TRAIT", "POS"])
-                merged_df.to_csv(out + ".csv", mode="a", index=False, header = False)
+                if not batch_name:
+                        batch_name = random.randint(1, 10000000)
+                merged_df.to_csv(f"{out}_batch_{batch_name}.csv", mode="a", index=False, header = False)
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
         counter_nonempty_region = 0
@@ -174,13 +177,13 @@ def export(
                     if result and isinstance(result[0], pd.DataFrame) and not result[0].shape[0] == 0:   
                             interval = result[0]
                             segments = result[1]
-                            if not batch_name_lb:
-                                batch_name_lb = random.randint(1, 10000000)
+                            if not batch_name:
+                                batch_name = random.randint(1, 10000000)
 
-                            write_header_interval = not os.path.exists(f"{out}_batch_{batch_name_lb}_interval.csv")
-                            write_header_segment = not os.path.exists(f"{out}_batch_{batch_name_lb}_segment.csv")
-                            interval.to_csv(f"{out}_batch_{batch_name_lb}_interval.csv", mode="a", index=False, header = write_header_interval)
-                            segments.to_csv(f"{out}_batch_{batch_name_lb}_segment.csv", mode="a", index=False, header = write_header_segment)
+                            write_header_interval = not os.path.exists(f"{out}_batch_{batch_name}_interval.csv")
+                            write_header_segment = not os.path.exists(f"{out}_batch_{batch_name}_segment.csv")
+                            interval.to_csv(f"{out}_batch_{batch_name}_interval.csv", mode="a", index=False, header = write_header_interval)
+                            segments.to_csv(f"{out}_batch_{batch_name}_segment.csv", mode="a", index=False, header = write_header_segment)
     else:
         with tiledb.open(tiledb_path, mode="r") as A:
             if type_sumstat == "gwas":

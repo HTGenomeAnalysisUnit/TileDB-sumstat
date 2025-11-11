@@ -1,6 +1,7 @@
 include { INGEST_DATA } from "./modules/ingestion"
 include { CREATE_TILEDB } from "./modules/create_tiledb"
 include { EXPORT_LOCUSBREAKER } from "./modules/locusbreaker"
+include { EXPORT_SNP } from "./modules/snp"
 include { EXPORT_REGIONS } from "./modules/regions"
 include { MERGE_METADATA } from "./modules/merge_metadata"
 
@@ -31,8 +32,18 @@ workflow {
         // The final output will be in merged_metadata.tiledb_final
     }
     if (params.export){
-        if (params.snp_list){
+        if (params.snp){
+            Channel.fromPath(params.snp, checkIfExists:true)
+                .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
+                .map { batch_file -> 
+                def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
+                tuple(batch_index, batch_file)
+                }.set { tiledb_metadata_batches }
             
+            tiledb_metadata_batches.view()
+                
+            EXPORT_SNP(tiledb_metadata_batches)
+
         }
         if (params.regions){
 
