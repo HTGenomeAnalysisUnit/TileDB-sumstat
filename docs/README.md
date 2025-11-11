@@ -22,9 +22,10 @@ Before running the pipeline, ensure you have the following installed:
 
 
 ## ▶️ Running the pipeline
-### Example: Fine-Mapping + Colocalization
+### Example: SNP extraction
 ```bash
-nextflow run main.nf -r 1.0    -profile [docker|singularity|conda]    --summarystats_input /path/to/input_table.tsv    --run_colocalization true    --finemap_id my_finemap_run    --coloc_id my_coloc_run    -w ./work    -resume
+nextflow run main.nf -r 1.0    -profile [docker|singularity|conda]    --export true    --tiledb_path /path/to/tiledb    --snp /path/to/snp    --attrs attributes_list_string     --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
+
 ```
 
 ### Example: Run Only Colocalization (with existing `.h5ad`)
