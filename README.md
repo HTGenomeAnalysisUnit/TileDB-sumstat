@@ -32,7 +32,5 @@ tdbsumstat --help
 
 #### To check how to use the Nextflow pipeline for extracting and ingesting data please refer here [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/nextflow_branch/docs/README)
 
-#### To check how to use the standalone tdbsumstat program instead check here [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/nextflow_branch/docs/README)
-
 
 
