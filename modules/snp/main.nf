@@ -1,8 +1,6 @@
 #!/usr/bin/env nextflow
 
 process EXPORT_SNP {
-  label "process_multi"
-  conda '/ssu/gassu/conda_envs/tdbsumstat'
 
   publishDir "${params.outdir}/snp_table", mode: params.publish_dir_mode
 

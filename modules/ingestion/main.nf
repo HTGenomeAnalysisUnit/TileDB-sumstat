@@ -2,7 +2,7 @@
 
 process INGEST_DATA {
   label "process_multi"
-  conda '/ssu/gassu/conda_envs/tdbsumstat'
+  conda 'tdbsumstat'
   publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
 

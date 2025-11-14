@@ -1,6 +1,6 @@
 process MERGE_METADATA {
   label "process_single"
-  conda '/ssu/gassu/conda_envs/tdbsumstat'
+  conda 'tdbsumstat'
   publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
   input:

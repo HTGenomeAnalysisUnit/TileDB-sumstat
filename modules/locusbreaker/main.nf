@@ -2,7 +2,7 @@
 
 process EXPORT_LOCUSBREAKER {
   label "process_multi"
-  conda '/ssu/gassu/conda_envs/tdbsumstat'
+  conda 'tdbsumstat'
 
   publishDir "${params.outdir}/gwas_and_loci_tables", mode: params.publish_dir_mode
 
