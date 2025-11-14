@@ -25,13 +25,26 @@ Before running the pipeline, ensure you have the following installed:
 ### Example: Run SNPs extraction
 ```bash
 nextflow run main.nf -profile [docker|singularity|conda] --export true --tiledb_path /path/to/tiledb --snp /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
-
 ```
+
+An example of a SNP file table is in the example_data folder example_data/snp_list.csv
+
+### Example: Run regions extraction
+```bash
+nextflow run main.nf -profile [docker|singularity|conda] --export true --tiledb_path /path/to/tiledb --table-regions /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
+```
+
+An example of a SNP file table is in the example_data folder example_data/example_data_table.csv
 
 ### Example: Run ingestion of sumstat
 ```bash
 nextflow run main.nf -profile [docker|singularity|conda] --ingest true --file_path_ingestion /path/to/file_ingestion    --mapping_file path_for_mapping_file  --type_sumstat gwas(or qtl) --qc false --ingestion_chunk_files 2 --tiledb_name "test"
 ```
+
+A mapping file provide a mapping between the observed column in the file and the one needed by TileDB. 
+An example of file like that is in example_data/mapping_file_test.
+
+An example of table with files to ingest is in example_data/example_data_table.csv.
 
 ### Quick run with example dataset
 ```bash
