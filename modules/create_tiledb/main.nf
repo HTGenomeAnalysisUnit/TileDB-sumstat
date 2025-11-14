@@ -2,7 +2,7 @@
 
 process CREATE_TILEDB {
     label "process_single"
-    conda '/ssu/gassu/conda_envs/scqtl'
+    conda '/ssu/gassu/conda_envs/tdbsumstat'
     publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
     input:
@@ -18,7 +18,7 @@ process CREATE_TILEDB {
     """
     touch dummy_file
 
-    scqtl ingest --uri-path TileDB_${params.tiledb_name} \
+    tdbsumstat ingest --uri-path TileDB_${params.tiledb_name} \
     --create-tiledb \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat}

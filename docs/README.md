@@ -14,31 +14,28 @@ Implemented using **Nextflow** **Python** and **TileDB**
 Before running the pipeline, ensure you have the following installed:
 
 - [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html) (v24.04+)
-- For environment management, one of:
-  - [Docker](https://www.docker.com/)
-  - [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html)
-  - [Conda](https://docs.conda.io/en/latest/)
+- For environment management it uses the conda environment you can install following the instruction in the main README:
 </br>
 
 
 ## ▶️ Running the pipeline
 ### Example: Run SNPs extraction
 ```bash
-nextflow run main.nf -profile [docker|singularity|conda] --export true --tiledb_path /path/to/tiledb --snp /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
+nextflow run main.nf -profile conda_slurm --export true --tiledb_path /path/to/tiledb --snp /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
 ```
 
 An example of a SNP file table is in the example_data folder example_data/snp_list.csv
 
 ### Example: Run regions extraction
 ```bash
-nextflow run main.nf -profile [docker|singularity|conda] --export true --tiledb_path /path/to/tiledb --table-regions /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
+nextflow run main.nf -profile conda --export true --tiledb_path /path/to/tiledb --table-regions /path/to/snp --attrs attributes_list_string --out "out" --type_sumstat gwas(or qtl) --tiledb_batch_size number_of_batches_per_job
 ```
 
 An example of a SNP file table is in the example_data folder example_data/example_data_table.csv
 
 ### Example: Run ingestion of sumstat
 ```bash
-nextflow run main.nf -profile [docker|singularity|conda] --ingest true --file_path_ingestion /path/to/file_ingestion    --mapping_file path_for_mapping_file  --type_sumstat gwas(or qtl) --qc false --ingestion_chunk_files 2 --tiledb_name "test"
+nextflow run main.nf -profile conda --ingest true --file_path_ingestion /path/to/file_ingestion    --mapping_file path_for_mapping_file  --type_sumstat gwas(or qtl) --qc false --ingestion_chunk_files 2 --tiledb_name "test"
 ```
 
 A mapping file provide a mapping between the observed column in the file and the one needed by TileDB. 
@@ -109,3 +106,5 @@ Parameters | Description |
 </br>Loci with at least a significant SNPs (suggested value 5x10<sup>-8</sup>, customizable at the column `SIG` of the [table_lb] file). are retained and their boundaries are enlarged by 100kb to fully capture the shape of the association peak.
 </details>
 </br>
+
+

@@ -2,7 +2,7 @@
 
 process EXPORT_LOCUSBREAKER {
   label "process_multi"
-  conda '/ssu/gassu/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/tdbsumstat'
 
   publishDir "${params.outdir}/gwas_and_loci_tables", mode: params.publish_dir_mode
 
@@ -19,7 +19,7 @@ process EXPORT_LOCUSBREAKER {
 // Define the shell script to execute
   script:
     """
-    scqtl export \
+    tdbsumstat export \
       --table-lb ${traits_list_table} \
       --tiledb-path ${params.tiledb_path} \
       --out ${params.out} \

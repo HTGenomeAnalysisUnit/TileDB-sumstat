@@ -2,7 +2,7 @@ import tiledb
 import click
 import cloup
 import pandas as pd
-from scqtl.utils.locusbreaker_plpl import locusbreaker_plpl
+from tdbsumstat.utils.locusbreaker_plpl import locusbreaker_plpl
 import os
 import json
 import polars as pl

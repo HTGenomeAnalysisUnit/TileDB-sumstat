@@ -2,8 +2,8 @@
 
 process EXPORT_REGIONS {
   label "process_multi"
-  // conda '/ssu/gassu/conda_envs/scqtl'
-  conda '/software/cardinal_analysis/ht/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/tdbsumstat'
+  //conda '/software/cardinal_analysis/ht/conda_envs/tdbsumstat'
 
   publishDir "${params.outdir}/results/gwas_and_loci_tables/", mode: params.publish_dir_mode
 
@@ -20,7 +20,7 @@ process EXPORT_REGIONS {
 // Define the shell script to execute
   script:
     """
-    scqtl --workers ${params.workers} \
+    tdbsumstat --workers ${params.workers} \
       export \
       --table ${traits_list_table} \
       --uri-path ${params.tiledb_uri} \

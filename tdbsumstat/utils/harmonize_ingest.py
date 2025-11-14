@@ -9,7 +9,7 @@ from scipy import stats
 import tiledb
 import gwaslab as gl
 from collections import defaultdict
-from scqtl.utils import acat_optimized, compute_pheno_variance
+from tdbsumstat.utils import acat_optimized, compute_pheno_variance
 
 
 logger = logging.getLogger(__name__)

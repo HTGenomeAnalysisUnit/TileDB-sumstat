@@ -2,7 +2,7 @@
 
 process EXPORT_SNP {
   label "process_multi"
-  conda '/ssu/gassu/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/tdbsumstat'
 
   publishDir "${params.outdir}/snp_table", mode: params.publish_dir_mode
 
@@ -18,7 +18,7 @@ process EXPORT_SNP {
 // Define the shell script to execute
   script:
     """
-    scqtl export \
+    tdbsumstat export \
       --snp ${snps_list_table} \
       --attr ${params.attrs} \
       --tiledb-path ${params.tiledb_path} \

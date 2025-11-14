@@ -1,14 +1,14 @@
 import click
 import cloup
 import os
-from scqtl.cli.ingestion import ingest
-from scqtl.cli.export import export
+from tdbsumstat.cli.ingestion import ingest
+from tdbsumstat.cli.export import export
 
 
-@cloup.group(name="scqtl", help="Single cell analysis with TileDB", no_args_is_help=True)
+@cloup.group(name="tdbsumstat", help="Genomics summary statistics analysis with TileDB", no_args_is_help=True)
 @click.pass_context
 def cli_init(ctx):
-    """Initialize the scqtl CLI context."""
+    """Initialize the tdbsumstat CLI context."""
     ctx.obj = {}
     return ctx.obj
 

@@ -1,6 +1,6 @@
 process MERGE_METADATA {
   label "process_single"
-  conda '/ssu/gassu/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/tdbsumstat'
   publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
   input:
@@ -29,7 +29,7 @@ process MERGE_METADATA {
   echo "Total JSON files collected:"
   ls TileDB_${params.tiledb_name}_metadata_parts/*.json 2>/dev/null | wc -l || echo "0"
   
-  scqtl ingest \
+  tdbsumstat ingest \
   --uri-path ${tiledb} \
   --mapping-file ${mapping_file} \
   --type-sumstat ${params.type_sumstat} \

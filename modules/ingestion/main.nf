@@ -2,7 +2,7 @@
 
 process INGEST_DATA {
   label "process_multi"
-  conda '/ssu/gassu/conda_envs/scqtl'
+  conda '/ssu/gassu/conda_envs/tdbsumstat'
   publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
 
@@ -23,7 +23,7 @@ process INGEST_DATA {
   script:
     def qc = params.qc ? "--qc" : ""
     """
-    scqtl ingest \
+    tdbsumstat ingest \
     --uri-path TileDB_${params.tiledb_name}\
     --file-path ${list_files} \
     --mapping-file ${mapping_file} \
