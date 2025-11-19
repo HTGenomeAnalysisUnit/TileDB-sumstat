@@ -1,8 +1,7 @@
 #!/usr/bin/env nextflow
 
 process CREATE_TILEDB {
-    label "process_single"
-    conda '/ssu/gassu/conda_envs/tdbsumstat'
+    label "process_high"
     publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
     input:
@@ -16,11 +15,11 @@ process CREATE_TILEDB {
     // Define the shell script to execute
     script:
     """
-    touch dummy_file
-
     tdbsumstat ingest --uri-path TileDB_${params.tiledb_name} \
     --create-tiledb \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat}
+
+    touch dummy_file
     """
 }

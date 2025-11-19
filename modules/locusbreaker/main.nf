@@ -1,9 +1,7 @@
 #!/usr/bin/env nextflow
 
 process EXPORT_LOCUSBREAKER {
-  label "process_multi"
-  conda 'tdbsumstat'
-
+  label "process_high"
   publishDir "${params.outdir}/gwas_and_loci_tables", mode: params.publish_dir_mode
 
 

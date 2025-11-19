@@ -25,18 +25,16 @@ workflow {
         // The final output will be in merged_metadata.tiledb_final
     }
     if (params.export){
-        if (params.snp){
-            Channel.fromPath(params.snp, checkIfExists:true)
-                .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
-                .map { batch_file -> 
-                def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
-                tuple(batch_index, batch_file)
-                }.set { tiledb_metadata_batches }
-            
-            tiledb_metadata_batches.view()
-                
-            EXPORT_SNP(tiledb_metadata_batches)
-
+        if (params.snp) {
+        Channel
+        .fromPath(params.snp, checkIfExists: true)
+        .splitCsv(header: true)
+        .map { row ->
+            tuple(row.CHR, row)
+        }
+        .groupTuple()
+        .set { tiledb_metadata_batches }
+        EXPORT_SNP(tiledb_metadata_batches)
         }
         if (params.regions){
 

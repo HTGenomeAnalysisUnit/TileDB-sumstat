@@ -106,21 +106,25 @@ def export(
                 if type_sumstat == "gwas":
                     snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['TRAIT']==trait)]['POS'].unique().tolist()
                 else:
-                    snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['TRAIT']==trait)]['POS'].unique().tolist()
+                    snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['POS'].unique().tolist()
+                    gene_list = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['GENE'].unique().tolist()
                 if type_sumstat == "gwas":
                     tiledb_query = tiledb_export.query(
-                        	attrs=attr.split(",")
-                    	).df[chrom, trait ,snp_list_refined]
+                        	attrs=attr.split(","),
+                            return_arrow = True
+                    	).df[chrom, trait , :]
+                    tiledb_query_pl = pl.from_arrow(tiledb_query)
+                    tiledb_query_pl = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined))
                 else:
                     tiledb_query = tiledb_export.query(
                         attrs=attr.split(",")
-                    ).df[chrom, trait , :, snp_list_refined]
-                    tiledb_query["TRAIT"] = tiledb_query["CELL"] + ":" + tiledb_query["GENE"]
-                    tiledb_query = tiledb_query.drop(['CELL', 'GENE'], axis = 1)
-                merged_df = tiledb_query.merge(snp_list.drop(['CELL','GENE'], axis = 1), on = ["CHR","TRAIT", "POS"])
+                    ).df[chrom, trait , gene_list, :]
+                    tiledb_query_pl = pl.from_arrow(tiledb_query)
+                    tiledb_query_pl = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined))
+                    tiledb_query_pd =  tiledb_query_pl.drop(["CELL", "GENE"], axis=1)
                 if not batch_name:
                         batch_name = random.randint(1, 10000000)
-                merged_df.to_csv(f"{out}_batch_{batch_name}.csv", mode="a", index=False, header = False)
+                tiledb_query_pd.to_csv(f"{out}_batch_{batch_name}.csv", mode="a", index=False, header = False)
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
         counter_nonempty_region = 0

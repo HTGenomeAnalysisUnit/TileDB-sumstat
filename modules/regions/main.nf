@@ -1,8 +1,7 @@
 #!/usr/bin/env nextflow
 
 process EXPORT_REGIONS {
-  label "process_multi"
-  conda 'tdbsumstat'
+  label "process_high"
   //conda '/software/cardinal_analysis/ht/conda_envs/tdbsumstat'
 
   publishDir "${params.outdir}/results/gwas_and_loci_tables/", mode: params.publish_dir_mode

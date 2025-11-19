@@ -1,8 +1,7 @@
 #!/usr/bin/env nextflow
 
 process INGEST_DATA {
-  label "process_multi"
-  conda 'tdbsumstat'
+  label "process_high"
   publishDir "${params.outdir}/TileDB/", mode: 'copy'
 
 
@@ -36,5 +35,6 @@ process INGEST_DATA {
   
     # Create a dummy file to signal completion
     touch ingestion_complete_${list_files.name}
+    rm -rf ${tiledb}_metadata_parts
     """
 }
