@@ -2,7 +2,7 @@
 
 process INGEST_DATA {
   label "process_high"
-  publishDir "${params.outdir}/TileDB/", mode: 'copy'
+  publishDir "${params.outdir}/TileDB/", mode: 'link'
 
 
 // Define input
