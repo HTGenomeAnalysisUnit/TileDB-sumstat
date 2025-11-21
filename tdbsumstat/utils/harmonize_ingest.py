@@ -22,7 +22,7 @@ class HarmonizationError(Exception):
 
 
 class Harmonize:
-    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str):
+    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str, mac: int):
         self.mapping_file = mapping_file
         self.uri = uri
         self.pvar_file = pvar_file
@@ -31,6 +31,7 @@ class Harmonize:
         self.mapping_types = {}
         self.tiledb_types = {}
         self.dimension_tiledb = []
+        self.mac = mac
     
     def create_mapping(self):
         df = pd.read_csv(self.mapping_file, header=None, names=["key", "value"])
@@ -115,6 +116,17 @@ class Harmonize:
     def harmonize(self, sumstat, trait: str = None, cell: str = None, gene: str = None, n: int = None, n_controls: int = None,n_cases: int = None, qc:bool = False):
         """Load and rename columns, and ensure CHR/POS exist."""
         self.chunk_pl = sumstat.rename(self.mapping_types)
+        # If CHR/POS missing, extract from SNP ID
+        if "CHR" not in self.chunk_pl.columns or "POS" not in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(
+                pl.col("SNPID")
+                .str.split_exact(":", 4)
+                .struct.rename_fields(["CHR", "POS", "A1", "A2"])
+                .alias("fields")
+            ).unnest("fields")
+        
+        #Filter additional headers in the file
+        self.chunk_pl = sumstat.filter(pl.col('POS')=='CHR')
         
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
@@ -124,6 +136,18 @@ class Harmonize:
                     )
                 else:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
+            if self.mac is not None:
+                self.chunk_pl = self.chunk_pl.with_columns((pl.when(
+                    pl.col('EAF')>0.5
+                ).then(
+                    1-pl.col('EAF')
+                ).otherwise(
+                    pl.col('EAF')
+                )
+                * 2
+                * pl.col('N')).alias('MAC'))
+                self.chunk_pl = self.chunk_pl.filter(pl.col('MAC')>self.mac)
+            
         elif self.type_trait == "binary": 
             
             if not all(sample_size in self.chunk_pl.columns for sample_size in ["N_CASES", "N_CONTROLS"]):
@@ -135,17 +159,21 @@ class Harmonize:
                     )
                 else:
                     raise HarmonizationError("n_cases and n_controls columns are missing and were not provided")
+                if self.mac is not None:
+                    self.chunk_pl = self.chunk_pl.with_columns((pl.when(
+                    pl.col('EAF')>0.5
+                    ).then(
+                    1-pl.col('EAF')
+                    ).otherwise(
+                    pl.col('EAF')
+                    )
+                    * 2
+                    * pl.col('N')).alias('MAC'))
+                    self.chunk_pl = self.chunk_pl.filter(pl.col('MAC')>self.mac)
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
 
-        # If CHR/POS missing, extract from SNP ID
-        if "CHR" not in self.chunk_pl.columns or "POS" not in self.chunk_pl.columns:
-            self.chunk_pl = self.chunk_pl.with_columns(
-                pl.col("SNPID")
-                .str.split_exact(":", 4)
-                .struct.rename_fields(["CHR", "POS", "A1", "A2"])
-                .alias("fields")
-            ).unnest("fields")
+
     
         if "SNPID" in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.drop("SNPID")

@@ -121,7 +121,6 @@ def export(
                     ).df[chrom, trait , gene_list, :]
                     tiledb_query_pl = pl.from_arrow(tiledb_query)
                     tiledb_query_pd = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined)).to_pandas()
-                    #tiledb_query_pd =  tiledb_query_pl.drop(["CELL", "GENE"], axis=1)
                 if not batch_name:
                         batch_name = random.randint(1, 10000000)
                 tiledb_query_pd.to_csv(f"{out}_batch_{batch_name}.csv", mode="a", index=False, header = False)
