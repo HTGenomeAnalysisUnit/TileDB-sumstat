@@ -346,6 +346,7 @@ class Harmonize:
             pl.col("POS").cast(pl.UInt32)
         ])
         chunk_pl_ingest = self.chunk_pl.select(self.tiledb_types.keys())
+        chunk_pl_ingest = chunk_pl_ingest.drop_nulls()
         try:
             tiledb.from_pandas(
                 uri=self.uri,
@@ -367,7 +368,7 @@ class Harmonize:
             "traits": [],
             "CELL": []
         }
-    
+        self.chunk_pl = self.chunk_pl.drop_nulls()
         if self.type_sumstat == "qtl":
             # Get unique cell types
             celltypes = self.chunk_pl["CELL"].unique().to_list()
@@ -388,7 +389,7 @@ class Harmonize:
                         lambda s: pl.Series([acat_optimized(s)]),
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
-                    pl.col("N").first().alias("N")
+                    pl.col("N").drop_nulls().first().alias("N")
                 ])
                 chr_gene_agg = chr_gene_agg.with_columns(
                     pl.col("ACAT_LIST").list.first().alias("ACAT")
