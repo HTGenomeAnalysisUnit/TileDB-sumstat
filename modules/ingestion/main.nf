@@ -28,11 +28,7 @@ process INGEST_DATA {
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat} \
     ${qc}
-
-    # Copy all metadata JSON files to a unique directory for output
-    mkdir -p metadata_parts_${list_files.name}
-    cp -v ${tiledb}_metadata_parts/*.json metadata_parts_${list_files.name}/ || true
-  
+      
     # Create a dummy file to signal completion
     touch ingestion_complete_${list_files.name}
     rm -rf ${tiledb}_metadata_parts

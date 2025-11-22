@@ -36,12 +36,6 @@ workflow {
         .set { tiledb_metadata_batches }
         EXPORT_SNP(tiledb_metadata_batches)
         }
-        if (params.regions){
-
-        }
-        if (params.sumstat){
-
-        }
         if (params.locusbreaker){
             Channel.fromPath(params.table_lb, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)

@@ -1,6 +1,6 @@
 process EXPORT_SNP {
     label "process_high"
-    publishDir "${params.outdir}/snp_table", mode: params.publish_dir_mode
+    //publishDir "${params.outdir}/snp_table", mode: params.publish_dir_mode
 
     // Define input
     input:
@@ -8,7 +8,7 @@ process EXPORT_SNP {
 
     // Define output
     output:
-    path("*_batch_*.csv"), emit: snp_tdb_positions, optional: true
+    path("*.csv"), emit: snp_tdb_positions, optional: true
 
     // Define the shell script to execute
     script:

@@ -105,10 +105,6 @@ def export(
             for chrom in chrom_list:
                 if type_sumstat == "gwas":
                     snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['TRAIT']==trait)]['POS'].unique().tolist()
-                else:
-                    snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['POS'].unique().tolist()
-                    gene_list = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['GENE'].unique().tolist()
-                if type_sumstat == "gwas":
                     tiledb_query = tiledb_export.query(
                         	attrs=attr.split(","),
                             return_arrow = True
@@ -116,14 +112,14 @@ def export(
                     tiledb_query_pl = pl.from_arrow(tiledb_query)
                     tiledb_query_pd = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined)).to_pandas()
                 else:
+                    snp_list_refined = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['POS'].unique().tolist()
+                    gene_list = snp_list[(snp_list['CHR']==chrom) & (snp_list['CELL']==trait)]['GENE'].unique().tolist()
                     tiledb_query = tiledb_export.query(
                         attrs=attr.split(",")
                     ).df[chrom, trait , gene_list, :]
                     tiledb_query_pl = pl.from_arrow(tiledb_query)
                     tiledb_query_pd = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined)).to_pandas()
-                if not batch_name:
-                        batch_name = random.randint(1, 10000000)
-                tiledb_query_pd.to_csv(f"{out}_batch_{batch_name}.csv", mode="a", index=False, header = False)
+                tiledb_query_pd.to_csv(f"{out}_{trait}_{chrom}.csv", index=False, header = False)
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
         counter_nonempty_region = 0
