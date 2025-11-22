@@ -124,10 +124,7 @@ class Harmonize:
                 .struct.rename_fields(["CHR", "POS", "A1", "A2"])
                 .alias("fields")
             ).unnest("fields")
-        
-        #Filter additional headers in the file
-        self.chunk_pl = sumstat.filter(pl.col('POS')=='CHR')
-        
+                
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
                 if n is not None:
