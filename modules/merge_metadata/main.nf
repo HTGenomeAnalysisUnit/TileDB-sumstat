@@ -1,6 +1,8 @@
 process MERGE_METADATA {
   label "process_high"
-  publishDir "${params.outdir}/TileDB/", mode: 'copy'
+  publishDir "${params.outdir}/TileDB/", mode: 'copy', pattern: "TileDB_${params.tiledb_name}"
+  publishDir "${params.outdir}/TileDB/", mode: 'copy', pattern: "TileDB_${params.tiledb_name}_metadata.csv"
+
 
   input:
   path(tiledb)

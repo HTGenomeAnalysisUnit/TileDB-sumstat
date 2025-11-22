@@ -18,15 +18,11 @@ def locusbreaker_plpl(
     df = df.with_columns(
         MAF=pl.when(pl.col("EAF") <= 0.5).then(pl.col("EAF")).otherwise(1 - pl.col("EAF"))
     ).filter(pl.col("MAF") >= maf).drop("MAF")
-    print(df)
     # Filter SNPs for locus definition
-    
-
     if type_sumstat == "gwas":
         if "N" in df.columns:
             df = df.drop("N")
         df = df.join(metadata, on = ["TRAIT"])
-        
     else:
         df = df.join(metadata, on = ["CHR","CELL","GENE"])
     loci_snps = df.filter(pl.col("P") <= pvalue_limit)
@@ -48,14 +44,12 @@ def locusbreaker_plpl(
         group_keys = ["CHR", "TRAIT","PHENO_VAR"]
     else:
         group_keys = ["CHR", "CELL", "GENE","PHENO_VAR"]
-    
     # Process groups
     loci_snps = loci_snps.sort(group_keys + ["POS"])
     # Identify groups based on hole_size
     grouped = loci_snps.with_columns(
         pl.col("POS").diff().gt(hole_size).cast(pl.UInt32).fill_null(0).cum_sum().over(group_keys).alias("group_id")
     )
-    
     # Aggregate groups
     aggregated = grouped.group_by(group_keys + ["group_id"]).agg(
         [
@@ -65,9 +59,7 @@ def locusbreaker_plpl(
             pl.all().sort_by("P").first()
         ]
     )
-    
     # Filter significant groups and expand regions
-    
     significant = aggregated.filter(pl.col("min_p") <= pvalue_sig).with_columns(
     start_pos=pl.when(pl.col("min_pos") <= 100000)
             .then(1)

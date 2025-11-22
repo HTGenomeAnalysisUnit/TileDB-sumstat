@@ -88,15 +88,10 @@ def export(
     if snp: 
         snp_list = pd.read_csv(snp, dtype = {"CHR":int, "POS":np.uint32, "TRAIT":str})        
         if type_sumstat == "gwas":
-            header_file = "CHR,TRAIT,POS,SNPID" + "," + attr
             trait_list = snp_list['TRAIT'].unique().tolist()
         else:
-            header_file = "CHR,POS,SNPID" + "," + attr + ",TRAIT"
             snp_list[["CELL","GENE"]] = snp_list["TRAIT"].str.split(":", n = 2, expand = True)
             trait_list = snp_list['CELL'].unique().tolist()
-        out_file = out + ".csv"
-        with open(out_file, "w") as f:
-            f.write(header_file + "\n")
         for trait in trait_list:
             if type_sumstat == "gwas":
                 chrom_list = snp_list[snp_list['TRAIT']==trait]['CHR'].unique().tolist()
@@ -119,7 +114,7 @@ def export(
                     ).df[chrom, trait , gene_list, :]
                     tiledb_query_pl = pl.from_arrow(tiledb_query)
                     tiledb_query_pd = tiledb_query_pl.filter(pl.col("POS").is_in(snp_list_refined)).to_pandas()
-                tiledb_query_pd.to_csv(f"{out}_{trait}_{chrom}.csv", index=False, header = False)
+                tiledb_query_pd.to_csv(f"{out}_{trait}_{chrom}.csv", mode = "a", index=False)
     elif table_regions:
         pd_region = pd.read_csv(table_regions)
         counter_nonempty_region = 0
@@ -145,10 +140,8 @@ def export(
                 else:
                     tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], return_arrow=True).df[chrom, cell ,gene , :]
                 return tiledb_filtered
-            
-        def locus_breaker(tiledb_data, maf, pvalue_sig, pvalue_limit, locus_max_size, hole_size, cis_trans_lb, metadata, type_sumstat = "scqtl"):
-            return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, 
-                                     hole_size=hole_size, cis_trans_lb = cis_trans_lb, type_sumstat = type_sumstat, metadata = metadata)
+            #return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, 
+            #                         hole_size=hole_size, cis_trans_lb = cis_trans_lb, type_sumstat = type_sumstat, metadata = metadata)
         traits = pd.read_csv(table_lb)
         traits = traits.astype({'CHR': 'int16'})
         for index, trait in traits.iterrows():
@@ -162,7 +155,7 @@ def export(
                     cell,genes = trait["TRAIT"].split(":")
                     query = query_spec(tiledb_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
 
-                result = locus_breaker(query,
+                result = locusbreaker_plpl(query,
                                      maf=maf_lb, 
                                      pvalue_sig=pvalue_sig,
                                      pvalue_limit=pvalue_limit, 
