@@ -137,7 +137,7 @@ class Harmonize:
                 self.chunk_pl = self.chunk_pl.with_columns(
                 (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
                 .alias("MAC")
-                 ).filter(pl.col("MAC") > self.mac)
+                 ).filter(pl.col("MAC") > int(self.mac))
             
         elif self.type_trait == "binary": 
             
@@ -154,7 +154,7 @@ class Harmonize:
                     self.chunk_pl = self.chunk_pl.with_columns(
                     (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
                     .alias("MAC")
-                    ).filter(pl.col("MAC") > self.mac)
+                    ).filter(pl.col("MAC") > int(self.mac))
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
 
