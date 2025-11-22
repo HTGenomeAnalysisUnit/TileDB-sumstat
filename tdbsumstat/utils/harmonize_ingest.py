@@ -341,6 +341,10 @@ class Harmonize:
                 .filter(pl.col("_grp_count") == 1)
                 .drop("_grp_count")
                 )
+        self.chunk_pl = self.chunk_pl.with_columns([
+            pl.col("CHR").cast(pl.UInt16),
+            pl.col("POS").cast(pl.UInt32)
+        ])
         chunk_pl_ingest = self.chunk_pl.select(self.tiledb_types.keys())
         try:
             tiledb.from_pandas(
