@@ -26,6 +26,6 @@ process EXPORT_LOCUSBREAKER {
       --hole-lb ${params.hole_lb} \
       --locus-max-size-lb ${params.locus_max_size_lb} \
       --locusbreaker \
-      --batch-name-lb ${batch_index}
+      --batch-name ${batch_index}
     """
 }

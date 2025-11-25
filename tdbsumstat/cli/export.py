@@ -58,7 +58,7 @@ def export(
         ):
     #Open connection with TileDB
     tiledb_export = tiledb.open(tiledb_path, mode="r")
-    metadata = json.loads(tiledb_export.meta["metadata"])
+    metadata = json.loads(tiledb_export.meta["merged_metadata"])
     rows = []
     if type_sumstat == "qtl":
         for cell in metadata["CELL"]:
