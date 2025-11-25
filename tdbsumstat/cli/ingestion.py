@@ -90,8 +90,7 @@ def ingest(uri_path:str,
         if qc:
             harmonized_object.qc_sumstat(file_path = file)
         # Ingest the data
-        else:
-            print(f"Ingesting data: {file}")
-            harmonized_object.ingest_data(file_path = file)
-            harmonized_object.create_metadata(file_path = file)
+        print(f"Ingesting data: {file}")
+        harmonized_object.ingest_data(file_path = file)
+        harmonized_object.create_metadata(file_path = file)
 
