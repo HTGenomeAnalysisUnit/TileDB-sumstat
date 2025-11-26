@@ -113,7 +113,16 @@ class Harmonize:
             pl.when(swap).then(pl.col("EAF")).otherwise(1.0-pl.col("EAF"))
             ])
 
-    def harmonize(self, sumstat, trait: str = None, cell: str = None, gene: str = None, n: int = None, n_controls: int = None,n_cases: int = None, qc:bool = False):
+    def harmonize(self, 
+                  sumstat, 
+                  mac: int, 
+                  trait: str = None, 
+                  cell: str = None, 
+                  gene: str = None, 
+                  pheno_var:int = None, 
+                  n: int = None, 
+                  n_controls: int = None,
+                  n_cases: int = None):
         """Load and rename columns, and ensure CHR/POS exist."""
         self.chunk_pl = sumstat.rename(self.mapping_types)
         # If CHR/POS missing, extract from SNP ID
@@ -124,7 +133,20 @@ class Harmonize:
                 .struct.rename_fields(["CHR", "POS", "A1", "A2"])
                 .alias("fields")
             ).unnest("fields")
+<<<<<<< HEAD
                 
+=======
+    
+        if "SNPID" in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.drop("SNPID")
+        if "EAF" not in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(0).alias("EAF"))
+        if "DIST" not in self.chunk_pl.columns:
+            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(1).alias("DIST"))
+        #Check for removing double headers
+        self.chunk_pl = self.chunk_pl.filter(pl.col('CHR')=='CHR')
+
+>>>>>>> eca170d (Adding trait extraction)
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
                 if n is not None:
@@ -133,14 +155,21 @@ class Harmonize:
                     )
                 else:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
+<<<<<<< HEAD
             if self.mac is not None:
                 self.chunk_pl = self.chunk_pl.with_columns(
                 (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
                 .alias("MAC")
                  ).filter(pl.col("MAC") > self.mac)
             
+=======
+            self.chunk_pl = self.chunk_pl.with_columns(
+                    pl.lit(pheno_var).alias("PHENO_VAR")
+                )
+            if mac is not None:
+                self.chunk_pl.map_rows()
+>>>>>>> eca170d (Adding trait extraction)
         elif self.type_trait == "binary": 
-            
             if not all(sample_size in self.chunk_pl.columns for sample_size in ["N_CASES", "N_CONTROLS"]):
                 if not None in [n_cases, n_controls]:
                     self.chunk_pl = self.chunk_pl.with_columns(
@@ -158,15 +187,14 @@ class Harmonize:
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
 
+<<<<<<< HEAD
 
     
         if "SNPID" in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.drop("SNPID")
+=======
+>>>>>>> eca170d (Adding trait extraction)
         
-        if "EAF" not in self.chunk_pl.columns:
-            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(0).alias("EAF"))
-        if "DIST" not in self.chunk_pl.columns:
-            self.chunk_pl = self.chunk_pl.with_columns(pl.lit(1).alias("DIST"))
         
         #Here we always assumbe that the SNPs are in REF=A1 and ALT=A2
         swap = pl.col("A1") < pl.col("A2")
@@ -313,7 +341,7 @@ class Harmonize:
                  se="SE",
                  p="P",
                  n="N",
-                 other = ["CELL","GENE","RSID","DIST"])
+                 other = ["CELL","GENE","RSID","DIST","PHENO_VAR"])
         #sumstat_gl.fix_id()
         sumstat_gl.fix_chr(remove=True)
         sumstat_gl.fix_pos(remove=True)
@@ -389,7 +417,12 @@ class Harmonize:
                         lambda s: pl.Series([acat_optimized(s)]),
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
+<<<<<<< HEAD
                     pl.col("N").drop_nulls().first().alias("N")
+=======
+                    pl.col("N").first().alias("N"),
+                    pl.col("PHENO_VAR").first().alias("PHENO_VAR")
+>>>>>>> eca170d (Adding trait extraction)
                 ])
                 chr_gene_agg = chr_gene_agg.with_columns(
                     pl.col("ACAT_LIST").list.first().alias("ACAT")
@@ -405,6 +438,7 @@ class Harmonize:
                     gene = row["GENE"]
                     acat_val = row["ACAT"]
                     n_val = float(row["N"])
+                    pheno_val = float(row["PHENO_VAR"])
                 
                     if chrom not in metadata[cell]:
                         metadata[cell][chrom] = {}
@@ -412,7 +446,7 @@ class Harmonize:
                     gene_metadata = {
                         "ACAT": float(acat_val),
                         "N": n_val,
-                        "PHENO_VAR": 1.0
+                        "PHENO_VAR": pheno_val
                     }
                 
                     metadata[cell][chrom][gene] = gene_metadata

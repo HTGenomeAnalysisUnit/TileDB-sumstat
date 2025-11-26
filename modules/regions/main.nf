@@ -21,14 +21,9 @@ process EXPORT_REGIONS {
     """
     tdbsumstat --workers ${params.workers} \
       export \
-      --table ${traits_list_table} \
-      --uri-path ${params.tiledb_uri} \
-      --out_lb "out" \
-      --maf ${params.tiledb_lb_maf} \
+      --table_regions ${traits_list_table} \
+      --uri-path ${params.uri_path} \
       --type-sumstat ${params.tiledb_lb_typesumstat} \
-      --hole ${params.tiledb_lb_hole} \
-      --locus-max-size ${params.tiledb_large_locus_size} \
-      --locusbreaker \
       --batch-name ${batch_index}
     """
 }

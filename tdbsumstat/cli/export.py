@@ -16,10 +16,11 @@ Query TileDB database and export data.
 @cloup.command("export", no_args_is_help=True, help=help_doc)
 @cloup.option_group(
     "Options for querying specific chromosomes, cells, genes or positions in the TileDB",
-    cloup.option("--tiledb-path", default = None, type=str, help = "path of TileDB"),
+    cloup.option("--uri-path", default = None, type=str, help = "path of TileDB"),
     cloup.option("--table-regions", default = None, type=str, help = "Regions to interrogate from a table"),
-    cloup.option("--trait", default = None, type=str, help = "Trait to filter the for an entire summary statistics"),
+    cloup.option("--trait-list", default = None, type=str, help = "List of entire traits to filter"),
     cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE", type=str, help = "Attributes to output"),
+    cloup.option("--export-meta", is_flag = True, default = False, type=str, help = "Get metadata from TileDB"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
     cloup.option("--batch-name", default = None, type=str, help = "Name of the batch")
 )
@@ -41,12 +42,13 @@ Query TileDB database and export data.
 @click.pass_context
 def export(
         ctx,
-        tiledb_path: str,
+        uri_path: str,
         type_sumstat: str,
         table_regions: str,
-        trait:str,
+        trait_list:str,
         attr: str,
         snp: str,
+        export_meta:bool,
         locusbreaker: bool,
         maf_lb: float,
         cis_trans_lb: str,
@@ -57,7 +59,7 @@ def export(
         batch_name:str
         ):
     #Open connection with TileDB
-    tiledb_export = tiledb.open(tiledb_path, mode="r")
+    tiledb_export = tiledb.open(uri_path, mode="r")
     metadata = json.loads(tiledb_export.meta["merged_metadata"])
     rows = []
     if type_sumstat == "qtl":
@@ -79,12 +81,6 @@ def export(
                     **metadata[trait]
                     })
         df_meta = pl.DataFrame(rows)
-    #Print only the schema of the tiledb
-    #Get list of genes, cell type and positions or create ones
-    unique_positions = slice(None)
-    if not trait:
-        trait = slice(None)
-    #Intersect the tiledb with a list of SNPs
     if snp: 
         snp_list = pd.read_csv(snp, dtype = {"CHR":int, "POS":np.uint32, "TRAIT":str})        
         if type_sumstat == "gwas":
@@ -133,8 +129,8 @@ def export(
                     region.to_csv(out, mode='a', index = False, header = False)
     elif locusbreaker:
         print("Starting LocusBreaker")
-        def query_spec(tiledb_path, chrom:int, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
-            with tiledb.open(tiledb_path, mode="r") as tiledb_data:
+        def query_spec(uri_path, chrom:int, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
+            with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
                     tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, :]
                 else:
@@ -150,10 +146,10 @@ def export(
                     pvalue_limit = trait["LIM"]
 
                 if type_sumstat == "gwas":
-                    query = query_spec(tiledb_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
+                    query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
                 else:
                     cell,genes = trait["TRAIT"].split(":")
-                    query = query_spec(tiledb_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
+                    query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
 
                 result = locusbreaker_plpl(query,
                                      maf=maf_lb, 
@@ -176,19 +172,53 @@ def export(
                             write_header_segment = not os.path.exists(f"{out}_batch_{batch_name}_segment.csv")
                             interval.to_csv(f"{out}_batch_{batch_name}_interval.csv", mode="a", index=False, header = write_header_interval)
                             segments.to_csv(f"{out}_batch_{batch_name}_segment.csv", mode="a", index=False, header = write_header_segment)
+    elif export_meta:
+        tiledb_db = tiledb.open(uri_path, mode="r")
+        tiledb_meta = json.loads(tiledb_db.meta['merged_metadata'])
+        if type_sumstat == "qtl":
+            rows = []
+            for cell_type in tiledb_meta["CELL"]:
+                samples = tiledb_meta.get(cell_type, {})
+                for sample_id, genes in samples.items():
+                    for gene_id, metrics in genes.items():
+                        rows.append({
+                            "CELL": cell_type,
+                            "CHR": sample_id,
+                            "GENE": gene_id,
+                        **metrics
+                        })
+        else:
+            for trait in tiledb_meta["traits"]:
+                samples = tiledb_meta.get(trait, {})
+                for chrom, genes in samples.items():
+                    for gene_id, metrics in genes.items():
+                        rows.append({
+                            "CELL": cell_type,
+                            "CRH": chrom,
+                        **metrics
+                        })   
+
+        df = pd.DataFrame(rows)
+        df.to_csv(f"{out}_meta.csv", index = False)
+    
     else:
-        with tiledb.open(tiledb_path, mode="r") as A:
+        trait_list_pd = pd.read_csv(trait_list)
+        with tiledb.open(uri_path, mode="r") as A:
             if type_sumstat == "gwas":
+                trait_list_np = trait_list_pd["TRAIT"].to_list()
                 tiledb_iterator = A.query(
                     return_incomplete=True,
                     attrs=attr.split(",")
-                ).df[chrom, trait , unique_positions]
+                ).df[:, trait_list_np , :]
             else:
+                trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split(':', expand = True)
+                cells = trait_list_pd['cell'].to_list()
+                gene = trait_list_pd['gene'].to_list()
                 tiledb_iterator = A.query(
                     return_incomplete=True,
                     attrs=attr.split(",")
-                ).df[chrom, cell, gene , unique_positions]
+                ).df[:, cells, gene , :]
 
             for chunk in tiledb_iterator:
-                chunk.to_csv(out + ".csv", mode="a", index=False, header = True)
+                chunk.to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = True)
         print(f"Saved filtered summary statistics in {out}")

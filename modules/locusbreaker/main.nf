@@ -19,7 +19,7 @@ process EXPORT_LOCUSBREAKER {
     """
     tdbsumstat export \
       --table-lb ${traits_list_table} \
-      --tiledb-path ${params.tiledb_path} \
+      --uri-path ${params.uri_path} \
       --out ${params.out} \
       --maf-lb ${params.maf_lb} \
       --type-sumstat ${params.type_sumstat} \

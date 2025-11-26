@@ -25,7 +25,7 @@ EOF
     tdbsumstat export \
       --snp batch_${chr}.csv \
       --attr ${params.attrs} \
-      --tiledb-path ${params.tiledb_path} \
+      --uri-path ${params.uri_path} \
       --out ${params.out} \
       --type-sumstat ${params.type_sumstat}
     """

@@ -15,7 +15,7 @@ process CREATE_TILEDB {
     // Define the shell script to execute
     script:
     """
-    tdbsumstat ingest --uri-path TileDB_${params.tiledb_name} \
+    tdbsumstat ingest --uri-path TileDB_${params.uri_path} \
     --create-tiledb \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat}

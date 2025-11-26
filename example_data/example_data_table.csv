@@ -1,10 +1,4 @@
-FILE
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000000457_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000000460_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000000938_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000000971_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000001036_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000001084_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000001167_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000001460_results.tsv
-/project/cardinal/QTLs/step02_MASHR/mashr_obj/MASHR_ENSG00000001461_results.tsv
+FILE,CELL,PHENO_VAR,N
+/home/bruno.ariano/TileDB-sumstat/example_data/dummy_out_ENSG0000010000.tsv.gz,T_gd,1.5,4000
+/home/bruno.ariano/TileDB-sumstat/example_data/dummy_out_ENSG0000010001.tsv.gz,T_gd,1.5,4000
+

@@ -4,9 +4,10 @@ include { EXPORT_LOCUSBREAKER } from "./modules/locusbreaker"
 include { EXPORT_SNP } from "./modules/snp"
 include { EXPORT_REGIONS } from "./modules/regions"
 include { MERGE_METADATA } from "./modules/merge_metadata"
+include { TRAITS } from "./modules/traits"
 
 workflow {
-    if (params.ingest){
+    if (params.ingestion){
         Channel.fromPath(params.file_path_ingestion, checkIfExists:true)
         .splitText(by: params.ingestion_chunk_files, keepHeader: true, file: true)
         .set { list_files }
@@ -36,6 +37,12 @@ workflow {
         .set { tiledb_metadata_batches }
         EXPORT_SNP(tiledb_metadata_batches)
         }
+<<<<<<< HEAD
+=======
+        if (params.regions){
+
+        }
+>>>>>>> eca170d (Adding trait extraction)
         if (params.locusbreaker){
             Channel.fromPath(params.table_lb, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
@@ -43,10 +50,18 @@ workflow {
                 def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
                 tuple(batch_index, batch_file)
                 }.set { tiledb_metadata_batches }
-            
-            tiledb_metadata_batches.view()
                 
             EXPORT_LOCUSBREAKER(tiledb_metadata_batches)
          }
+        if (params.export_traits){
+            Channel.fromPath(params.export_traits, checkIfExists:true)
+                .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
+                .map { batch_file -> 
+                def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
+                tuple(batch_index, batch_file)
+                }.set { tiledb_metadata_batches }
+
+            TRAITS(tiledb_metadata_batches)
+        }
     }
 }

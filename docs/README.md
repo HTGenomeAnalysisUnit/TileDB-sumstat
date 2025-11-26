@@ -2,154 +2,191 @@
 
 TileDB-sumstat is a Nextflow + Python toolkit for scalable ingestion and export of genetic association summary statistics (GWAS and single‑cell QTL). It uses TileDB as the underlying storage engine and provides pipelines and utilities to import, query and export summary statistics at scale.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Pipeline Overview](#pipeline-overview)
+- [Usage with Nextflow](#usage-with-nextflow)
+  - [Ingestion](#ingestion)
+  - [Export](#export)
+    - [SNP-based Export](#snp-based-export)
+    - [Region-based Export](#region-based-export)
+    - [Locusbreaker](#locusbreaker)
+- [Test Data](#test-data)
+- [Support and Contribution](#support-and-contribution)
+
+
 ---
 
 ## Requirements
 
 Before running the pipeline, make sure you have:
 
-- Nextflow (recommended v24.04+)
-- Python (recommended 3.8+)
-- TileDB (library/runtime as required by the Python TileDB package)
-- Conda (the pipeline includes conda profiles for environment management)
-- A working Slurm cluster (only if you use the `conda_slurm` profile) or a local environment
+- **Nextflow** (recommended v24.04+)
+- **Python** (recommended 3.8+)
+- **Conda** (the pipeline includes conda profiles for environment management)
+
 
 See the repository main README for detailed environment setup and instructions to create the conda environments used by the pipeline.
 
 ---
 
-## Quick start
+## Pipeline Overview
 
-The pipeline exposes two primary workflows: ingestion and export. You can run either (or both) using Nextflow.
+TileDB-sumstat implements two main workflows executed in separate steps:
 
-Examples below use `main.nf` and placeholder values — replace them with your actual paths and parameters.
+1. **Ingestion** — Import summary statistics files into a TileDB array
+2. **Export** — Query the TileDB array and export results by:
+   - SNP
+   - Genomic region
+   - Entire summary statistics
+   - Clumping using the "Locusbreaker" algorithm
 
-Example: export SNPs
+The program can be used with Nextflow or as standalone Python utilities.
+
+---
+
+## Usage with Nextflow
+
+Examples below use main.nf with placeholder values — replace them with your actual paths and parameters.
+
+### Ingestion
+
+Import summary statistics files into a TileDB array.
+
+#### Required Files
+
+- **Mapping File** (.csv): Maps input GWAS columns to standard TileDB-sumstat columns. See `example_data/mapping_file_test` for format. First column: original GWAS names, second column: converted names.
+- **Data Table**: Lists files to ingest. See `example_data/example_data_table.csv`. Must include:
+  - Path to GWAS files
+  - Optional: Additional columns can be added to this file if they are not present in the summary statistics:
+    - `N`: Sample size for specific summary statistics
+    - `N_CASES`: Sample size for cases specific to a summary statistics
+    - `N_CONTROLS`: Sample size for controls specific to a summary statistics
+    - `CELL`: Cell name for single QTL studies
+    - `GENE`: GENE name for single QTL studies
+    - `PHENO_VAR`: Phenotypic variance for the specific trait (only for QTLs single cell)
+    - `TRAIT`: Trait name for GWAS studies
+
+#### Parameters
+
+**Required:**
+- `--ingest` (flag to enable ingestion)
+- `--file_path_ingestion` (path to data table file)
+- `--type_sumstat` (either `gwas` or `qtl`)
+
+**Optional:**
+- `--qc` (enable QC processing)
+- `--ingestion_chunk_files` (number of files to ingest simultaneously, default: 4)
+
+#### Example
 ```bash
-nextflow run main.nf -profile conda_slurm \
-  --export true \
-  --tiledb_path /path/to/tiledb \
-  --snp /path/to/snp_list.csv \
-  --attrs "BETA,SE,PVAL,EAF,A1,A2" \
-  --out /path/to/output_prefix \
-  --type_sumstat gwas \
-  --tiledb_batch_size 100
+nextflow run main.nf -profile conda --ingest --file_path_ingestion example_data/example_data_table.csv  --mapping_file example_data/mapping_file_test.csv --type_sumstat qtl --ingestion_chunk_files 4
 ```
 
-Example: export regions
+Using Nextflow profile you can also use
+
 ```bash
-nextflow run main.nf -profile conda \
-  --export true \
-  --tiledb_path /path/to/tiledb \
-  --table-regions /path/to/regions_table.csv \
-  --attrs "BETA,SE,PVAL" \
-  --out /path/to/output_prefix \
-  --type_sumstat gwas \
-  --tiledb_batch_size 100
+nextflow run main.nf -profile test_ingest,conda
 ```
 
-Example: ingestion of summary statistics
+
+### Export
+
+Query and export data from the TileDB array.
+
+#### Common Parameters
+
+**Required:**:
+- --export (flag to enable export)
+- --tiledb_path (path to TileDB array)
+- --out (output file prefix)
+- --type_sumstat (type of summary statistics, either gwas or qtl for single cell)
+
+**Optional**:
+- --attrs (attributes to export, e.g., "BETA,SE,PVAL,EAF,A1,A2")
+
+#### SNP-based Export
+
+Extract specific SNP positions.
+
+**Required**
+- --snp (path to SNP list file)
+
+Example Files:
+- GWAS: example_data/snp_list_gwas.csv
+- Single-cell: example_data/snp_list_sc.csv
+
+#### Example:
 ```bash
-nextflow run main.nf -profile conda \
-  --ingest true \
-  --file_path_ingestion /path/to/files_table.csv \
-  --mapping_file /path/to/mapping_file.tsv \
-  --type_sumstat gwas \
-  --qc false \
-  --ingestion_chunk_files 4
+nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --snp /path/to/snp_list.csv --attrs "BETA,SE,PVAL,EAF,A1,A2" --out /path/to/output_prefix --type_sumstat gwas
+```
+#### Region-based Export
+
+Extract genomic regions using BED format.
+
+**Required:**
+- --table-regions (path to regions file)
+
+Example:
+```bash
+nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --table-regions /path/to/regions_table.csv --attrs "BETA,SE,PVAL" --out /path/to/output_prefix --type_sumstat gwas
 ```
 
-- A mapping file maps observed column names in your input files to the standardized column names expected by TileDB-sumstat. See `example_data/mapping_file_test` for an example.
-- A table listing files to ingest is provided in `example_data/example_data_table.csv`.
-- Example SNP list: `example_data/snp_list.csv`.
-- Example regions table: `example_data/example_data_table.csv`.
-
-Quick test run (uses small test datasets/configs):
+Quick Test:
 ```bash
 nextflow run main.nf -profile test_export_lb,conda
 ```
 
----
+#### Locusbreaker
 
-## Pipeline overview
+Identify genomic loci with significant associations and export locus-centric results.
 
-TileDB-sumstat implements two main workflows executed in separate steps:
+**Required:**
+- --table-lb (path to traits table, see example_data/locusbreaker_test_table.csv)
 
-1. Ingestion — import summary statistics files into a TileDB array.
-2. Export — query the TileDB array and export results by SNP, region or using the "Locusbreaker" algorithm.
+**Optional**
+- --maf-lb (minor allele frequency filter)
+- --locus-max-size (maximum locus size in base pairs)
+- --hole-lb (maximum gap size within loci in base pairs)
+- --cis-trans (for QTLs: filter by cis or trans)
 
-### Step 1 — Ingestion
-
-Purpose: ingest summary statistics files into TileDB.
-
-Required inputs and key parameters:
-
-| Parameter | Description |
-|---|---|
-| file_path_ingestion | CSV file listing summary-statistic files to ingest (paths). |
-| mapping_file | Mapping file that maps columns in each input file to the standardized column names required by TileDB-sumstat. |
-| type_sumstat | Type of summary statistics: `gwas` or `qtl` (single-cell QTL). |
-| qc | Whether to perform QC before ingestion (`true`/`false`). |
-| ingestion_chunk_files | Number of files to ingest in parallel (controls parallelism). |
-
-Notes:
-- Check `example_data/` for sample ingestion tables and mapping files.
-- Ensure the mapping file correctly maps input column names (e.g., SNP, CHR, POS, A1, A2, BETA, SE, PVAL, etc.) to expected internal names.
-
-### Step 2 — Export
-
-Purpose: query TileDB and export summary statistics. There are common parameters and mode-specific parameters (SNP, region, or Locusbreaker).
-
-Common parameters:
-
-| Parameter | Description |
-|---|---|
-| export | Activate export workflow (`true`/`false`). |
-| tiledb_path | Path to the TileDB dataset/array. |
-| attrs | Comma-separated list of attributes to export (e.g., `BETA,SE,PVAL,EAF,A1,A2`). |
-| tiledb_batch_size | Batch size for processing the set of SNPs or regions (controls memory/parallelism). |
-| out | Output path or prefix. Batch runs append a suffix for each batch. |
-
-Export modes
-
-- SNP/Regions export:
-  - SNP export: provide `--snp /path/to/snp_list.csv` (list of SNP identifiers or positions).
-  - Regions export: provide `--table-regions /path/to/regions_table.csv` (table with regions to query).
-
-- Locusbreaker export:
-  - Locusbreaker identifies genomic loci with significant associations and exports locus-centric results (peaks).
-  - Parameters:
-
-| Parameter | Description |
-|---|---|
-| maf_lb | Minor allele frequency filter applied before locus calling. |
-| locus_max_size_lb | Maximum allowed size for a Locusbreaker region (e.g., in base pairs). |
-| hole_lb | Maximum allowed gap (in base pairs) inside a locus before splitting (defines peak continuity). |
-| cis_trans_lb | For QTLs: choose whether to filter by cis or trans (e.g., cis = within 1Mb). |
-| table_lb | Table listing traits / datasets to perform locus-breaking on (see `example_data/locusbreaker_test_table.csv`). |
-
-Locusbreaker algorithm (brief)
-- Select SNPs below a given p-value threshold (suggested LIM = 1e-6). SNPs are grouped if consecutive SNPs are closer than a distance threshold (suggested 250 kb).
-- Groups (putative loci) are retained if they contain at least one genome-wide significant SNP (suggested SIG = 5e-8).
-- Locus boundaries can be expanded by a margin (e.g., +100 kb) to ensure full coverage of the association signal.
-- Additional filters (MAF, maximum locus size, cis/trans selection for QTL) are applied during locus selection.
+Locusbreaker Algorithm:
+1. Select SNPs below p-value threshold (suggested: 1e-6)
+2. Group consecutive SNPs within distance threshold (suggested: 250 kb)
+3. Retain groups containing at least one genome-wide significant SNP (suggested: 5e-8)
+4. Expand locus boundaries by margin (e.g., +100 kb)
+5. Apply additional filters (MAF, locus size, cis/trans)
 
 ---
 
-## Examples and test data
+#### Metadata extraction
 
-- example_data/snp_list.csv — example SNP list for SNP-based export.
-- example_data/example_data_table.csv — example table used for regions and ingestion.
-- example_data/mapping_file_test — example mapping file for ingestion.
-- example_data/locusbreaker_test_table.csv — example table for running Locusbreaker.
+Metadata are structured as json in tiledb. To extract them you can use the following command:
 
----
-
-## Support and contribution
-
-If you find issues, please open an issue in the repository with a reproducible example and any error messages. Contributions are welcome — please open a pull request against the `main` branch and follow the repository contribution guidelines.
-
----
-
-If you'd like, I can open a pull request that replaces the current docs/README.md with this cleaned and corrected version. Would you like me to create that PR? 
+```bash
+tdbsumstat export metadata 
 ```
+
+tiledb_meta
+{'traits': [], 'CELL': ['Tgd'], 'Tgd': {'20': {'ENSG0000010000': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}, 'ENSG0000010001': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}}}}
+## Test Data
+
+- example_data/snp_list.csv - Example SNP list for SNP-based export
+- example_data/example_data_table.csv - Example table for regions and ingestion
+- example_data/mapping_file_test - Example mapping file for ingestion
+- example_data/locusbreaker_test_table.csv - Example table for Locusbreaker
+
+---
+
+## Support and Contribution
+
+If you encounter issues, please open a GitHub issue with a reproducible example and error messages.
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request against the main branch
+4. Follow the repository's contribution guidelines
+
+---
