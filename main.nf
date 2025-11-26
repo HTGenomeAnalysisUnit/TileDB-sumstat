@@ -37,12 +37,7 @@ workflow {
         .set { tiledb_metadata_batches }
         EXPORT_SNP(tiledb_metadata_batches)
         }
-<<<<<<< HEAD
-=======
-        if (params.regions){
-
         }
->>>>>>> eca170d (Adding trait extraction)
         if (params.locusbreaker){
             Channel.fromPath(params.table_lb, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
@@ -62,6 +57,6 @@ workflow {
                 }.set { tiledb_metadata_batches }
 
             TRAITS(tiledb_metadata_batches)
-        }
+        
     }
 }
