@@ -133,9 +133,6 @@ class Harmonize:
                 .struct.rename_fields(["CHR", "POS", "A1", "A2"])
                 .alias("fields")
             ).unnest("fields")
-<<<<<<< HEAD
-                
-=======
     
         if "SNPID" in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.drop("SNPID")
@@ -146,7 +143,6 @@ class Harmonize:
         #Check for removing double headers
         self.chunk_pl = self.chunk_pl.filter(pl.col('CHR')=='CHR')
 
->>>>>>> eca170d (Adding trait extraction)
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
                 if n is not None:
@@ -155,20 +151,15 @@ class Harmonize:
                     )
                 else:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
-<<<<<<< HEAD
             if self.mac is not None:
                 self.chunk_pl = self.chunk_pl.with_columns(
                 (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
                 .alias("MAC")
                  ).filter(pl.col("MAC") > self.mac)
             
-=======
             self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(pheno_var).alias("PHENO_VAR")
                 )
-            if mac is not None:
-                self.chunk_pl.map_rows()
->>>>>>> eca170d (Adding trait extraction)
         elif self.type_trait == "binary": 
             if not all(sample_size in self.chunk_pl.columns for sample_size in ["N_CASES", "N_CONTROLS"]):
                 if not None in [n_cases, n_controls]:
@@ -187,13 +178,10 @@ class Harmonize:
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
 
-<<<<<<< HEAD
 
     
         if "SNPID" in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.drop("SNPID")
-=======
->>>>>>> eca170d (Adding trait extraction)
         
         
         #Here we always assumbe that the SNPs are in REF=A1 and ALT=A2
@@ -417,12 +405,8 @@ class Harmonize:
                         lambda s: pl.Series([acat_optimized(s)]),
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
-<<<<<<< HEAD
-                    pl.col("N").drop_nulls().first().alias("N")
-=======
                     pl.col("N").first().alias("N"),
                     pl.col("PHENO_VAR").first().alias("PHENO_VAR")
->>>>>>> eca170d (Adding trait extraction)
                 ])
                 chr_gene_agg = chr_gene_agg.with_columns(
                     pl.col("ACAT_LIST").list.first().alias("ACAT")
