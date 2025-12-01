@@ -141,17 +141,17 @@ class Harmonize:
         if "DIST" not in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.with_columns(pl.lit(1).alias("DIST"))
         #Check for removing double headers
-        self.chunk_pl = self.chunk_pl.filter(pl.col('CHR')=='CHR')
 
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
                 if n is not None:
                     self.chunk_pl = self.chunk_pl.with_columns(
-                    pl.lit(n).alias("N")
+                    pl.lit(int(n)).alias("N")
                     )
                 else:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
             if self.mac is not None:
+                print(self.chunk_pl.select('EAF','N'))
                 self.chunk_pl = self.chunk_pl.with_columns(
                 (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
                 .alias("MAC")

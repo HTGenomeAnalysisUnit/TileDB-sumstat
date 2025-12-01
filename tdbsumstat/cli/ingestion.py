@@ -21,7 +21,6 @@ import polars as pl
     "Optional parameters",
     cloup.option("--pvar-file", default = None, type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--sep", default = "\t", type=str, help = "pvar file used to verify the alleles order"),
-    cloup.option("--mac", default = None, type=int, help = "Allele count filter"),
     cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
     cloup.option("--mac", default=None, type=int, help = "Minor allele count filter during ingestion"),
     cloup.option("--only-meta", is_flag=True, type=bool, default = False, help = "Create and ingest metadata")
