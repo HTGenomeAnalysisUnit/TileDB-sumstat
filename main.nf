@@ -5,6 +5,7 @@ include { EXPORT_SNP } from "./modules/snp"
 include { EXPORT_REGIONS } from "./modules/regions"
 include { MERGE_METADATA } from "./modules/merge_metadata"
 include { TRAITS } from "./modules/traits"
+include { RECOMPUTE_META } from "./modules/recompute_meta"
 
 workflow {
     if (params.ingestion){
@@ -49,7 +50,7 @@ workflow {
             EXPORT_LOCUSBREAKER(tiledb_metadata_batches)
          }
         if (params.export_traits){
-            Channel.fromPath(params.export_traits, checkIfExists:true)
+            Channel.fromPath(params.list_traits, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
                 .map { batch_file -> 
                 def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
@@ -57,6 +58,17 @@ workflow {
                 }.set { tiledb_metadata_batches }
 
             TRAITS(tiledb_metadata_batches)
+        
+    }
+        if (params.recompute_meta){
+            Channel.fromPath(params.list_traits, checkIfExists:true)
+                .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
+                .map { batch_file -> 
+                def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
+                tuple(batch_index, batch_file)
+                }.set { tiledb_metadata_batches }
+
+            RECOMPUTE_META(tiledb_metadata_batches)
         
     }
 }

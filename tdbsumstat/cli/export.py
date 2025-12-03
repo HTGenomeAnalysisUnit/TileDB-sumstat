@@ -3,6 +3,7 @@ import click
 import cloup
 import pandas as pd
 from tdbsumstat.utils.locusbreaker_plpl import locusbreaker_plpl
+from tdbsumstat.utils import acat_optimized
 import os
 import json
 import polars as pl
@@ -21,6 +22,8 @@ Query TileDB database and export data.
     cloup.option("--trait-list", default = None, type=str, help = "List of entire traits to filter"),
     cloup.option("--attr", default = "P,SNPID,EAF,BETA,SE", type=str, help = "Attributes to output"),
     cloup.option("--export-meta", is_flag = True, default = False, type=str, help = "Get metadata from TileDB"),
+    cloup.option("--mac", default = 0, type=int, help = "Filter for MAC when recomputing metadata"),
+    cloup.option("--recompute-meta", is_flag = True, default = False, type=str, help = "Recompute metadata after applying filters (Does not modify data within the TileDB)"),
     cloup.option("--snp", default = None, type=str, help = "List of SNPs to interrogate taken from a txt file. Please check README for details on the format of this file"),
     cloup.option("--batch-name", default = None, type=str, help = "Name of the batch")
 )
@@ -46,9 +49,11 @@ def export(
         type_sumstat: str,
         table_regions: str,
         trait_list:str,
+        mac:int,
         attr: str,
         snp: str,
         export_meta:bool,
+        recompute_meta:bool,
         locusbreaker: bool,
         maf_lb: float,
         cis_trans_lb: str,
@@ -201,6 +206,55 @@ def export(
         df = pd.DataFrame(rows)
         df.to_csv(f"{out}_meta.csv", index = False)
     
+    elif recompute_meta:
+        trait_list_pd = pd.read_csv(trait_list)
+        for record, trait in trait_list_pd.iterrows():
+            if type_sumstat == "gwas":
+                tiledb_query = tiledb_export.query().df[int(trait['CHR']), trait['TRAIT'].to_string() , :]
+                n = df_meta.filter(pl.col('TRAIT')==trait['TRAIT']).select('N')["N"][0]
+            else:
+                #cell,gene = trait['TRAIT'].split(':')
+                print(trait['CELL'])
+                tiledb_query = tiledb_export.query().df[int(trait['CHR']), trait['CELL'], : , :]
+                
+                n = df_meta.filter(pl.col('CELL')==trait['CELL']).select('N')["N"][0]
+                print(n)
+            if "N" not in tiledb_query.columns:
+                tiledb_query["N"] = n
+                print(tiledb_query)
+            tiledb_query_pl = pl.from_pandas(tiledb_query)
+            
+            tiledb_query_pl= tiledb_query_pl.with_columns(
+                (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
+                .alias("MAC")
+                 ).filter(pl.col("MAC") > mac)
+            if type_sumstat == "gwas":
+                chr_gene_agg = tiledb_query_pl.group_by(["CHR","TRAIT"]).agg([
+                    pl.col("P").map_batches(
+                        lambda s: pl.Series([acat_optimized(s)]),
+                        return_dtype=pl.Float64
+                    ).alias("ACAT_LIST"),
+                    pl.col("N").first().alias("N"),
+                    pl.min("P").alias("MIN_P")
+                ])
+                chr_gene_agg = chr_gene_agg.with_columns(
+                    pl.col("ACAT_LIST").list.first().alias("ACAT")
+                )
+            else:
+                chr_gene_agg = tiledb_query_pl.group_by(["CHR","CELL","GENE"]).agg([
+                    pl.col("P").map_batches(
+                        lambda s: pl.Series([acat_optimized(s)]),
+                        return_dtype=pl.Float64
+                    ).alias("ACAT_LIST"),
+                    pl.col("N").first().alias("N"),
+                    pl.min("P").alias("MIN_P")
+                ])
+                chr_gene_agg = chr_gene_agg.with_columns(
+                    pl.col("ACAT_LIST").list.first().alias("ACAT"),
+                ).drop("ACAT_LIST")
+
+            chr_gene_agg_pd = chr_gene_agg.to_pandas()
+            chr_gene_agg_pd.to_csv(f"{out}_batch_{batch_name}_metadata.csv", mode="a", index=False)
     else:
         trait_list_pd = pd.read_csv(trait_list)
         with tiledb.open(uri_path, mode="r") as A:
@@ -220,5 +274,5 @@ def export(
                 ).df[:, cells, gene , :]
 
             for chunk in tiledb_iterator:
-                chunk.to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = True)
+                chunk.to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = False)
         print(f"Saved filtered summary statistics in {out}")
