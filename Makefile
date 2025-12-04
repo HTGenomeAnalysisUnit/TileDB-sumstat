@@ -1,4 +1,4 @@
-APPNAME='scqtl'
+APPNAME='tdbsumstat'
 TARGETS=build clean dependencies deploy install test uninstall
 VERSION=$(shell grep version pyproject.toml|cut -f2 -d'"')
 
@@ -24,7 +24,7 @@ deploy:
 	poetry install
 
 install: build
-	pip install dist/*.whl
+	pip install dist/*.whl --force-reinstall
 
 editable_install: build
 	pip install --editable .

@@ -1,179 +1,192 @@
-# TileDB for single cell analysis
+# TileDB-sumstat
 
-## Overall usage
-This program works using. python on the Sanger cluster using the tiledb conda environment. This program consists of 2 main subcommands called ingestion and export. The ingestion is used in import new data into an existing or a new TileDB while the export can be used to query the data and export it in a txt file. This program makes also optionally use of Dask for accelerate the computation. To get a menu of the main parameters and commands available run a script like below.
+TileDB-sumstat is a Nextflow + Python toolkit for scalable ingestion and export of genetic association summary statistics (GWAS and single‑cell QTL). It uses TileDB as the underlying storage engine and provides pipelines and utilities to import, query and export summary statistics at scale.
 
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Pipeline Overview](#pipeline-overview)
+- [Usage with Nextflow](#usage-with-nextflow)
+  - [Ingestion](#ingestion)
+  - [Export](#export)
+    - [SNP-based Export](#snp-based-export)
+    - [Region-based Export](#region-based-export)
+    - [Locusbreaker](#locusbreaker)
+- [Test Data](#test-data)
+- [Support and Contribution](#support-and-contribution)
+
+
+---
+
+## Requirements
+
+Before running the pipeline, make sure you have:
+
+- **Nextflow** (recommended v24.04+)
+- **Python** (recommended 3.8+)
+- **Conda** (the pipeline includes conda profiles for environment management)
+
+
+See the repository main README for detailed environment setup and instructions to create the conda environments used by the pipeline.
+
+---
+
+## Pipeline Overview
+
+TileDB-sumstat implements two main workflows executed in separate steps:
+
+1. **Ingestion** — Import summary statistics files into a TileDB array
+2. **Export** — Query the TileDB array and export results by:
+   - SNP
+   - Genomic region
+   - Entire summary statistics
+   - Clumping using the "Locusbreaker" algorithm
+
+The program can be used with Nextflow or as standalone Python utilities.
+
+---
+
+## Usage with Nextflow
+
+Examples below use main.nf with placeholder values — replace them with your actual paths and parameters.
+
+### Ingestion
+
+Import summary statistics files into a TileDB array.
+
+#### Required Files
+
+- **Mapping File** (.csv): Maps input GWAS columns to standard TileDB-sumstat columns. See `example_data/mapping_file_test` for format. First column: original GWAS names, second column: converted names.
+- **Data Table**: Lists files to ingest. See `example_data/example_data_table.csv`. Must include:
+  - Path to GWAS files
+  - Optional: Additional columns can be added to this file if they are not present in the summary statistics:
+    - `N`: Sample size for specific summary statistics
+    - `N_CASES`: Sample size for cases specific to a summary statistics
+    - `N_CONTROLS`: Sample size for controls specific to a summary statistics
+    - `CELL`: Cell name for single QTL studies
+    - `GENE`: GENE name for single QTL studies
+    - `PHENO_VAR`: Phenotypic variance for the specific trait (only for QTLs single cell)
+    - `TRAIT`: Trait name for GWAS studies
+
+#### Parameters
+
+**Required:**
+- `--ingest` (flag to enable ingestion)
+- `--file_path_ingestion` (path to data table file)
+- `--type_sumstat` (either `gwas` or `qtl`)
+
+**Optional:**
+- `--qc` (enable QC processing)
+- `--ingestion_chunk_files` (number of files to ingest simultaneously, default: 4)
+
+#### Example
+```bash
+nextflow run main.nf -profile conda --ingest --file_path_ingestion example_data/example_data_table.csv  --mapping_file example_data/mapping_file_test.csv --type_sumstat qtl --ingestion_chunk_files 4
 ```
-python main.py
 
-Usage: main.py [OPTIONS] COMMAND [ARGS]...
+Using Nextflow profile you can also use
 
-  Single cell analysis with TileDB
-
-Dask cluster options:
-  --workers INTEGER  Number of workers to use in the Dask cluster
-  --cores_w INTEGER  Number of core to use per single worker
-  --memory_w TEXT    Number of GB to give as memory for each worker
-  --local_cluster    Use this option to parallelize within a node (Use for Sanger cluster)
-
-Other options:
-  --help             Show this message and exit.
-
-Commands:
-  ingestion  Ingest single cell QTL with TileDB
-  export     Query the TileDb and export the data in csv format
+```bash
+nextflow run main.nf -profile test_ingest,conda
 ```
-</br>
 
 
-## Ingestion
-To ingest new data into a TileDB use the ```ingestion``` option of the program. To check all the possible option that can be given below.
+### Export
 
-``` python main.py ingestion --help```
+Query and export data from the TileDB array.
 
-<details>
-  <summary>Help message</summary>
-  
-  ```
-  Ingest single cell QTL with TileDB
+#### Common Parameters
 
-  Essential parameters:
-  --uri TEXT         Where to store the TileDB
-  --list_files TEXT  List of the files to ingest. Each files needs to be in tsv format (gz or not)
-  --cell_type TEXT   The celltype to ingest
+**Required:**:
+- --export (flag to enable export)
+- --tiledb_path (path to TileDB array)
+- --out (output file prefix)
+- --type_sumstat (type of summary statistics, either gwas or qtl for single cell)
 
-  Optional parameters:
-  --batch_size INT  The number of rows form a file to ingest at once(Don't touch this parameter unless you know how ot will affect both the memory of the process and the TileDB itself).
-  --chunk_size INT  The number of rows to ingest at once
-  Other options:
-  --help             Show this message and exit.
-  ```
-</details>
-</br>
+**Optional**:
+- --attrs (attributes to export, e.g., "BETA,SE,PVAL,EAF,A1,A2")
 
-### Query and Export
-To query and export the TileDB you need to use the command exportlike shown below. Also below are the options you can see the type of query you can use and how to export the data in a csv file
+#### SNP-based Export
 
-``` python main.py export --help```
+Extract specific SNP positions.
 
-<details>
-  <summary>Help message</summary>
+**Required**
+- --snp (path to SNP list file)
 
+Example Files:
+- GWAS: example_data/snp_list_gwas.csv
+- Single-cell: example_data/snp_list_sc.csv
+
+#### Example:
+```bash
+nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --snp /path/to/snp_list.csv --attrs "BETA,SE,PVAL,EAF,A1,A2" --out /path/to/output_prefix --type_sumstat gwas
 ```
-Usage: main.py export [OPTIONS]
+#### Region-based Export
 
-  Qeury TileDB database and export data.
+Extract genomic regions using BED format.
 
-Options for querying the TileDB:
-  --uri   TEXT            Where to data to be created or queried is stored
-  --schema                Print the schema of a tiledb
-  --chrom TEXT            Cell to interrogate
-  --cell  TEXT            Cell to interrogate
-  --gene  TEXT            Gene to interrogate
-  --snp   TEXT            List of SNPs to interrogate taken from a txt file.
-                          Please check the example file in test_data/dummy_SNPs.txt for details on the format of this file
-  
+**Required:**
+- --table-regions (path to regions file)
 
-Options for general filters into TileDB:
-  
-  --maf   FLOAT   
-
-Options for Locusbreaker:
-  --locusbreaker        Option to run locusbreaker
-  --pvalue-sig    FLOAT      P-value threshold to use for filtering the data (default: 5e-8)
-  --pvalue-limit  FLOAT      P-value threshold for loci borders (default: 5e-6)
-  --hole-size     INTEGER    Minimum pair-base distance between SNPs in different loci (default: 250000)
-  --maf           FLOAT      The MAF to filter the TILEDB before locusbreaker (default: 0.01)
-  --table         TEXT       Path of the table containing the traits to interrogate
-
-Options for output:
-  --out           TEXT       Output path with file name where results will be stored
-
-                        
-Other options:
-  --help              Show this message and exit.
+Example:
+```bash
+nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --table-regions /path/to/regions_table.csv --attrs "BETA,SE,PVAL" --out /path/to/output_prefix --type_sumstat gwas
 ```
-</details>
-</br>
 
-## Dry example run 
-
-To give an idea on how this program works we created a series of script and dummy data for you to test the program. Please keep in mind that for running these example you need at least 15 GB of memory on your computer and you need also the conda environment activated
-
-</br>
-
-### Step 1 ingest your data in a TileDB
-
-To test how to ingest data you can use the below command which use all the options described above:
-
+Quick Test:
+```bash
+nextflow run main.nf -profile test_export_lb,conda
 ```
-python main.py ingestion --uri dummy_tiledb_CD14 --list_files test_data/list_files.txt
-```
-</br>
 
-### Step 2 investigate the schema of the TileDB
+#### Locusbreaker
 
-To get details on how the TileDB you created is made run the following command:
+Identify genomic loci with significant associations and export locus-centric results.
 
-```
-python main.py export --uri dummy_tiledb_CD14 --schema
-```
-<details>
-  <summary>Schema of the file</summary>
+**Required:**
+- --table-lb (path to traits table, see example_data/locusbreaker_test_table.csv)
 
-```
-ArraySchema(
-  domain=Domain(*[
-    Dim(name='cell_type', domain=('', ''), tile=None, dtype='|S0', var=True, filters=FilterList([LZ4Filter(level=5), ])),
-    Dim(name='gene', domain=('', ''), tile=None, dtype='|S0', var=True, filters=FilterList([LZ4Filter(level=5), ])),
-    Dim(name='position', domain=(1, 3000000000), tile=3000000000, dtype='uint32', filters=FilterList([LZ4Filter(level=5), ])),
-  ]),
-  attrs=[
-    Attr(name='SNP', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='af', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='beta', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='se', dtype='float32', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='allele0', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='allele1', dtype='ascii', var=True, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-    Attr(name='p-value', dtype='float64', var=False, nullable=False, enum_label=None, filters=FilterList([LZ4Filter(level=5), ])),
-  ],
-  cell_order='row-major',
-  tile_order='row-major',
-  capacity=10000,
-  sparse=True,
-  allows_duplicates=True,
-)
-```
-</details>
-This will print the schema of the TileDB created.
-</br>
+**Optional**
+- --maf-lb (minor allele frequency filter)
+- --locus-max-size (maximum locus size in base pairs)
+- --hole-lb (maximum gap size within loci in base pairs)
+- --cis-trans (for QTLs: filter by cis or trans)
 
-### Step 3 query and export data by a list of SNPs
+Locusbreaker Algorithm:
+1. Select SNPs below p-value threshold (suggested: 1e-6)
+2. Group consecutive SNPs within distance threshold (suggested: 250 kb)
+3. Retain groups containing at least one genome-wide significant SNP (suggested: 5e-8)
+4. Expand locus boundaries by margin (e.g., +100 kb)
+5. Apply additional filters (MAF, locus size, cis/trans)
 
-Here we are showing how to query the TileDB created above for a series of SNPs within cell types
+---
 
-```
-python main.py export --uri dummy_tiledb_CD14 --snp test_data/dummy_SNPs.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_snp_CD14
-```
-</br>
+#### Metadata extraction
 
-### Step 4 query and export data by a list of genes and cell types for all the positions
+Metadata are structured as json in tiledb. To extract them you can use the following command:
 
+```bash
+tdbsumstat export metadata 
 ```
-python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
-```
-</br>
 
-### Step 5 run locus-breaker
+tiledb_meta
+{'traits': [], 'CELL': ['Tgd'], 'Tgd': {'20': {'ENSG0000010000': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}, 'ENSG0000010001': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}}}}
+## Test Data
 
-```
-python main.py export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
-```
-This will create 2 files in txt format. One containing the the limit of each clumped region and another file with all the positions included in each independent region defined by significant SNPs.
+- example_data/snp_list.csv - Example SNP list for SNP-based export
+- example_data/example_data_table.csv - Example table for regions and ingestion
+- example_data/mapping_file_test - Example mapping file for ingestion
+- example_data/locusbreaker_test_table.csv - Example table for Locusbreaker
 
-### Step 6 run locus-breaker with Dask
+---
 
-To run both the ingestion and locusbreaker on parallel workers using Dask you can use the --workers parameters to define how many you want to use like described in the command below.
-```
-python main.py --workers 6 --memory_w 15 export --uri dummy_tiledb_CD14 --genes test_data/dummy_gene_list.txt --cell_types test_data/dummy_cell_list.txt --output_path test_out_genes_CD14
-```
+## Support and Contribution
+
+If you encounter issues, please open a GitHub issue with a reproducible example and error messages.
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request against the main branch
+4. Follow the repository's contribution guidelines
+
+---

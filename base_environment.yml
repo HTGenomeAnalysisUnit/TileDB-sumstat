@@ -1,4 +1,4 @@
-name: scqtl
+name: tdbsumstat
 channels:
   - conda-forge
   - nodefaults

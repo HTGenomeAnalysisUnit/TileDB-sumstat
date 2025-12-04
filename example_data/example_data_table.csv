@@ -1,0 +1,4 @@
+FILE,CELL,PHENO_VAR,N
+/home/bruno.ariano/TileDB-sumstat/example_data/dummy_out_ENSG0000010000.tsv.gz,T_gd,1.5,4000
+/home/bruno.ariano/TileDB-sumstat/example_data/dummy_out_ENSG0000010001.tsv.gz,T_gd,1.5,4000
+
