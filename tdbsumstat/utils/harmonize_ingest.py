@@ -152,9 +152,9 @@ class Harmonize:
                     raise HarmonizationError("N column is missing and N parameter is not provided")
             if self.mac is not None:
                 self.chunk_pl = self.chunk_pl.with_columns(
-                (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
+                (2 * pl.col("N") * pl.min_horizontal(pl.col("EAF"), 1 - pl.col("EAF")))
                 .alias("MAC")
-                 ).filter(pl.col("MAC") > self.mac)
+                 ).filter(pl.col("MAC") >= self.mac)
             
             self.chunk_pl = self.chunk_pl.with_columns(
                     pl.lit(pheno_var).alias("PHENO_VAR")
@@ -171,9 +171,9 @@ class Harmonize:
                     raise HarmonizationError("n_cases and n_controls columns are missing and were not provided")
                 if self.mac is not None:
                     self.chunk_pl = self.chunk_pl.with_columns(
-                    (2 * pl.col("N") * pl.min_horizontal("EAF", (1 - pl.col("EAF"))))
+                    (2 * pl.col("N") * pl.min_horizontal(pl.col("EAF"), 1 - pl.col("EAF")))
                     .alias("MAC")
-                    ).filter(pl.col("MAC") > self.mac)
+                    ).filter(pl.col("MAC") >= self.mac)
         else:
             raise HarmonizationError("Type of trait must be either binary or quant")
 

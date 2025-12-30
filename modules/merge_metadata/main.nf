@@ -19,11 +19,25 @@ process MERGE_METADATA {
   """
   # Create the main metadata_parts directory
   mkdir -p TileDB_${params.tiledb_name}_metadata_parts
-  
+
   # Copy all JSON files from all input directories
   for parts_dir in ${metadata_parts}; do
     if [ -d "\$parts_dir" ]; then
-      cp -v "\$parts_dir"/*.json TileDB_${params.tiledb_name}_metadata_parts/ 2>/dev/null || true
+
+      # Extract the trailing number before .csv from the input folder
+      base=\$(basename "\$parts_dir")
+      base="\${base%.csv}"
+      suffix="\${base##*.}"
+
+      for json in "\$parts_dir"/*.json; do
+        [ -e "\$json" ] || continue
+
+        # Add that trailing number to .json file name
+        base=\$(basename "\$json")
+        name="\${base%.json}"
+
+        cp -v "\$json" "TileDB_${params.tiledb_name}_metadata_parts/\${name}_\${suffix}.json"
+      done
     fi
   done
   

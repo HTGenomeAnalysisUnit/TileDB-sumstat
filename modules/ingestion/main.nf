@@ -21,14 +21,14 @@ process INGEST_DATA {
 // Define the shell script to execute
   script:
     def qc = params.qc ? "--qc" : ""
+    def pvar_file = params.pvar_file ? "--pvar-file ${params.pvar_file}" : ""
     """
     tdbsumstat ingest \
     --uri-path TileDB_${params.tiledb_name}\
     --file-path ${list_files} \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat} \
-    --mac ${params.mac}
-    ${qc}
+    --mac ${params.mac} ${qc} ${pvar_file}
     # Rename the metadata parts directory to include the list_files name for uniqueness
     if [ -d "TileDB_${params.tiledb_name}_metadata_parts" ]; then
         mv "TileDB_${params.tiledb_name}_metadata_parts" "TileDB_${params.tiledb_name}_metadata_parts_${list_files.name}"
