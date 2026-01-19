@@ -404,6 +404,7 @@ class Harmonize:
                         lambda s: pl.Series([acat_optimized(s)]),
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
+                    pl.col("P").min().alias("min_P"),
                     pl.col("N").first().alias("N"),
                     pl.col("PHENO_VAR").first().alias("PHENO_VAR")
                 ])
@@ -421,6 +422,7 @@ class Harmonize:
                     gene = row["GENE"]
                     acat_val = row["ACAT"]
                     n_val = float(row["N"])
+                    min_p = float(row["min_P"])
                     pheno_val = float(row["PHENO_VAR"])
                 
                     if chrom not in metadata[cell]:
@@ -429,7 +431,8 @@ class Harmonize:
                     gene_metadata = {
                         "ACAT": float(acat_val),
                         "N": n_val,
-                        "PHENO_VAR": pheno_val
+                        "PHENO_VAR": pheno_val,
+                        "MIN_P":min_p
                     }
                 
                     metadata[cell][chrom][gene] = gene_metadata
@@ -445,10 +448,12 @@ class Harmonize:
                 df_trait = self.chunk_pl.filter(pl.col("TRAIT") == trait)
                 pheno_var = compute_pheno_variance(df_trait, self.type_trait)
                 n_val = df_trait["N"].unique().to_list()[0]
+                min_p = df_trait["P"].min().to_list()[0]
             
                 trait_metadata = {
                     "N": float(n_val),
-                    "PHENO_VAR": float(pheno_var)
+                    "PHENO_VAR": float(pheno_var),
+                    "MIN_P": float(min_p)
                 }
             
                 if self.type_trait == "binary":
@@ -511,7 +516,8 @@ class Harmonize:
                                 "GENE": gene_id,
                                 "ACAT": gene_metadata.get("ACAT", ""),
                                 "N": gene_metadata.get("N", ""),
-                                "PHENO_VAR": gene_metadata.get("PHENO_VAR", "")
+                                "PHENO_VAR": gene_metadata.get("PHENO_VAR", ""),
+                                "MIN_P": gene_metadata.get("MIN_P", "")
                                 }
                             rows.append(row)
     
@@ -524,6 +530,7 @@ class Harmonize:
                     "TRAIT": trait,
                     "N": trait_data.get("N", ""),
                     "PHENO_VAR": trait_data.get("PHENO_VAR", ""),
+                    "MIN_P": trait_data.get("MIN_P", ""),
                     "N_CASES": trait_data.get("N_CASES", ""),
                     "N_CONTROLS": trait_data.get("N_CONTROLS", "")
                     }
@@ -536,13 +543,13 @@ class Harmonize:
             # Reorder columns for better readability
             if "CELL" in df.columns:
                 # QTL format
-                column_order = ["CHR", "CELL", "GENE", "ACAT", "N", "PHENO_VAR"]
+                column_order = ["CHR", "CELL", "GENE", "ACAT", "MIN_P", "N", "PHENO_VAR"]
                 # Only include columns that exist in the DataFrame
                 column_order = [col for col in column_order if col in df.columns]
                 df = df[column_order]
             else:
                 # GWAS format
-                column_order = ["TRAIT", "N", "PHENO_VAR", "N_CASES", "N_CONTROLS"]
+                column_order = ["TRAIT", "N", "PHENO_VAR", "MIN_P", "N_CASES", "N_CONTROLS"]
                 column_order = [col for col in column_order if col in df.columns]
                 df = df[column_order]
         
