@@ -8,7 +8,7 @@ process EXPORT_SNP {
 
     // Define output
     output:
-    path("${params.out}_*.csv"), emit: snp_tdb_positions, optional: true
+    path("${params.out}_batch_*.csv"), emit: snp_tdb_positions, optional: true
 
     // Define the shell script to execute
     script:
@@ -17,13 +17,13 @@ process EXPORT_SNP {
     
     """
     # Write the complete CSV file
-    cat << 'EOF' > batch_${chr}.csv
+    cat << 'EOF' > ${params.out}_batch_${chr}.csv
 ${csvContent}
 EOF
     
     # Run the tdbsumstat command
     tdbsumstat export \
-      --snp batch_${chr}.csv \
+      --snp ${params.out}_batch_${chr}.csv \
       --attr ${params.attrs} \
       --uri-path ${params.uri_path} \
       --out ${params.out} \
