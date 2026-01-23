@@ -29,10 +29,14 @@ make install
 #### Verify installation
 tdbsumstat --help
 
+#### Run with singularity
+
+Alternatively you can use the singularity container that already pack tdbsumstat. you can find the container here: ghcr.io/bruno-ariano/tdbsumstat:1.0
+
+
 #### Run with nextflow
 
 If you are running the pipeline with nextflow change the path where the conda env is stored in conf/base.config
-
 
 #### To check how to use the Nextflow pipeline for extracting and ingesting data please refer here [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/nextflow_branch/docs/README.md)
 

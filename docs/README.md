@@ -25,9 +25,11 @@ Before running the pipeline, make sure you have:
 - **Nextflow** (recommended v24.04+)
 - **Python** (recommended 3.8+)
 - **Conda** (the pipeline includes conda profiles for environment management)
+- **Singularity** (the pipeline includes singularity profiles for environment management)
 
 
-See the repository main README for detailed environment setup and instructions to create the conda environments used by the pipeline.
+
+See the repository main README for detailed environment setup and instructions to create the conda environments or pull the singularity image used by the pipeline.
 
 ---
 
@@ -81,13 +83,13 @@ Import summary statistics files into a TileDB array.
 
 #### Example
 ```bash
-nextflow run main.nf -profile conda --ingest --file_path_ingestion example_data/example_data_table.csv  --mapping_file example_data/mapping_file_test.csv --type_sumstat qtl --ingestion_chunk_files 4
+nextflow run main.nf -profile singularity --ingest --file_path_ingestion example_data/example_data_table.csv  --mapping_file example_data/mapping_file_test.csv --type_sumstat qtl --ingestion_chunk_files 4
 ```
 
 Using Nextflow profile you can also use
 
 ```bash
-nextflow run main.nf -profile test_ingest,conda
+nextflow run main.nf -profile test_ingest,singularity
 ```
 
 
@@ -119,7 +121,7 @@ Example Files:
 
 #### Example:
 ```bash
-nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --snp /path/to/snp_list.csv --attrs "BETA,SE,PVAL,EAF,A1,A2" --out /path/to/output_prefix --type_sumstat gwas
+nextflow run main.nf -profile singularity --export --tiledb_path /path/to/tiledb --snp /path/to/snp_list.csv --attrs "BETA,SE,PVAL,EAF,A1,A2" --out /path/to/output_prefix --type_sumstat gwas
 ```
 #### Region-based Export
 
@@ -130,12 +132,12 @@ Extract genomic regions using BED format.
 
 Example:
 ```bash
-nextflow run main.nf -profile conda --export --tiledb_path /path/to/tiledb --table-regions /path/to/regions_table.csv --attrs "BETA,SE,PVAL" --out /path/to/output_prefix --type_sumstat gwas
+nextflow run main.nf -profile singularity --export --tiledb_path /path/to/tiledb --table-regions /path/to/regions_table.csv --attrs "BETA,SE,PVAL" --out /path/to/output_prefix --type_sumstat gwas
 ```
 
 Quick Test:
 ```bash
-nextflow run main.nf -profile test_export_lb,conda
+nextflow run main.nf -profile test_export_lb,singularity
 ```
 
 #### Locusbreaker
