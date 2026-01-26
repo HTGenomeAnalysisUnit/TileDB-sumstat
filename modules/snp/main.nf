@@ -1,6 +1,5 @@
 process EXPORT_SNP {
     label "process_high"
-    publishDir "${params.outdir}/snp_table", mode: params.publish_dir_mode
 
     // Define input
     input:
@@ -8,24 +7,28 @@ process EXPORT_SNP {
 
     // Define output
     output:
-    path("${params.out}_batch_*.csv"), emit: snp_tdb_positions, optional: true
+    tuple val(chr), path("${params.out}*.csv"), emit: snp_tdb_positions, optional: true
 
     // Define the shell script to execute
     script:
     // Create the complete CSV content as a Groovy string
-    def csvContent = "CHR,POS,TRAIT\n" + rows.collect { "${it.CHR},${it.POS},${it.TRAIT}" }.join('\n')
+    // Get column names and create header
+    def columnNames = rows[0].keySet().toList().sort()
+    def header = columnNames.join(',')
     
     """
-    # Write the complete CSV file
-    cat << 'EOF' > ${params.out}_batch_${chr}.csv
-${csvContent}
-EOF
-    
+    # Create header
+    echo "${header}" > snp_batch_${chr}.csv
+    # Use collectFile-like approach with shell commands
+    ${rows.collect { row ->
+        def line = columnNames.collect { col -> row[col] ?: '' }.join(',')
+        "echo '${line}' >> snp_batch_${chr}.csv"
+    }.join('\n    ')}    
     # Run the tdbsumstat command
     tdbsumstat export \
-      --snp ${params.out}_batch_${chr}.csv \
+      --snp snp_batch_${chr}.csv \
       --attr ${params.attrs} \
-      --uri-path ${params.uri_path} \
+      --tiledb-path ${params.tiledb_path} \
       --out ${params.out} \
       --type-sumstat ${params.type_sumstat}
     """

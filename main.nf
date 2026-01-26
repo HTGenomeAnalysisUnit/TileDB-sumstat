@@ -36,7 +36,18 @@ workflow {
         }
         .groupTuple()
         .set { tiledb_metadata_batches }
-        EXPORT_SNP(tiledb_metadata_batches)
+        snp_results = EXPORT_SNP(tiledb_metadata_batches)
+	snp_results.snp_tdb_positions
+        	.transpose()  // Convert tuple(chr, [file1, file2]) to [tuple(chr, file1), tuple(chr, file2)]
+        	.collectFile(keepHeader:true) { chr, file ->
+            	["${params.out}_chr_${chr}_concatenated.csv", file.text]
+        	}
+        	.set { concatenated_files }
+    
+    // Optionally publish the concatenated files
+    concatenated_files.subscribe { file ->
+        file.copyTo("${params.outdir}/snp_table_concatenated/${file.name}")
+    }
         }
         }
         if (params.locusbreaker){
