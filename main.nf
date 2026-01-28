@@ -9,11 +9,11 @@ include { RECOMPUTE_META } from "./modules/recompute_meta"
 
 workflow {
     if (params.ingestion){
-        Channel.fromPath(params.file_path_ingestion, checkIfExists:true)
+        channel.fromPath(params.file_path_ingestion, checkIfExists:true)
         .splitText(by: params.ingestion_chunk_files, keepHeader: true, file: true)
         .set { list_files }
-        mapping_file = Channel.fromPath(params.mapping_file, checkIfExists:true)
-        create_tiledb = CREATE_TILEDB(mapping_file, Channel.of('dummy'))
+        mapping_file = channel.fromPath(params.mapping_file, checkIfExists:true)
+        create_tiledb = CREATE_TILEDB(mapping_file, channel.of('dummy'))
         // Pass the TileDB array through all ingestion steps
         ingestion_results = INGEST_DATA(create_tiledb.tiledb_storage, list_files, mapping_file, create_tiledb.dummy_file)
         // Collect all completion signals
@@ -23,12 +23,12 @@ workflow {
         // Get one instance of the updated TileDB array (they should all be the same)
         updated_tiledb = ingestion_results.tiledb_updated.first()
         // After all ingestion is done, merge metadata using the updated TileDB
-        merged_metadata = MERGE_METADATA(updated_tiledb, mapping_file, all_metadata_parts, all_ingestion_done) 
+        MERGE_METADATA(updated_tiledb, mapping_file, all_metadata_parts, all_ingestion_done) 
         // The final output will be in merged_metadata.tiledb_final
     }
     if (params.export){
         if (params.snp) {
-        Channel
+        channel
         .fromPath(params.snp, checkIfExists: true)
         .splitCsv(header: true)
         .map { row ->
@@ -51,7 +51,7 @@ workflow {
         }
         }
         if (params.locusbreaker){
-            Channel.fromPath(params.table_lb, checkIfExists:true)
+            channel.fromPath(params.table_lb, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
                 .map { batch_file -> 
                 def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
@@ -61,7 +61,7 @@ workflow {
             EXPORT_LOCUSBREAKER(tiledb_metadata_batches)
          }
         if (params.export_traits){
-            Channel.fromPath(params.list_traits, checkIfExists:true)
+            channel.fromPath(params.list_traits, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
                 .map { batch_file -> 
                 def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
@@ -72,7 +72,7 @@ workflow {
         
     }
         if (params.recompute_meta){
-            Channel.fromPath(params.list_traits, checkIfExists:true)
+            channel.fromPath(params.list_traits, checkIfExists:true)
                 .splitText(by: params.tiledb_batch_size, keepHeader: true, file: true)
                 .map { batch_file -> 
                 def batch_index = (batch_file.name =~ /\.(\d+)\.csv$/)[0][1]
