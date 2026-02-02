@@ -23,6 +23,7 @@ import polars as pl
     cloup.option("--sep", default = "\t", type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
     cloup.option("--mac", default=None, type=int, help = "Minor allele count filter during ingestion"),
+    cloup.option("--permuted", default = False, type=bool, help = "Compute the SE from the permuted pvalue"),
     cloup.option("--only-meta", is_flag=True, type=bool, default = False, help = "Create and ingest metadata")
 )
 
@@ -36,7 +37,8 @@ def ingest(uri_path:str,
            pvar_file:str = None, 
            qc:bool = False, 
            only_meta:bool = False,
-           mac:int = None):
+           mac:int = None,
+           permuted:bool = False):
     # Create a Harmonize object
     print("Starting ingestion")
     harmonized_object = Harmonize(mapping_file= mapping_file, uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file, type_trait = type_trait, mac = mac)
@@ -72,7 +74,9 @@ def ingest(uri_path:str,
         # Harmonize the data
         print(f"Harmonizing file: {file}")
         chunk_pl = pl.read_csv(file,separator=sep,low_memory=True ,null_values="NA")
-        harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, gene = gene, pheno_var = pheno_var, n = n, n_cases = n_cases, n_controls = n_controls, mac = mac)
+        harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, 
+                                    gene = gene, pheno_var = pheno_var, n = n, n_cases = n_cases, 
+                                    n_controls = n_controls, mac = mac, permuted = permuted)
         #Performing QC using GWASLAB
         if qc:
             harmonized_object.qc_sumstat(file_path = file)

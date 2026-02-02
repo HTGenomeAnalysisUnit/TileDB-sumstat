@@ -22,7 +22,7 @@ class HarmonizationError(Exception):
 
 
 class Harmonize:
-    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str, mac: int):
+    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str, mac: int, permuted: False):
         self.mapping_file = mapping_file
         self.uri = uri
         self.pvar_file = pvar_file
@@ -32,6 +32,7 @@ class Harmonize:
         self.tiledb_types = {}
         self.dimension_tiledb = []
         self.mac = mac
+        self.permuted = permuted
     
     def create_mapping(self):
         df = pd.read_csv(self.mapping_file, header=None, names=["key", "value"])
@@ -272,12 +273,22 @@ class Harmonize:
         
         #Calculate p-value from z-score
         self.chunk_pl = self.chunk_pl.drop('P')
-        self.chunk_pl = self.chunk_pl.with_columns(
-            (pl.col("BETA") / pl.col("SE")).pow(2).map_batches(
-            lambda x: pl.Series(stats.chi2.sf(x.to_numpy(), df=1)),
-            return_dtype=pl.Float64
-            ).alias('P')
-            )
+        if self.permuted==False:
+            self.chunk_pl = self.chunk_pl.with_columns(
+                (pl.col("BETA") / pl.col("SE")).pow(2).map_batches(
+                lambda x: pl.Series(stats.chi2.sf(x.to_numpy(), df=1)),
+                return_dtype=pl.Float64
+                ).alias('P')
+                )
+        else:
+            self.chunk_pl = self.chunk_pl.with_columns(
+            (
+                pl.col("BETA").pow(2) / 
+                pl.col("P").map_batches(
+                lambda x: pl.Series(stats.chi2.isf(x.to_numpy(), df=1))
+                )
+            ).sqrt().alias("SE")
+)
     
     def qc_sumstat(self, file_path:str):
         directory = self.uri + "_logs"
