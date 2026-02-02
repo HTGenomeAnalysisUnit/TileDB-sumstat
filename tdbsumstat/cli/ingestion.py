@@ -23,7 +23,7 @@ import polars as pl
     cloup.option("--sep", default = "\t", type=str, help = "pvar file used to verify the alleles order"),
     cloup.option("--qc", is_flag=True, type=bool, default = False, help = "Harmonize and QC the summary statistics using gwaslab"),
     cloup.option("--mac", default=None, type=int, help = "Minor allele count filter during ingestion"),
-    cloup.option("--permuted", default = False, type=bool, help = "Compute the SE from the permuted pvalue"),
+    cloup.option("--permuted", is_flag=True, type=bool, default = False, help = "Compute the SE from the permuted pvalue"),
     cloup.option("--only-meta", is_flag=True, type=bool, default = False, help = "Create and ingest metadata")
 )
 
