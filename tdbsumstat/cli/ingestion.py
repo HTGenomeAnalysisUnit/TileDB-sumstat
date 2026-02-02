@@ -41,7 +41,7 @@ def ingest(uri_path:str,
            permuted:bool = False):
     # Create a Harmonize object
     print("Starting ingestion")
-    harmonized_object = Harmonize(mapping_file= mapping_file, uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file, type_trait = type_trait, mac = mac)
+    harmonized_object = Harmonize(mapping_file= mapping_file, uri=uri_path, type_sumstat=type_sumstat, pvar_file = pvar_file, type_trait = type_trait, mac = mac, permuted = permuted)
    
     #Check if the tiledb already exists, if not create it
     if create_tiledb:
