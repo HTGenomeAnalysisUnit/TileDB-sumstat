@@ -76,7 +76,7 @@ def ingest(uri_path:str,
         chunk_pl = pl.read_csv(file,separator=sep,low_memory=True ,null_values="NA")
         harmonized_object.harmonize(sumstat = chunk_pl, trait = trait, cell = cell, 
                                     gene = gene, pheno_var = pheno_var, n = n, n_cases = n_cases, 
-                                    n_controls = n_controls, mac = mac, permuted = permuted)
+                                    n_controls = n_controls, mac = mac)
         #Performing QC using GWASLAB
         if qc:
             harmonized_object.qc_sumstat(file_path = file)
