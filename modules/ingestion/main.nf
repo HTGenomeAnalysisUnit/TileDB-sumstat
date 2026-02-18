@@ -29,6 +29,7 @@ process INGEST_DATA {
     --file-path ${list_files} \
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat} \
+    --maf ${params.maf} \
     --mac ${params.mac} ${qc} ${pvar_file} ${permuted}
     # Rename the metadata parts directory to include the list_files name for uniqueness
     if [ -d "TileDB_${params.tiledb_name}_metadata_parts" ]; then

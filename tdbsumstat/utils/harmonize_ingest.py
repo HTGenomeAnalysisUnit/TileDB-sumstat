@@ -22,7 +22,7 @@ class HarmonizationError(Exception):
 
 
 class Harmonize:
-    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str, mac: int, permuted: bool):
+    def __init__(self, mapping_file: str, uri: str, type_sumstat: str, pvar_file: str, type_trait: str, mac: int, maf: float, permuted: bool):
         self.mapping_file = mapping_file
         self.uri = uri
         self.pvar_file = pvar_file
@@ -32,6 +32,7 @@ class Harmonize:
         self.tiledb_types = {}
         self.dimension_tiledb = []
         self.mac = mac
+        self.maf = maf
         self.permuted = permuted
         print(self.permuted)
     
@@ -117,7 +118,6 @@ class Harmonize:
 
     def harmonize(self, 
                   sumstat, 
-                  mac: int, 
                   trait: str = None, 
                   cell: str = None, 
                   gene: str = None, 
@@ -142,8 +142,13 @@ class Harmonize:
             self.chunk_pl = self.chunk_pl.with_columns(pl.lit(0).alias("EAF"))
         if "DIST" not in self.chunk_pl.columns:
             self.chunk_pl = self.chunk_pl.with_columns(pl.lit(1).alias("DIST"))
-        #Check for removing double headers
 
+        if self.maf is not None:
+                self.chunk_pl = self.chunk_pl.with_columns(
+                (pl.min_horizontal(pl.col("EAF"), 1 - pl.col("EAF")))
+                .alias("MAF")
+                 ).filter(pl.col("MAF") >= self.maf)
+            
         if self.type_trait == "quant": 
             if not "N" in self.chunk_pl.columns:
                 if n is not None:
@@ -396,6 +401,9 @@ class Harmonize:
             "traits": [],
             "CELL": []
         }
+        self.chunk_pl = self.chunk_pl.select(
+            [col for col in self.chunk_pl.columns if self.chunk_pl[col].null_count() < self.chunk_pl.height]
+            )
         self.chunk_pl = self.chunk_pl.drop_nulls()
         if self.type_sumstat == "qtl":
             # Get unique cell types
