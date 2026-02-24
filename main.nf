@@ -13,9 +13,17 @@ workflow {
         .splitText(by: params.ingestion_chunk_files, keepHeader: true, file: true)
         .set { list_files }
         mapping_file = Channel.fromPath(params.mapping_file, checkIfExists:true)
-        create_tiledb = CREATE_TILEDB(mapping_file, Channel.of('dummy'))
+        def myFolder = file("${params.outdir}/TileDB/${params.tiledb_name}")
+        if(!myFolder.exists()){
+            create_tiledb = CREATE_TILEDB(mapping_file, Channel.of('dummy'))
+            tiledb_storage = create_tiledb.tiledb_storage
+        }
+        else{
+            tiledb_storage = myFolder
+        }
+        
         // Pass the TileDB array through all ingestion steps
-        ingestion_results = INGEST_DATA(create_tiledb.tiledb_storage, list_files, mapping_file, create_tiledb.dummy_file)
+        ingestion_results = INGEST_DATA(tiledb_storage, list_files, mapping_file, create_tiledb.dummy_file)
         // Collect all completion signals
         all_metadata_parts = ingestion_results.metadata_parts.collect()
         all_ingestion_done = ingestion_results.ingestion_done.collect()
