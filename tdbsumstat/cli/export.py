@@ -153,7 +153,7 @@ def export(
                 if type_sumstat == "gwas":
                     query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
                 else:
-                    cell,genes = trait["TRAIT"].split(":")
+                    cell,genes = trait["TRAIT"].split(";")
                     query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
 
                 result = locusbreaker_plpl(query,
