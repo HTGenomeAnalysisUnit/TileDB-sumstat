@@ -1,4 +1,4 @@
 FILE,CELL,PHENO_VAR,N
-/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysed_datasets/eqtls/F3_QTLs_updated_12_2025/TileDB-sumstat/example_data/dummy_out_ENSG0000010000.tsv.gz,T_gd,1.5,4000
-/lustre/scratch124/humgen/projects_v2/cardinal_analysis/analysed_datasets/eqtls/F3_QTLs_updated_12_2025/TileDB-sumstat/example_data/dummy_out_ENSG0000010001.tsv.gz,T_gd,1.5,4000
+dummy_out_ENSG0000010000.tsv.gz,T_gd,1.5,4000
+dummy_out_ENSG0000010001.tsv.gz,T_gd,1.5,4000
 
