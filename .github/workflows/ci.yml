@@ -1,0 +1,163 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+# Minimal permissions for all jobs
+permissions:
+  contents: read
+
+jobs:
+  # -----------------------------------------------------------------------
+  # Python unit + integration tests
+  # -----------------------------------------------------------------------
+  python-tests:
+    name: Python tests (pytest)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install tdbsumstat and test dependencies
+        run: |
+          pip install -e .
+          pip install pytest pytest-cov
+
+      - name: Run test suite
+        run: python -m pytest tests/ -v --tb=short
+
+  # -----------------------------------------------------------------------
+  # Nextflow stub tests (validate workflow DAG without running commands)
+  # -----------------------------------------------------------------------
+  nextflow-stub-tests:
+    name: Nextflow stub tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: "latest-stable"
+
+      - name: Stub test – ingestion
+        run: |
+          nextflow run main.nf -profile test_ingest -stub -ansi-log false
+          echo "✓ Ingestion stub test passed"
+
+      - name: Stub test – export SNP
+        run: |
+          nextflow run main.nf -profile test_export_snp -stub -ansi-log false
+          echo "✓ Export SNP stub test passed"
+
+      - name: Stub test – export locusbreaker
+        run: |
+          nextflow run main.nf -profile test_export_lb -stub -ansi-log false
+          echo "✓ Export locusbreaker stub test passed"
+
+      - name: Stub test – export traits
+        run: |
+          nextflow run main.nf -profile test_export_traits -stub -ansi-log false
+          echo "✓ Export traits stub test passed"
+
+      - name: Stub test – export regions
+        run: |
+          nextflow run main.nf -profile test_export_regions -stub -ansi-log false
+          echo "✓ Export regions stub test passed"
+
+      - name: Stub test – recompute metadata
+        run: |
+          nextflow run main.nf -profile test_recompute_meta -stub -ansi-log false
+          echo "✓ Recompute metadata stub test passed"
+
+  # -----------------------------------------------------------------------
+  # Full Nextflow integration test (runs tdbsumstat commands via local Python)
+  # -----------------------------------------------------------------------
+  nextflow-integration-test:
+    name: Nextflow integration test (ingest + export)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install tdbsumstat
+        run: pip install -e .
+
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: "latest-stable"
+
+      - name: Create CI data table with absolute file paths
+        run: |
+          {
+            echo "FILE,CELL,GENE,PHENO_VAR,N"
+            echo "$(pwd)/example_data/dummy_out_ENSG0000010000.tsv.gz,Tgd,ENSG0000010000,1.5,4000"
+            echo "$(pwd)/example_data/dummy_out_ENSG0000010001.tsv.gz,Tgd,ENSG0000010001,1.5,4000"
+          } > /tmp/example_data_table_ci.csv
+
+      - name: Run ingestion pipeline (local, no container)
+        run: |
+          nextflow run main.nf \
+            --ingestion true \
+            --file_path_ingestion /tmp/example_data_table_ci.csv \
+            --mapping_file "$(pwd)/example_data/mapping_file_test.csv" \
+            --type_sumstat qtl \
+            --tiledb_name test_ci \
+            --ingestion_chunk_files 2 \
+            --maf 0 \
+            --mac 0 \
+            --outdir ./results_ci \
+            -process.container null \
+            -ansi-log false
+
+      - name: Verify TileDB was created
+        run: |
+          ls -la results_ci/TileDB/TileDB_test_ci/
+          echo "✓ TileDB created successfully"
+
+      - name: Run SNP export (local, no container)
+        run: |
+          nextflow run main.nf \
+            --export true \
+            --snp "$(pwd)/example_data/snp_list_sc.csv" \
+            --tiledb_path "$(pwd)/results_ci/TileDB/TileDB_test_ci" \
+            --uri_path "$(pwd)/results_ci/TileDB/TileDB_test_ci" \
+            --attrs "SE,BETA" \
+            --out out_ci \
+            --type_sumstat qtl \
+            --outdir ./results_ci \
+            -process.container null \
+            -ansi-log false
+          echo "✓ SNP export completed"

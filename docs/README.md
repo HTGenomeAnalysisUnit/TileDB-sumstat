@@ -11,7 +11,14 @@ TileDB-sumstat is a Nextflow + Python toolkit for scalable ingestion and export 
   - [Export](#export)
     - [SNP-based Export](#snp-based-export)
     - [Region-based Export](#region-based-export)
+    - [Traits Export](#traits-export)
     - [Locusbreaker](#locusbreaker)
+    - [Metadata Export](#metadata-export)
+    - [Recompute Metadata](#recompute-metadata)
+- [Nextflow Modules](#nextflow-modules)
+- [Testing the Nextflow Pipeline](#testing-the-nextflow-pipeline)
+  - [Stub Tests (CI / no data required)](#stub-tests-ci--no-data-required)
+  - [Integration Test](#integration-test)
 - [Test Data](#test-data)
 - [Support and Contribution](#support-and-contribution)
 
@@ -41,7 +48,7 @@ TileDB-sumstat implements two main workflows executed in separate steps:
 2. **Export** — Query the TileDB array and export results by:
    - SNP
    - Genomic region
-   - Entire summary statistics
+   - Entire summary statistics (trait-based)
    - Clumping using the "Locusbreaker" algorithm
 
 The program can be used with Nextflow or as standalone Python utilities.
@@ -58,36 +65,48 @@ Import summary statistics files into a TileDB array.
 
 #### Required Files
 
-- **Mapping File** (.csv): Maps input GWAS columns to standard TileDB-sumstat columns. See `example_data/mapping_file_test` for format. First column: original GWAS names, second column: converted names.
-- **Data Table**: Lists files to ingest. See `example_data/example_data_table.csv`. Must include:
-  - Path to GWAS files
-  - Optional: Additional columns can be added to this file if they are not present in the summary statistics:
-    - `N`: Sample size for specific summary statistics
-    - `N_CASES`: Sample size for cases specific to a summary statistics
-    - `N_CONTROLS`: Sample size for controls specific to a summary statistics
-    - `CELL`: Cell name for single QTL studies
-    - `GENE`: GENE name for single QTL studies
-    - `PHENO_VAR`: Phenotypic variance for the specific trait (only for QTLs single cell)
-    - `TRAIT`: Trait name for GWAS studies
+- **Mapping File** (.csv): Maps input GWAS columns to standard TileDB-sumstat columns. See `example_data/mapping_file_test.csv` for format. First column: original GWAS names, second column: converted names.
+- **Data Table** (`example_data/example_data_table.csv`): Lists files to ingest. Must contain **absolute file paths** in the `FILE` column. Optional columns:
+  - `N`: Sample size
+  - `N_CASES` / `N_CONTROLS`: Case/control sizes for binary GWAS
+  - `CELL`: Cell type (single-cell QTL)
+  - `GENE`: Gene name (single-cell QTL)
+  - `PHENO_VAR`: Phenotypic variance (single-cell QTL)
+  - `TRAIT`: Trait name (GWAS)
+
+> **Note on file paths:** The `FILE` column in the data table must contain absolute paths that are accessible from the compute nodes running the pipeline. The file `example_data/example_data_table_test.csv` shows the column format; for production runs, replace the paths with absolute paths on your cluster.
 
 #### Parameters
 
 **Required:**
-- `--ingest` (flag to enable ingestion)
+- `--ingestion` (flag to enable ingestion)
 - `--file_path_ingestion` (path to data table file)
+- `--mapping_file` (path to column mapping file)
 - `--type_sumstat` (either `gwas` or `qtl`)
+- `--tiledb_name` (name for the TileDB array)
 
 **Optional:**
-- `--qc` (enable QC processing)
-- `--ingestion_chunk_files` (number of files to ingest simultaneously, default: 4)
+- `--qc` (enable QC processing via gwaslab)
+- `--ingestion_chunk_files` (number of files to ingest per batch, default: 4)
+- `--maf` (minimum allele frequency filter, default: 0)
+- `--mac` (minimum allele count filter, default: 0)
+- `--permuted` (compute SE from permuted p-value)
+- `--pvar_file` (pvar file to align alleles)
+- `--outdir` (output directory, default: `./results`)
 
 #### Example
 ```bash
-nextflow run main.nf -profile singularity --ingest --file_path_ingestion example_data/example_data_table.csv  --mapping_file example_data/mapping_file_test.csv --type_sumstat qtl --ingestion_chunk_files 4
+nextflow run main.nf \
+  -profile singularity \
+  --ingestion \
+  --file_path_ingestion example_data/example_data_table.csv \
+  --mapping_file example_data/mapping_file_test.csv \
+  --type_sumstat qtl \
+  --tiledb_name my_tiledb \
+  --ingestion_chunk_files 4
 ```
 
-Using Nextflow profile you can also use
-
+Using a pre-defined test profile:
 ```bash
 nextflow run main.nf -profile test_ingest,singularity
 ```
@@ -99,85 +118,246 @@ Query and export data from the TileDB array.
 
 #### Common Parameters
 
-**Required:**:
-- --export (flag to enable export)
-- --tiledb_path (path to TileDB array)
-- --out (output file prefix)
-- --type_sumstat (type of summary statistics, either gwas or qtl for single cell)
+**Required:**
+- `--export` (flag to enable export)
+- `--uri_path` (path to TileDB array)
+- `--out` (output file prefix)
+- `--type_sumstat` (type of summary statistics: `gwas` or `qtl`)
 
-**Optional**:
-- --attrs (attributes to export, e.g., "BETA,SE,PVAL,EAF,A1,A2")
+**Optional:**
+- `--attrs` (attributes to export, e.g., `"BETA,SE,EAF"`, default: `"P,SNPID,EAF,BETA,SE"`)
 
 #### SNP-based Export
 
 Extract specific SNP positions.
 
-**Required**
-- --snp (path to SNP list file)
+**Required:**
+- `--snp` (path to SNP list CSV, columns: `CHR`, `POS`, `TRAIT`)
 
-Example Files:
-- GWAS: example_data/snp_list_gwas.csv
-- Single-cell: example_data/snp_list_sc.csv
+Example files: `example_data/snp_list_sc.csv`
 
-#### Example:
 ```bash
-nextflow run main.nf -profile singularity --export --tiledb_path /path/to/tiledb --snp /path/to/snp_list.csv --attrs "BETA,SE,PVAL,EAF,A1,A2" --out /path/to/output_prefix --type_sumstat gwas
+nextflow run main.nf \
+  -profile singularity \
+  --export \
+  --snp example_data/snp_list_sc.csv \
+  --tiledb_path /path/to/tiledb \
+  --uri_path /path/to/tiledb \
+  --attrs "BETA,SE,P" \
+  --out results/snp_output \
+  --type_sumstat qtl
 ```
+
+Quick test (stub – no data needed):
+```bash
+nextflow run main.nf -profile test_export_snp -stub
+```
+
 #### Region-based Export
 
-Extract genomic regions using BED format.
+Extract genomic intervals.
 
 **Required:**
-- --table-regions (path to regions file)
+- `--regions` (path to regions CSV, columns: `CHR`, `START`, `END`, `TRAIT`)
 
-Example:
+Example file: `example_data/region_list_sc.csv`
+
 ```bash
-nextflow run main.nf -profile singularity --export --tiledb_path /path/to/tiledb --table-regions /path/to/regions_table.csv --attrs "BETA,SE,PVAL" --out /path/to/output_prefix --type_sumstat gwas
+nextflow run main.nf \
+  -profile singularity \
+  --export \
+  --regions example_data/region_list_sc.csv \
+  --uri_path /path/to/tiledb \
+  --attrs "BETA,SE,P" \
+  --out results/regions_output \
+  --type_sumstat qtl
 ```
 
-Quick Test:
+Quick test:
 ```bash
-nextflow run main.nf -profile test_export_lb,singularity
+nextflow run main.nf -profile test_export_regions -stub
+```
+
+#### Traits Export
+
+Export complete summary statistics for a list of traits or cell-type/gene combinations.
+
+**Required:**
+- `--export_traits` (flag)
+- `--list_traits` (path to CSV with `TRAIT` column; for QTL: `CELL:GENE` format)
+
+Example file: `example_data/trait_list_test.csv`
+
+```bash
+nextflow run main.nf \
+  -profile singularity \
+  --export \
+  --export_traits \
+  --list_traits example_data/trait_list_test.csv \
+  --uri_path /path/to/tiledb \
+  --out results/traits_output \
+  --type_sumstat qtl
+```
+
+Quick test:
+```bash
+nextflow run main.nf -profile test_export_traits -stub
 ```
 
 #### Locusbreaker
 
-Identify genomic loci with significant associations and export locus-centric results.
+Identify genomic loci with significant associations.
 
 **Required:**
-- --table-lb (path to traits table, see example_data/locusbreaker_test_table.csv)
+- `--locusbreaker` (flag)
+- `--table_lb` (path to traits table, columns: `CHR`, `TRAIT`, `SIG`, `LIM`)
 
-**Optional**
-- --maf-lb (minor allele frequency filter)
-- --locus-max-size (maximum locus size in base pairs)
-- --hole-lb (maximum gap size within loci in base pairs)
-- --cis-trans (for QTLs: filter by cis or trans)
+**Optional:**
+- `--maf_lb` (MAF filter, default: 0.001)
+- `--locus_max_size_lb` (maximum locus size in bp, default: 3 Mb)
+- `--hole_lb` (maximum gap within loci in bp, default: 250 kb)
+- `--cis_trans_lb` (for QTLs: `cis` or `trans`, default: `cis`)
 
-Locusbreaker Algorithm:
-1. Select SNPs below p-value threshold (suggested: 1e-6)
-2. Group consecutive SNPs within distance threshold (suggested: 250 kb)
-3. Retain groups containing at least one genome-wide significant SNP (suggested: 5e-8)
-4. Expand locus boundaries by margin (e.g., +100 kb)
-5. Apply additional filters (MAF, locus size, cis/trans)
+Example:
+```bash
+nextflow run main.nf \
+  -profile singularity \
+  --locusbreaker \
+  --table_lb example_data/locusbreaker_test_table_sc.csv \
+  --uri_path /path/to/tiledb \
+  --out results/lb_output \
+  --type_sumstat qtl
+```
+
+Quick test:
+```bash
+nextflow run main.nf -profile test_export_lb -stub
+```
+
+#### Metadata Export
+
+Export the merged metadata stored in the TileDB array to CSV.
+
+```bash
+tdbsumstat export --export-meta --uri-path /path/to/tiledb --type-sumstat qtl --out metadata_out
+```
+
+#### Recompute Metadata
+
+Recompute per-trait/cell metadata statistics after applying a MAC filter without modifying the TileDB data.
+
+**Required:**
+- `--recompute_meta` (flag)
+- `--list_traits` (CSV with `CELL` and `CHR` columns for QTL, or `TRAIT` and `CHR` for GWAS)
+- `--uri_path`
+- `--mac` (minimum allele count threshold)
+
+Example file: `example_data/recompute_meta_test_table.csv`
+
+```bash
+nextflow run main.nf \
+  -profile singularity \
+  --recompute_meta \
+  --list_traits example_data/recompute_meta_test_table.csv \
+  --uri_path /path/to/tiledb \
+  --mac 10 \
+  --out results/meta_out \
+  --type_sumstat qtl
+```
+
+Quick test:
+```bash
+nextflow run main.nf -profile test_recompute_meta -stub
+```
 
 ---
 
-#### Metadata extraction
+## Nextflow Modules
 
-Metadata are structured as json in tiledb. To extract them you can use the following command:
+The pipeline is composed of the following Nextflow process modules under `modules/`:
+
+| Module | Process | Description |
+|--------|---------|-------------|
+| `create_tiledb/` | `CREATE_TILEDB` | Creates the TileDB sparse array schema |
+| `ingestion/` | `INGEST_DATA` | Harmonises and ingests one file-list chunk into TileDB |
+| `merge_metadata/` | `MERGE_METADATA` | Collects per-chunk metadata JSON files and stores merged metadata in TileDB |
+| `snp/` | `EXPORT_SNP` | Exports data for a list of SNP positions |
+| `regions/` | `EXPORT_REGIONS` | Exports data for a list of genomic intervals |
+| `traits/` | `TRAITS` | Exports complete summary statistics for a list of traits |
+| `locusbreaker/` | `EXPORT_LOCUSBREAKER` | Runs the Locusbreaker algorithm and exports locus/segment tables |
+| `recompute_meta/` | `RECOMPUTE_META` | Recomputes metadata with a MAC filter |
+
+Each module has a `stub` block so the workflow DAG can be validated without executing the actual commands (see [Testing](#testing-the-nextflow-pipeline)).
+
+---
+
+## Testing the Nextflow Pipeline
+
+### Stub Tests (CI / no data required)
+
+Stub tests validate the workflow DAG structure (channels, processes, outputs) without running the actual `tdbsumstat` commands. They are the recommended way to test the pipeline in CI or when data is not available.
+
+All test profiles are defined in `conf/test.config` and registered in `nextflow.config`.
 
 ```bash
-tdbsumstat export metadata 
+# Validate ingestion workflow
+nextflow run main.nf -profile test_ingest -stub
+
+# Validate export workflows
+nextflow run main.nf -profile test_export_snp -stub
+nextflow run main.nf -profile test_export_regions -stub
+nextflow run main.nf -profile test_export_traits -stub
+nextflow run main.nf -profile test_export_lb -stub
+nextflow run main.nf -profile test_recompute_meta -stub
 ```
 
-tiledb_meta
-{'traits': [], 'CELL': ['Tgd'], 'Tgd': {'20': {'ENSG0000010000': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}, 'ENSG0000010001': {'ACAT': 0.0, 'N': 4000.0, 'PHENO_VAR': 1.0}}}}
+These stubs are also run automatically on every push and pull request via the [CI workflow](.github/workflows/ci.yml).
+
+### Integration Test
+
+To run a full integration test that actually executes the ingestion and export commands, you need:
+1. `tdbsumstat` installed (`pip install -e .`)
+2. Nextflow installed
+
+```bash
+# Build a CI-friendly data table with absolute paths
+{
+  echo "FILE,CELL,GENE,PHENO_VAR,N"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010000.tsv.gz,Tgd,ENSG0000010000,1.5,4000"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010001.tsv.gz,Tgd,ENSG0000010001,1.5,4000"
+} > /tmp/example_data_table_ci.csv
+
+# Run ingestion (no container – uses local tdbsumstat)
+nextflow run main.nf \
+  --ingestion true \
+  --file_path_ingestion /tmp/example_data_table_ci.csv \
+  --mapping_file "$(pwd)/example_data/mapping_file_test.csv" \
+  --type_sumstat qtl \
+  --tiledb_name test_ci \
+  --ingestion_chunk_files 2 \
+  --maf 0 \
+  --mac 0 \
+  --outdir ./results_ci \
+  -process.container null \
+  -ansi-log false
+```
+
+---
+
 ## Test Data
 
-- example_data/snp_list.csv - Example SNP list for SNP-based export
-- example_data/example_data_table.csv - Example table for regions and ingestion
-- example_data/mapping_file_test - Example mapping file for ingestion
-- example_data/locusbreaker_test_table.csv - Example table for Locusbreaker
+| File | Description |
+|------|-------------|
+| `example_data/dummy_out_ENSG0000010000.tsv.gz` | Example QTL summary statistics (gene ENSG0000010000) |
+| `example_data/dummy_out_ENSG0000010001.tsv.gz` | Example QTL summary statistics (gene ENSG0000010001) |
+| `example_data/example_data_table.csv` | Ingestion data table (absolute paths, for cluster use) |
+| `example_data/example_data_table_test.csv` | Ingestion data table (filenames only, documents column format) |
+| `example_data/mapping_file_test.csv` | Column mapping file for example data |
+| `example_data/snp_list_sc.csv` | SNP list for SNP-based export tests |
+| `example_data/region_list_sc.csv` | Region list for region-based export tests |
+| `example_data/locusbreaker_test_table_sc.csv` | Traits table for Locusbreaker tests |
+| `example_data/trait_list_test.csv` | Trait list (`TRAIT` column) for traits export tests |
+| `example_data/recompute_meta_test_table.csv` | Cell/CHR table for recompute metadata tests |
 
 ---
 
@@ -190,5 +370,3 @@ Contributions are welcome! Please:
 2. Create a feature branch
 3. Submit a pull request against the main branch
 4. Follow the repository's contribution guidelines
-
----

@@ -158,3 +158,57 @@ Test files:
 | `tests/test_ingest.py` | Each ingest mixin + end-to-end pipeline with example data |
 | `tests/test_export.py` | All export modules + CLI command routing |
 
+---
+
+### Testing the Nextflow pipeline
+
+#### Stub tests (no data required)
+
+Every Nextflow module has a `stub` block that creates placeholder output files
+instead of running the actual `tdbsumstat` commands. Stub tests validate the
+workflow DAG structure (channels, process I/O, publish dirs) without needing
+containers or real data.
+
+```bash
+# Install Nextflow first: https://www.nextflow.io/docs/latest/install.html
+
+nextflow run main.nf -profile test_ingest          -stub   # ingestion DAG
+nextflow run main.nf -profile test_export_snp      -stub   # SNP export DAG
+nextflow run main.nf -profile test_export_regions  -stub   # region export DAG
+nextflow run main.nf -profile test_export_traits   -stub   # trait export DAG
+nextflow run main.nf -profile test_export_lb       -stub   # locusbreaker DAG
+nextflow run main.nf -profile test_recompute_meta  -stub   # recompute metadata DAG
+```
+
+These stub tests are run automatically on every push and pull request via
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+#### Full integration test (local Python + Nextflow)
+
+```bash
+# 1. Install tdbsumstat
+pip install -e .
+
+# 2. Build a data table with absolute paths
+{
+  echo "FILE,CELL,GENE,PHENO_VAR,N"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010000.tsv.gz,Tgd,ENSG0000010000,1.5,4000"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010001.tsv.gz,Tgd,ENSG0000010001,1.5,4000"
+} > /tmp/example_data_table_ci.csv
+
+# 3. Run ingestion (uses local Python – no container needed)
+nextflow run main.nf \
+  --ingestion true \
+  --file_path_ingestion /tmp/example_data_table_ci.csv \
+  --mapping_file "$(pwd)/example_data/mapping_file_test.csv" \
+  --type_sumstat qtl \
+  --tiledb_name test_ci \
+  --ingestion_chunk_files 2 \
+  --maf 0 --mac 0 \
+  --outdir ./results_ci \
+  -process.container null \
+  -ansi-log false
+```
+
+See [`docs/README.md`](docs/README.md) for the full Nextflow parameter reference.
+

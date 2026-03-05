@@ -1,3 +1,5 @@
+#!/usr/bin/env nextflow
+
 process EXPORT_SNP {
     label "process_high"
 
@@ -15,7 +17,7 @@ process EXPORT_SNP {
     // Get column names and create header
     def columnNames = rows[0].keySet().toList().sort()
     def header = columnNames.join(',')
-    
+
     """
     # Create header
     echo "${header}" > snp_batch_${chr}.csv
@@ -23,7 +25,7 @@ process EXPORT_SNP {
     ${rows.collect { row ->
         def line = columnNames.collect { col -> row[col] ?: '' }.join(',')
         "echo '${line}' >> snp_batch_${chr}.csv"
-    }.join('\n    ')}    
+    }.join('\n    ')}
     # Run the tdbsumstat command
     tdbsumstat export \
       --snp snp_batch_${chr}.csv \
@@ -31,5 +33,10 @@ process EXPORT_SNP {
       --uri-path ${params.tiledb_path} \
       --out ${params.out} \
       --type-sumstat ${params.type_sumstat}
+    """
+
+    stub:
+    """
+    touch ${params.out}_chr${chr}_stub.csv
     """
 }
