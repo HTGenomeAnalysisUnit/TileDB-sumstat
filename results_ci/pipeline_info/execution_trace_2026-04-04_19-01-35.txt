@@ -1,0 +1,4 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	28/f398cb	30494	CREATE_TILEDB (1)	COMPLETED	0	2026-04-04 19:01:36.675	2.6s	3s	-	-	-	-	-
+2	45/cc4998	30551	INGEST_DATA (1)	COMPLETED	0	2026-04-04 19:01:39.295	2.1s	2s	-	-	-	-	-
+3	8d/d87d1c	30602	MERGE_METADATA (1)	COMPLETED	0	2026-04-04 19:01:41.437	1.3s	1s	-	-	-	-	-

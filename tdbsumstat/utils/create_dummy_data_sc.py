@@ -1,100 +1,169 @@
-import pandas as pd
-import numpy as np
-import click
+"""Generate synthetic per-gene QTL tables for local tests (alleles and SNP column aligned)."""
+from __future__ import annotations
 
-@click.command()
-@click.option("--num_snps", default=10000, help="Total number of SNPs to create")
-@click.option("--num_snps_gene", default=2000, help="How many SNPs each gene should have")
-@click.option("--out_csv", default="dummy_out", help="Where to send the output")
+import argparse
+import csv
+import gzip
+import random
+from typing import Optional
 
-def create_dummy_data(num_snps, num_snps_gene, out_csv):
-    # Initialize lists for each column
+# Base genomic position offset per gene so (CHR, CELL, GENE, POS) never collides across genes
+# when ingested into the same TileDB array.
+_POS_OFFSET_PER_GENE = 100_000
 
-    gene_ids = []
-    variant_ids = []
-    start_distances = []
-    afs = []
-    ma_samples = []
-    ma_counts = []
-    pval_nominals = []
-    slopes = []
-    slope_ses = []
-    positions = []
-    a1s = []
-    a2s = []
-    
-    # Keep track of generated variant IDs to avoid duplicates
-    generated_variant_ids = set()
+_ALLELES = ("A", "T", "C", "G")
+
+_HEADER = [
+    "Chr",
+    "Gene",
+    "cell.type",
+    "pos",
+    "a0",
+    "a1",
+    "SNP",
+    "START",
+    "EAF",
+    "p",
+    "beta",
+    "se",
+]
+
+
+def _build_variant_key(chrom: int, pos: int, al1: str, al2: str) -> tuple[str, str]:
+    """Return ordered pair of variant id strings for a locus (forward and reverse).
+
+    Used to deduplicate the same physical SNP when alleles are swapped.
+
+    Example:
+        >>> _build_variant_key(20, 100, "A", "G")
+        ('chr20:100:A:G', 'chr20:100:G:A')
+    """
+    fwd = f"chr{chrom}:{pos}:{al1}:{al2}"
+    rev = f"chr{chrom}:{pos}:{al2}:{al1}"
+    return fwd, rev
+
+
+def _random_allele_pair(rng: random.Random) -> tuple[str, str]:
+    """Draw two distinct nucleotides uniformly from A/T/C/G.
+
+    Example:
+        >>> _random_allele_pair(random.Random(0))
+        ('T', 'C')
+    """
+    while True:
+        a1 = rng.choice(_ALLELES)
+        a2 = rng.choice(_ALLELES)
+        if a1 != a2:
+            return a1, a2
+
+
+def _generate_one_gene_rows(
+    rng: random.Random,
+    num_snps: int,
+    num_snps_gene: int,
+    gene_idx: int,
+    generated_variant_ids: set[str],
+) -> tuple[str, list[dict]]:
+    """Build table rows for a single gene; returns (phenotype_id, rows).
+
+    Example:
+        >>> r = random.Random(0)
+        >>> g, rows = _generate_one_gene_rows(r, 100, 3, 0, set())
+        >>> len(rows)
+        3
+    """
+    phenotype_id = f"ENSG00000{num_snps + gene_idx}"
+    pos_offset = gene_idx * _POS_OFFSET_PER_GENE
+    rows: list[dict] = []
+
+    for _ in range(num_snps_gene):
+        while True:
+            pos_local = rng.randrange(1, num_snps)
+            pos = pos_local + pos_offset
+            a1, a2 = _random_allele_pair(rng)
+
+            variant_id, variant_reverse_id = _build_variant_key(20, pos, a1, a2)
+
+            if variant_id not in generated_variant_ids and variant_reverse_id not in generated_variant_ids:
+                generated_variant_ids.add(variant_id)
+                generated_variant_ids.add(variant_reverse_id)
+                break
+
+        rows.append(
+            {
+                "Chr": 20,
+                "Gene": phenotype_id,
+                "cell.type": "Tgd",
+                "pos": pos,
+                "a0": a1,
+                "a1": a2,
+                "SNP": variant_id,
+                "START": rng.randrange(-500_000, 500_000),
+                "EAF": rng.random(),
+                "p": rng.random(),
+                "beta": rng.uniform(-1, 1),
+                "se": rng.uniform(0.001, 1),
+            }
+        )
+
+    return phenotype_id, rows
+
+
+def create_dummy_data(
+    num_snps: int,
+    num_snps_gene: int,
+    out_csv: str,
+    seed: Optional[int],
+    also_tsv: bool,
+) -> None:
+    """Write two gzipped TSVs with disjoint positions per gene, random A/T/C/G alleles, SNP = chr:pos:a0:a1.
+
+    Example:
+        ``create_dummy_data(10000, 2000, "dummy_out", seed=42, also_tsv=True)``
+        writes ``dummy_out_ENSG0000010000.tsv.gz`` (and optionally ``.tsv``) with varied alleles per row.
+    """
+    rng = random.Random(seed)
     num_genes = 2
+    generated_variant_ids: set[str] = set()
 
-    #num_genes = round(num_snps / num_snps_gene)
     for gene_idx in range(num_genes):
-        # Generate unique phenotype_id for this gene
-        phenotype_id = f"ENSG00000{num_snps + gene_idx}"
-        for _ in range(num_snps_gene):
-            # Ensure unique variant_id
-            while True:
-                pos = np.random.randint(1, num_snps)
-                a1 = np.random.choice(['A', 'T', 'C', 'G'])
-                a2 = np.random.choice(['A', 'T', 'C', 'G'])
-                while a1==a2:
-                    a1 = np.random.choice(['A', 'T', 'C', 'G'])
-                    a2 = np.random.choice(['A', 'T', 'C', 'G'])
-                
-                variant_id = f"chr20:{pos}:{a1}:{a2}"
-                variant_reverse_id = f"chr20:{pos}:{a2}:{a1}"
+        phenotype_id, rows = _generate_one_gene_rows(
+            rng, num_snps, num_snps_gene, gene_idx, generated_variant_ids
+        )
 
-                if variant_id not in generated_variant_ids and variant_reverse_id not in generated_variant_ids:
-                    generated_variant_ids.add(variant_id)
-                    generated_variant_ids.add(variant_reverse_id)
-                    break
-                
-            
-            # Generate other columns with dummy data
-            start_distance = np.random.randint(-500000, 500000)
-            a1s.append(a1)
-            a2s.append(a2)
-            af = np.random.uniform(0, 1)
-            ma_sample = np.random.randint(50, 200)
-            ma_count = np.random.randint(50, 300)
-            pval_nominal = np.random.uniform(0, 1)
-            slope = np.random.uniform(-1, 1)
-            slope_se = np.random.uniform(0.001, 1)
+        gz_path = f"{out_csv}_{phenotype_id}.tsv.gz"
+        with gzip.open(gz_path, "wt", encoding="utf-8", newline="") as gz_f:
+            w = csv.DictWriter(gz_f, fieldnames=_HEADER, delimiter="\t", lineterminator="\n")
+            w.writeheader()
+            w.writerows(rows)
+        print(f"Dummy data file created: {gz_path}")
 
-            # Append data to lists
-            gene_ids.append(phenotype_id)
-            variant_ids.append(variant_id)
-            start_distances.append(start_distance)
-            afs.append(af)
-            positions.append(pos)
-            ma_samples.append(ma_sample)
-            ma_counts.append(ma_count)
-            pval_nominals.append(pval_nominal)
-            slopes.append(slope)
-            slope_ses.append(slope_se)
+        if also_tsv:
+            tsv_path = f"{out_csv}_{phenotype_id}.tsv"
+            with open(tsv_path, "w", encoding="utf-8", newline="") as tsv_f:
+                w = csv.DictWriter(tsv_f, fieldnames=_HEADER, delimiter="\t", lineterminator="\n")
+                w.writeheader()
+                w.writerows(rows)
+            print(f"Uncompressed copy: {tsv_path}")
 
-        # Create a DataFrame
-        data = {
-        "Chr":20,
-        "Gene":gene_ids,
-        "cell.type": "Tgd",
-        "pos": positions,
-        "a0":a1,
-        "a1":a2,
-        "SNP": variant_ids,
-        "START": start_distances,
-        "EAF": afs,
-        "p": pval_nominals,
-        "beta": slopes,
-        "se": slope_ses
-        }
 
-        df = pd.DataFrame(data)
+def _parse_args() -> argparse.Namespace:
+    """Parse CLI arguments for the dummy-data generator."""
+    p = argparse.ArgumentParser(description="Generate two dummy QTL TSVs (random A/T/C/G alleles per row).")
+    p.add_argument("--num_snps", type=int, default=10000, help="Upper bound for random POS (exclusive)")
+    p.add_argument("--num_snps_gene", type=int, default=2000, help="SNPs per gene file")
+    p.add_argument("--out_csv", type=str, default="dummy_out", help="Output prefix")
+    p.add_argument("--seed", type=int, default=None, help="RNG seed (reproducible runs)")
+    p.add_argument("--also-tsv", action="store_true", help="Also write uncompressed .tsv files")
+    return p.parse_args()
 
-        # Save to a CSV file
-        df.to_csv(f"{out_csv}_{phenotype_id}.tsv.gz", index=False, sep="\t", compression="gzip")
 
-        print(f"Dummy data file created: {out_csv}")
-
-if __name__ == '__main__':
-    create_dummy_data()
+if __name__ == "__main__":
+    args = _parse_args()
+    create_dummy_data(
+        num_snps=args.num_snps,
+        num_snps_gene=args.num_snps_gene,
+        out_csv=args.out_csv,
+        seed=args.seed,
+        also_tsv=args.also_tsv,
+    )

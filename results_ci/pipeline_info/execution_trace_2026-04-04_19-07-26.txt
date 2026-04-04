@@ -1,0 +1,2 @@
+task_id	hash	native_id	name	status	exit	submit	duration	realtime	%cpu	peak_rss	peak_vmem	rchar	wchar
+1	95/242655	32953	EXPORT_SNP (1)	COMPLETED	0	2026-04-04 19:07:27.150	11.2s	11s	-	-	-	-	-

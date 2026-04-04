@@ -4,23 +4,29 @@ TileDB-sumstat is a Nextflow + Python toolkit for scalable ingestion and export 
 
 ## Table of Contents
 
-- [Requirements](#requirements)
-- [Pipeline Overview](#pipeline-overview)
-- [Usage with Nextflow](#usage-with-nextflow)
-  - [Ingestion](#ingestion)
-  - [Export](#export)
-    - [SNP-based Export](#snp-based-export)
-    - [Region-based Export](#region-based-export)
-    - [Traits Export](#traits-export)
-    - [Locusbreaker](#locusbreaker)
-    - [Metadata Export](#metadata-export)
-    - [Recompute Metadata](#recompute-metadata)
-- [Nextflow Modules](#nextflow-modules)
-- [Testing the Nextflow Pipeline](#testing-the-nextflow-pipeline)
-  - [Stub Tests (CI / no data required)](#stub-tests-ci--no-data-required)
-  - [Integration Test](#integration-test)
-- [Test Data](#test-data)
-- [Support and Contribution](#support-and-contribution)
+- [TileDB-sumstat](#tiledb-sumstat)
+  - [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Pipeline Overview](#pipeline-overview)
+  - [Usage with Nextflow](#usage-with-nextflow)
+    - [Ingestion](#ingestion)
+      - [Required Files](#required-files)
+      - [Parameters](#parameters)
+      - [Example](#example)
+    - [Export](#export)
+      - [Common Parameters](#common-parameters)
+      - [SNP-based Export](#snp-based-export)
+      - [Region-based Export](#region-based-export)
+      - [Traits Export](#traits-export)
+      - [Locusbreaker](#locusbreaker)
+      - [Metadata Export](#metadata-export)
+      - [Recompute Metadata](#recompute-metadata)
+  - [Nextflow Modules](#nextflow-modules)
+  - [Testing the Nextflow Pipeline](#testing-the-nextflow-pipeline)
+    - [Stub Tests (CI / no data required)](#stub-tests-ci--no-data-required)
+    - [Integration Test](#integration-test)
+  - [Test Data](#test-data)
+  - [Support and Contribution](#support-and-contribution)
 
 
 ---
@@ -325,13 +331,13 @@ To run a full integration test that actually executes the ingestion and export c
   echo "FILE,CELL,GENE,PHENO_VAR,N"
   echo "$(pwd)/example_data/dummy_out_ENSG0000010000.tsv.gz,Tgd,ENSG0000010000,1.5,4000"
   echo "$(pwd)/example_data/dummy_out_ENSG0000010001.tsv.gz,Tgd,ENSG0000010001,1.5,4000"
-} > /tmp/example_data_table_ci.csv
+} > example_data/example_data_table_ci.csv
 
 # Run ingestion (no container – uses local tdbsumstat)
 nextflow run main.nf \
   --ingestion true \
-  --file_path_ingestion /tmp/example_data_table_ci.csv \
-  --mapping_file "$(pwd)/example_data/mapping_file_test.csv" \
+  --file_path_ingestion example_data/example_data_table_ci.csv \
+  --mapping_file /example_data/mapping_file_test.csv \
   --type_sumstat qtl \
   --tiledb_name test_ci \
   --ingestion_chunk_files 2 \
