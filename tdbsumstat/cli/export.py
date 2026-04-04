@@ -1,3 +1,21 @@
+# This file is superseded by the tdbsumstat/cli/export/ package.
+# Python loads the package (directory with __init__.py) in preference to this file.
+# It is kept for reference only; all logic now lives in the export/ sub-modules:
+#   export/helpers.py    – common TileDB helpers
+#   export/snp.py        – SNP-based export
+#   export/regions.py    – region-based export
+#   export/locusbreaker.py – locusbreaker export
+#   export/metadata.py   – metadata export / recompute
+#   export/traits.py     – trait-based export
+#   export/command.py    – CLI command definition and routing
+#   export/__init__.py   – re-exports the `export` command
+
+from tdbsumstat.cli.export.command import export  # noqa: F401
+
+# ---------------------------------------------------------------------------
+# Legacy code kept below for historical reference only
+# ---------------------------------------------------------------------------
+
 import tiledb
 import click
 import cloup
@@ -14,7 +32,7 @@ help_doc = """
 Query TileDB database and export data.
 """
 
-@cloup.command("export", no_args_is_help=True, help=help_doc)
+@cloup.command("export_legacy", no_args_is_help=True, help=help_doc)
 @cloup.option_group(
     "Options for querying specific chromosomes, cells, genes or positions in the TileDB",
     cloup.option("--uri-path", default = None, type=str, help = "path of TileDB"),

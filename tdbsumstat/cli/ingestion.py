@@ -3,7 +3,7 @@ import numpy as np
 import os
 import click 
 import cloup
-from tdbsumstat.utils.harmonize_ingest import Harmonize
+from tdbsumstat.utils.ingest import Harmonize
 import pandas as pd
 import polars as pl
 

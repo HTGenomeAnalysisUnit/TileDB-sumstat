@@ -40,5 +40,175 @@ If you are running the pipeline with nextflow change the path where the conda en
 
 #### To check how to use the Nextflow pipeline for extracting and ingesting data please refer here [HERE](https://github.com/HTGenomeAnalysisUnit/TileDB-sumstat/blob/nextflow_branch/docs/README.md)
 
+---
 
+### Code structure
+
+The Python package lives under `tdbsumstat/` and is organised as follows:
+
+```
+tdbsumstat/
+├── main.py                  # CLI entry-point (registers ingest + export commands)
+├── cli/
+│   ├── ingestion.py         # `tdbsumstat ingest` CLI command
+│   └── export/              # `tdbsumstat export` CLI command (package)
+│       ├── __init__.py      # re-exports the `export` command
+│       ├── command.py       # CLI decorator + routing to handlers
+│       ├── helpers.py       # shared TileDB open/metadata helper
+│       ├── snp.py           # export by SNP list
+│       ├── regions.py       # export by genomic regions
+│       ├── locusbreaker.py  # locusbreaker wrapper
+│       ├── metadata.py      # metadata export / recompute
+│       └── traits.py        # bulk trait export
+└── utils/
+    ├── __init__.py          # acat_optimized, compute_pheno_variance, z_to_p_via_chi2
+    ├── harmonize_ingest.py  # backward-compat shim → re-exports from utils/ingest/
+    ├── ingest/              # ingestion pipeline (package)
+    │   ├── __init__.py      # Harmonize class + HarmonizationError
+    │   ├── errors.py        # HarmonizationError exception
+    │   ├── schema.py        # SchemaMixin  – TileDB array creation
+    │   ├── mapping.py       # MappingMixin – column-mapping CSV parsing
+    │   ├── harmonize.py     # HarmonizeMixin – data normalisation
+    │   ├── qc.py            # QCMixin       – optional gwaslab QC
+    │   ├── writer.py        # WriterMixin   – TileDB data writer
+    │   └── metadata.py      # MetadataMixin – metadata management
+    ├── locusbreaker.py      # pandas-based locusbreaker (legacy)
+    ├── locusbreaker_plpl.py # Polars-based locusbreaker (used by export)
+    └── update_metadata.py   # standalone metadata update utility
+scripts/
+    ├── create_metadata.py           # one-off metadata creation helper
+    ├── fix_json.py                  # one-off JSON repair helper
+    └── generate_table_cell_sumstat.py  # one-off table generation helper
+```
+
+#### Ingestion pipeline in detail
+
+The `Harmonize` class (in `tdbsumstat/utils/ingest/`) is composed from focused mixin classes:
+
+| Module | Mixin | Responsibility |
+|--------|-------|----------------|
+| `schema.py` | `SchemaMixin` | Create the TileDB sparse array schema |
+| `mapping.py` | `MappingMixin` | Parse the column-mapping CSV |
+| `harmonize.py` | `HarmonizeMixin` | Rename columns, handle alleles, compute p-values |
+| `qc.py` | `QCMixin` | Optional gwaslab-based QC checks |
+| `writer.py` | `WriterMixin` | Deduplicate and append data to TileDB |
+| `metadata.py` | `MetadataMixin` | Create, merge and export metadata JSON/CSV |
+
+A typical ingestion workflow (Python API):
+
+```python
+from tdbsumstat.utils.ingest import Harmonize
+import polars as pl
+
+h = Harmonize(
+    mapping_file="mapping.csv",
+    uri="my_tiledb",
+    type_sumstat="qtl",   # or "gwas"
+    pvar_file=None,
+    type_trait="quant",   # or "binary"
+    mac=None,
+    maf=None,
+    permuted=False,
+)
+
+# One-time setup
+h.create_tiledb()
+h.create_mapping()
+
+# Per-file loop
+for filepath, cell, gene in file_list:
+    sumstat = pl.read_csv(filepath, separator="\t", null_values="NA")
+    h.harmonize(sumstat=sumstat, cell=cell, gene=gene, n=n, pheno_var=pheno_var)
+    h.ingest_data(file_path=filepath)
+    h.create_metadata(file_path=filepath)
+
+# Finalise metadata
+h.merge_metadata_files()
+```
+
+---
+
+### Running tests
+
+Tests live in the `tests/` directory and use [pytest](https://pytest.org).
+
+```bash
+# Install dev dependencies
+pip install pytest pytest-cov
+
+# Run the full test suite
+python -m pytest tests/ -v
+
+# Run only ingestion tests
+python -m pytest tests/test_ingest.py -v
+
+# Run only export tests
+python -m pytest tests/test_export.py -v
+
+# Run with coverage report
+python -m pytest tests/ --cov=tdbsumstat --cov-report=term-missing
+```
+
+Test files:
+
+| File | What it tests |
+|------|---------------|
+| `tests/test_utils.py` | `acat_optimized`, `compute_pheno_variance`, `z_to_p_via_chi2` |
+| `tests/test_harmonize.py` | `Harmonize` class (legacy + backward-compat) |
+| `tests/test_ingest.py` | Each ingest mixin + end-to-end pipeline with example data |
+| `tests/test_export.py` | All export modules + CLI command routing |
+
+---
+
+### Testing the Nextflow pipeline
+
+#### Stub tests (no data required)
+
+Every Nextflow module has a `stub` block that creates placeholder output files
+instead of running the actual `tdbsumstat` commands. Stub tests validate the
+workflow DAG structure (channels, process I/O, publish dirs) without needing
+containers or real data.
+
+```bash
+# Install Nextflow first: https://www.nextflow.io/docs/latest/install.html
+
+nextflow run main.nf -profile test_ingest          -stub   # ingestion DAG
+nextflow run main.nf -profile test_export_snp      -stub   # SNP export DAG
+nextflow run main.nf -profile test_export_regions  -stub   # region export DAG
+nextflow run main.nf -profile test_export_traits   -stub   # trait export DAG
+nextflow run main.nf -profile test_export_lb       -stub   # locusbreaker DAG
+nextflow run main.nf -profile test_recompute_meta  -stub   # recompute metadata DAG
+```
+
+These stub tests are run automatically on every push and pull request via
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+#### Full integration test (local Python + Nextflow)
+
+```bash
+# 1. Install tdbsumstat
+pip install -e .
+
+# 2. Build a data table with absolute paths
+{
+  echo "FILE,CELL,GENE,PHENO_VAR,N"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010000.tsv.gz,Tgd,ENSG0000010000,1.5,4000"
+  echo "$(pwd)/example_data/dummy_out_ENSG0000010001.tsv.gz,Tgd,ENSG0000010001,1.5,4000"
+} > /tmp/example_data_table_ci.csv
+
+# 3. Run ingestion (uses local Python – no container needed)
+nextflow run main.nf \
+  --ingestion true \
+  --file_path_ingestion /tmp/example_data_table_ci.csv \
+  --mapping_file "$(pwd)/example_data/mapping_file_test.csv" \
+  --type_sumstat qtl \
+  --tiledb_name test_ci \
+  --ingestion_chunk_files 2 \
+  --maf 0 --mac 0 \
+  --outdir ./results_ci \
+  -process.container null \
+  -ansi-log false
+```
+
+See [`docs/README.md`](docs/README.md) for the full Nextflow parameter reference.
 

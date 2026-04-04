@@ -1,26 +1,32 @@
-process RECOMPUTE_META{
+#!/usr/bin/env nextflow
+
+process RECOMPUTE_META {
     label 'process_high'
     publishDir "${params.outdir}/gwas_and_loci_tables/", mode: params.publish_dir_mode
 
-
-        // Define input
+    // Define input
     input:
-    tuple  val(batch_index), path(traits_list_table)
-  
+    tuple val(batch_index), path(traits_list_table)
+
     // Define output
     output:
-        path("*.csv"), emit:ltbd_traits, optional: true
-    
+    path("*.csv"), emit: ltbd_traits, optional: true
+
     // Define the shell script to execute
     script:
-        """
-        tdbsumstat \
-        export \
-        --recompute-meta \
-        --mac ${params.mac} \
-        --trait-list ${traits_list_table} \
-        --uri-path ${params.uri_path} \
-        --batch-name ${batch_index} \
-        --type-sumstat ${params.type_sumstat}
-        """
+    """
+    tdbsumstat \
+    export \
+    --recompute-meta \
+    --mac ${params.mac} \
+    --trait-list ${traits_list_table} \
+    --uri-path ${params.uri_path} \
+    --batch-name ${batch_index} \
+    --type-sumstat ${params.type_sumstat}
+    """
+
+    stub:
+    """
+    touch stub_recompute_${batch_index}.csv
+    """
 }

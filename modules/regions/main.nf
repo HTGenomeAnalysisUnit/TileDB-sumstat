@@ -1,29 +1,35 @@
 #!/usr/bin/env nextflow
 
 process EXPORT_REGIONS {
-  label "process_high"
-  //conda '/software/cardinal_analysis/ht/conda_envs/tdbsumstat'
+    label "process_high"
+    publishDir "${params.outdir}/results/regions_export/", mode: params.publish_dir_mode
 
-  publishDir "${params.outdir}/results/gwas_and_loci_tables/", mode: params.publish_dir_mode
+    // Define input
+    input:
+    tuple val(batch_index), path(regions_table)
 
+    // Define output
+    output:
+    path("*.csv"), emit: regions_output, optional: true
 
-// Define input
-  input:
-  tuple  val(batch_index), path(traits_list_table)
-
-// Define output
-  output:
-    path("*_interval.csv"), emit:locus_breaker_tdb_intervals, optional: true
-    tuple path("dummy_index"), path("*_segment.csv"), emit:locus_breaker_tdb_segments, optional: true
-
-// Define the shell script to execute
-  script:
+    // Define the shell script to execute
+    script:
     """
-    tdbsumstat --workers ${params.workers} \
-      export \
-      --table_regions ${traits_list_table} \
+    tdbsumstat export \
+      --table-regions ${regions_table} \
       --uri-path ${params.uri_path} \
-      --type-sumstat ${params.tiledb_lb_typesumstat} \
-      --batch-name ${batch_index}
+      --type-sumstat ${params.type_sumstat} \
+      --out ${params.out}_${batch_index} \
+      --attr ${params.attrs}
+
+    # Ensure output has .csv extension
+    for f in ${params.out}_${batch_index}*; do
+        [ -f "\$f" ] && [[ "\${f}" != *.csv ]] && mv "\$f" "\${f}.csv"
+    done
+    """
+
+    stub:
+    """
+    touch stub_regions_${batch_index}.csv
     """
 }

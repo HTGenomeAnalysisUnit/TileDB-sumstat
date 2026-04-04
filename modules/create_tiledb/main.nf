@@ -7,6 +7,7 @@ process CREATE_TILEDB {
     input:
     path(mapping_file)
     val dummy
+
     // Define output
     output:
     path "TileDB_${params.tiledb_name}", emit: tiledb_storage
@@ -20,6 +21,12 @@ process CREATE_TILEDB {
     --mapping-file ${mapping_file} \
     --type-sumstat ${params.type_sumstat}
 
+    touch dummy_file
+    """
+
+    stub:
+    """
+    mkdir -p TileDB_${params.tiledb_name}
     touch dummy_file
     """
 }
