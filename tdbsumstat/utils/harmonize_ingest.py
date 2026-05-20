@@ -469,7 +469,7 @@ class Harmonize:
                 df_trait = self.chunk_pl.filter(pl.col("TRAIT") == trait)
                 pheno_var = compute_pheno_variance(df_trait, self.type_trait)
                 n_val = df_trait["N"].unique().to_list()[0]
-                min_p = df_trait["P"].min().to_list()[0]
+                min_p = df_trait["P"].min()
             
                 trait_metadata = {
                     "N": float(n_val),

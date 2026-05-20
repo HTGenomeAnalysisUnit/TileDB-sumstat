@@ -80,7 +80,7 @@ def export(
         df_meta = pl.DataFrame(rows)  
         df_meta = df_meta.with_columns(pl.col("CHR").cast(pl.UInt16))
     else:
-        for trait in metadata["trait"]:
+        for trait in metadata["traits"]:
             rows.append({
                     "TRAIT": trait,
                     **metadata[trait]
@@ -134,12 +134,12 @@ def export(
                     region.to_csv(out, mode='a', index = False, header = False)
     elif locusbreaker:
         print("Starting LocusBreaker")
-        def query_spec(uri_path, chrom:int, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl"):
+        def query_spec(uri_path, chrom:int, trait: str = None, cell: str = None, gene: str = None, type_sumstat:str = "scqtl", region = slice(None)):
             with tiledb.open(uri_path, mode="r") as tiledb_data:
                 if type_sumstat == "gwas":
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','TRAIT','POS']).df[chrom, trait, region]
                 else:
-                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], return_arrow=True).df[chrom, cell ,gene , :]
+                    tiledb_filtered = tiledb_data.query(dims=['CHR','CELL','GENE','POS'], return_arrow=True).df[chrom, cell ,gene , region]
                 return tiledb_filtered
             #return locusbreaker_plpl(tiledb_data, maf = maf, pvalue_sig=pvalue_sig, pvalue_limit=pvalue_limit, locus_max_size = locus_max_size, 
             #                         hole_size=hole_size, cis_trans_lb = cis_trans_lb, type_sumstat = type_sumstat, metadata = metadata)
@@ -149,12 +149,14 @@ def export(
                 if "SIG" in traits.columns:
                     pvalue_sig = trait["SIG"]
                     pvalue_limit = trait["LIM"]
-
+                region = slice(None)
+                if "START" in traits.columns and "END" in traits.columns:
+                    region=slice(trait["START"],trait["END"])
                 if type_sumstat == "gwas":
-                    query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat)
+                    query = query_spec(uri_path, trait["CHR"], trait=trait["TRAIT"], type_sumstat=type_sumstat, region=region)
                 else:
                     cell,genes = trait["TRAIT"].split(":")
-                    query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat)
+                    query = query_spec(uri_path, trait["CHR"], cell=cell, gene=genes, type_sumstat=type_sumstat, region=region)
 
                 result = locusbreaker_plpl(query,
                                      maf=maf_lb, 
