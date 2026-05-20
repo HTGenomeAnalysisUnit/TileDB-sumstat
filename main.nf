@@ -12,27 +12,34 @@ workflow {
         Channel.fromPath(params.file_path_ingestion, checkIfExists:true)
         .splitText(by: params.ingestion_chunk_files, keepHeader: true, file: true)
         .set { list_files }
+        
         mapping_file = Channel.fromPath(params.mapping_file, checkIfExists:true)
-        def myFolder = file("${params.outdir}/TileDB/${params.tiledb_name}")
-        if(!myFolder.exists()){
+        
+        // Check if TileDB already exists
+        def tiledb_path = "${params.outdir}/TileDB/${params.tiledb_name}"
+        def tiledb_exists = file(tiledb_path).exists()
+        
+        if (!tiledb_exists) {
+            // Create TileDB if it doesn't exist
             create_tiledb = CREATE_TILEDB(mapping_file, Channel.of('dummy'))
             tiledb_storage = create_tiledb.tiledb_storage
-        }
-        else{
-            tiledb_storage = myFolder
+            dummy_file = create_tiledb.dummy_file
+        } else {
+            // Use existing TileDB
+            tiledb_storage = Channel.fromPath(tiledb_path)
+            dummy_file = Channel.fromPath("${tiledb_path}/.dummy").ifEmpty { 
+                Channel.of(file("${tiledb_path}/.dummy").tap { it.text = "dummy" }) 
+            }
         }
         
         // Pass the TileDB array through all ingestion steps
-        ingestion_results = INGEST_DATA(tiledb_storage, list_files, mapping_file, create_tiledb.dummy_file)
-        // Collect all completion signals
+        ingestion_results = INGEST_DATA(tiledb_storage, list_files, mapping_file, dummy_file)
+        
+        // Rest of your workflow...
         all_metadata_parts = ingestion_results.metadata_parts.collect()
         all_ingestion_done = ingestion_results.ingestion_done.collect()
-        // Use the updated TileDB array from the last ingestion process
-        // Get one instance of the updated TileDB array (they should all be the same)
         updated_tiledb = ingestion_results.tiledb_updated.first()
-        // After all ingestion is done, merge metadata using the updated TileDB
         merged_metadata = MERGE_METADATA(updated_tiledb, mapping_file, all_metadata_parts, all_ingestion_done) 
-        // The final output will be in merged_metadata.tiledb_final
     }
     if (params.export){
         if (params.snp) {

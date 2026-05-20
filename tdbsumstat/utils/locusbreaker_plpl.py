@@ -126,13 +126,13 @@ def locusbreaker_plpl(
         all_snp_df = all_snp_df.with_columns(TYPE=pl.lit("gwas"))
     else:
         trait_res_df = significant.with_columns(
-            TRAIT=pl.col("CELL") + ":" + pl.col("GENE")
+            TRAIT=pl.col("CELL") + ";" + pl.col("GENE")
         ).select(
             ["TRAIT", "start_pos", "end_pos", "POS", "P"] + [c for c in df.columns if c not in ["POS", "P"]]
         ).rename({"start_pos": "START", "end_pos": "END", "POS": "SNP_POS", "P": "SNP_PVAL"})
         
         all_snp_df = all_snps.with_columns(
-            TRAIT=pl.col("CELL") + ":" + pl.col("GENE"),
+            TRAIT=pl.col("CELL") + ";" + pl.col("GENE"),
             REGION=pl.format("{}:{}:{}", pl.col("CHR"), pl.col("start_pos"), pl.col("end_pos"))
         ).select(
             ["TRAIT", "REGION", "POS", "P"] + [c for c in df.columns if c not in ["POS", "P"]]
