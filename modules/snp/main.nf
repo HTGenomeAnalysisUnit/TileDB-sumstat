@@ -1,5 +1,5 @@
 process EXPORT_SNP {
-    label "process_high"
+    label "process_medium"
 
     // Define input
     input:
