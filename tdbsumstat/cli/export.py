@@ -249,7 +249,10 @@ def export(
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
                     pl.col("N").first().alias("N"),
-                    pl.min("P").alias("MIN_P")
+                    pl.min("P").alias("MIN_P"),
+                    pl.min("P").alias("MIN_BETA"),
+                    pl.col("SNP").sort_by("P").first().alias("MIN_P_SNP"),
+                    pl.col("BETA").sort_by("P").first().alias("MIN_P_BETA")
                 ])
                 chr_gene_agg = chr_gene_agg.with_columns(
                     pl.col("ACAT_LIST").list.first().alias("ACAT"),
@@ -274,6 +277,7 @@ def export(
                     return_incomplete=True,
                     attrs=attr.split(",")
                 ).df[:, cells, gene , :]
+
 
             for chunk in tiledb_iterator:
                 chunk.to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = False)
