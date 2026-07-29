@@ -267,7 +267,7 @@ def export(
                     attrs=attr.split(",")
                 ).df[:, trait_list_np , :]
             else:
-                trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split(':', expand = True)
+                trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split('~', expand = True)
                 cells = trait_list_pd['cell'].to_list()
                 gene = trait_list_pd['gene'].to_list()
                 tiledb_iterator = A.query(
