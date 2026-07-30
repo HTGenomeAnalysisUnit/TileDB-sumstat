@@ -33,7 +33,6 @@ WORKDIR /src
 # Create the environment (example env name: tdbsumstat)
 RUN /usr/local/bin/micromamba create -y -p $MAMBA_ROOT_PREFIX/envs/tdbsumstat --file $CONDA_LOCK \
     && /usr/local/bin/micromamba clean --all -y
-RUN apk add --no-cache bash
-
+RUN apk add --no-cache bash libstdc++
 # Activate via micromamba shell hook and run make install in bash
 RUN /usr/local/bin/micromamba run -p $MAMBA_ROOT_PREFIX/envs/tdbsumstat make install

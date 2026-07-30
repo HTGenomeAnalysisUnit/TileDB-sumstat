@@ -1,2 +1,0 @@
-class HarmonizationError(Exception):
-    pass

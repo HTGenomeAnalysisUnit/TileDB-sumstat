@@ -1,3 +1,2 @@
-TRAIT
-Tgd:ENSG0000010000
-Tgd:ENSG0000010001
+FILE,N
+/nfs/users/nfs_b/ba13/TileDB-sumstat/example_data/dummy_out_ENSG0000010001.tsv.gz,2000
