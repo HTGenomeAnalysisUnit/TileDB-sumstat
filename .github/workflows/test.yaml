@@ -23,7 +23,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v4
         with:
           activate-environment: tdbsumstat
-          environment-file: base_environment_docker.yml
+          environment-file: base_environment.yml
           auto-update-conda: true
           auto-activate-base: false
           python-version: ${{ matrix.python-version }}
