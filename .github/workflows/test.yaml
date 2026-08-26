@@ -32,7 +32,7 @@ jobs:
       - name:  Install project
         shell: bash -el {0}
         run: |
-          make dependencies_dev
+          make dependencies
           make install
 
       - name: Run test
