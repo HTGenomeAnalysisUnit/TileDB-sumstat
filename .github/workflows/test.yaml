@@ -1,0 +1,41 @@
+name: test
+
+on: [push,pull_request]
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Clear conda cache
+        run: conda clean --all -y
+
+      - name: Conda setup
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          activate-environment: tdbsumstat
+          environment-file: base_environment_docker.yml
+          auto-update-conda: true
+          auto-activate-base: false
+          python-version: ${{ matrix.python-version }}
+          miniforge-version: latest
+
+      - name:  Install project
+        shell: bash -el {0}
+        run: |
+          make dependencies_dev
+          make install
+
+      - name: Run test
+        shell: bash -el {0}
+        run: |
+          make test-unit
