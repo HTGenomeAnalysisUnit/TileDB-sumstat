@@ -3,3 +3,4 @@ dist/*
 work/
 results/
 .nextflow*
+.coverage

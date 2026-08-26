@@ -34,7 +34,6 @@ class Harmonize:
         self.mac = mac
         self.maf = maf
         self.permuted = permuted
-        print(self.permuted)
     
     def create_mapping(self):
         df = pd.read_csv(self.mapping_file, header=None, names=["key", "value"])

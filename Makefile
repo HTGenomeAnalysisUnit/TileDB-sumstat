@@ -17,6 +17,12 @@ clean:
 	find . -type d -name '__pycache__' -exec rm -rf {} +
 	rm -rf dist build
 
+test-all:
+	pytest --cov=tdbsumstat --cov-report=term-missing
+
+test-unit:
+	pytest tests/unit
+
 dependencies:
 	poetry install --no-root
 
