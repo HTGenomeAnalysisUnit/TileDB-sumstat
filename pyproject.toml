@@ -5,6 +5,7 @@ description = "TileDB summary statistics utilities"
 authors = ["Bruno Ariano <bruno.ariano.87@gmail.com>"]
 readme = "README.md"
 
+
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
 appdirs = ">=1.4.4,<2.0.0"
