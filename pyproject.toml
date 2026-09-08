@@ -44,3 +44,17 @@ DEP002 = ["pyarrow"]
 
 [tool.poetry.scripts]
 tdbsumstat = "tdbsumstat.main:main"  # Adjust to your actual CLI path
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.mypy]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "src",
+]
