@@ -14,6 +14,34 @@ help_doc = """
 Query TileDB database and export data.
 """
 
+def split_query_fields(array, attr: str):
+    """Split the comma separated list given to --attr into TileDB dimensions and attributes.
+
+    Dimensions are always returned by a query and cannot be part of the ``attrs``
+    selection, so they are separated out here. Unknown names are rejected upfront
+    instead of failing later with an opaque TileDB error.
+
+    It returns the requested fields in the order given by the user, then the dimensions
+    and the attributes among them.
+
+    Example (array with dimensions CHR, CELL, GENE, POS):
+        split_query_fields(array, "SNPID,CHR,POS,BETA")
+        -> (["SNPID", "CHR", "POS", "BETA"], ["CHR", "POS"], ["SNPID", "BETA"])
+    """
+    requested = [field.strip() for field in attr.split(",") if field.strip()]
+    dim_names = [array.schema.domain.dim(i).name for i in range(array.schema.domain.ndim)]
+    attr_names = [array.schema.attr(i).name for i in range(array.schema.nattr)]
+    unknown = [field for field in requested if field not in dim_names + attr_names]
+    if unknown:
+        raise click.ClickException(
+            f"Unknown field(s) passed to --attr: {','.join(unknown)}. "
+            f"Available dimensions: {','.join(dim_names)}. "
+            f"Available attributes: {','.join(attr_names)}."
+        )
+    return (requested,
+            [field for field in requested if field in dim_names],
+            [field for field in requested if field in attr_names])
+
 @cloup.command("export", no_args_is_help=True, help=help_doc)
 @cloup.option_group(
     "Options for querying specific chromosomes, cells, genes or positions in the TileDB",
@@ -263,11 +291,12 @@ def export(
     else:
         trait_list_pd = pd.read_csv(trait_list)
         with tiledb.open(uri_path, mode="r") as A:
+            requested_fields, requested_dims, requested_attrs = split_query_fields(A, attr)
             if type_sumstat == "gwas":
                 trait_list_np = trait_list_pd["TRAIT"].to_list()
                 tiledb_iterator = A.query(
                     return_incomplete=True,
-                    attrs=attr.split(",")
+                    attrs=requested_attrs
                 ).df[:, trait_list_np , :]
             else:
                 trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split('~', expand = True)
@@ -275,10 +304,13 @@ def export(
                 gene = trait_list_pd['gene'].to_list()
                 tiledb_iterator = A.query(
                     return_incomplete=True,
-                    attrs=attr.split(",")
+                    attrs=requested_attrs
                 ).df[:, cells, gene , :]
 
-
+            # Dimensions are always exported, so the ones not listed in --attr are kept in
+            # front of the requested columns, which follow the order given by the user
+            all_dims = [A.schema.domain.dim(i).name for i in range(A.schema.domain.ndim)]
+            columns = [dim for dim in all_dims if dim not in requested_dims] + requested_fields
             for chunk in tiledb_iterator:
-                chunk.to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = False)
+                chunk[columns].to_csv(f"{out}_{batch_name}.csv", mode="a", index=False, header = False)
         print(f"Saved filtered summary statistics in {out}")
