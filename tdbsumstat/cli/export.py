@@ -277,7 +277,10 @@ def export(
                         return_dtype=pl.Float64
                     ).alias("ACAT_LIST"),
                     pl.col("N").first().alias("N"),
-                    pl.min("P").alias("MIN_P")
+                    pl.min("P").alias("MIN_P"),
+                    pl.min("P").alias("MIN_BETA"),
+                    pl.col("SNP").sort_by("P").first().alias("MIN_P_SNP"),
+                    pl.col("BETA").sort_by("P").first().alias("MIN_P_BETA")
                 ])
                 chr_gene_agg = chr_gene_agg.with_columns(
                     pl.col("ACAT_LIST").list.first().alias("ACAT"),
@@ -296,7 +299,7 @@ def export(
                     attrs=requested_attrs
                 ).df[:, trait_list_np , :]
             else:
-                trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split(':', expand = True)
+                trait_list_pd[['cell','gene']] = trait_list_pd['TRAIT'].str.split('~', expand = True)
                 cells = trait_list_pd['cell'].to_list()
                 gene = trait_list_pd['gene'].to_list()
                 tiledb_iterator = A.query(

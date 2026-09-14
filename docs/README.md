@@ -170,13 +170,18 @@ array, so `qtl` and `eqtl` behave identically.
 ##### Trait list
 
 A CSV file with a `TRAIT` column; any other column is ignored. For GWAS arrays `TRAIT` is the
-trait name used at ingestion, for single-cell QTL arrays it is `CELL:GENE`:
+trait name used at ingestion, for single-cell QTL arrays it is `CELL~GENE` (the cell type and
+the gene separated by a tilde):
 
 ```csv
 TRAIT
-Tgd:ENSG0000010000
-Tgd:ENSG0000010001
+Tgd~ENSG0000010000
+Tgd~ENSG0000010001
 ```
+
+> Careful: the tilde is specific to the trait export. The SNP export, the region export and
+> Locusbreaker still expect their cell type and gene to be separated by a colon (`CELL:GENE`),
+> so the same list file cannot be reused across them as is.
 
 The list is split into chunks of `--tiledb_batch_size` rows and one job is submitted per chunk,
 so a list of thousands of genes is exported in parallel.
@@ -200,14 +205,13 @@ location is controlled by `--outdir`.
 #### Example:
 ```bash
 PIPELINE="/path/to/TileDB-sumstat/main.nf"
-CONFIG="/path/to/sanger_profile.config"
 
-TILEDB_PATH="/path/to/TileDB_tiledb_ukbb_celltype2_f3_16_12_25"
-TRAIT_CSV="./TileDB_tiledb_ukbb_celltype2_f3_16_12_25_metadata_20perc_expr_genes.csv"
+TILEDB_PATH="/path/to/tiledb_array"
+TRAIT_CSV="/path/to/trait_list.csv"
 
 ATTRS="SNPID,CHR,POS,DIST,EAF,BETA,SE,P"
 TYPE_SUMSTAT="qtl"
-OUT_PREFIX="ukbb_celltype2"
+OUT_PREFIX="trait_export"
 OUTDIR="./results"
 
 nextflow run "$PIPELINE" \
@@ -219,10 +223,12 @@ nextflow run "$PIPELINE" \
   --outdir "$OUTDIR" \
   --type_sumstat "$TYPE_SUMSTAT" \
   --tiledb_batch_size 100 \
-  -c "$CONFIG" \
-  -profile sanger \
+  -profile singularity \
   -resume
 ```
+
+On an HPC cluster, add your institutional configuration with `-c /path/to/your.config` and the
+matching `-profile`.
 
 Quick Test:
 ```bash
