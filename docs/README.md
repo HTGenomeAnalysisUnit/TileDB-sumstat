@@ -11,6 +11,7 @@ TileDB-sumstat is a Nextflow + Python toolkit for scalable ingestion and export 
   - [Export](#export)
     - [SNP-based Export](#snp-based-export)
     - [Region-based Export](#region-based-export)
+    - [Trait-based Export](#trait-based-export)
     - [Locusbreaker](#locusbreaker)
 - [Test Data](#test-data)
 - [Support and Contribution](#support-and-contribution)
@@ -41,7 +42,7 @@ TileDB-sumstat implements two main workflows executed in separate steps:
 2. **Export** — Query the TileDB array and export results by:
    - SNP
    - Genomic region
-   - Entire summary statistics
+   - Trait (the entire summary statistics of a list of traits or cell type/gene pairs)
    - Clumping using the "Locusbreaker" algorithm
 
 The program can be used with Nextflow or as standalone Python utilities.
@@ -106,7 +107,11 @@ Query and export data from the TileDB array.
 - --type_sumstat (type of summary statistics, either gwas or qtl for single cell)
 
 **Optional**:
-- --attrs (attributes to export, e.g., "BETA,SE,PVAL,EAF,A1,A2")
+- --attrs (attributes to export, e.g., "BETA,SE,P,EAF,SNPID")
+
+> Note: the SNP export reads the array location from `--tiledb_path`, while the trait export
+> and Locusbreaker read it from `--uri_path`. The trait export and Locusbreaker also run
+> without `--export`, which only gates the SNP export.
 
 #### SNP-based Export
 
@@ -138,6 +143,90 @@ nextflow run main.nf -profile singularity --export --tiledb_path /path/to/tiledb
 Quick Test:
 ```bash
 nextflow run main.nf -profile test_export_lb,singularity
+```
+
+#### Trait-based Export
+
+Export the complete summary statistics of a list of traits (GWAS) or of a list of cell
+type/gene pairs (single-cell QTL). Every association of every trait in the list is exported,
+so use the SNP or region export instead when only part of a signal is needed.
+
+**Required:**
+- --export_traits (flag to enable the trait export)
+- --uri_path (path to the TileDB array)
+- --list_traits (path to the trait list, the file name must end in `.csv`)
+- --type_sumstat (either gwas or qtl for single cell)
+
+**Optional:**
+- --attrs (columns to export, default "P,SNPID,EAF,BETA,SE")
+- --out (file name prefix of the exported tables, default "out")
+- --tiledb_batch_size (number of traits exported per parallel job, default 4)
+- --outdir (directory where results are published, default "./results")
+
+The trait export does not need the `--export` flag, and it reads the array from `--uri_path`
+rather than `--tiledb_path`. Any `--type_sumstat` value other than `gwas` is handled as a QTL
+array, so `qtl` and `eqtl` behave identically.
+
+##### Trait list
+
+A CSV file with a `TRAIT` column; any other column is ignored. For GWAS arrays `TRAIT` is the
+trait name used at ingestion, for single-cell QTL arrays it is `CELL:GENE`:
+
+```csv
+TRAIT
+Tgd:ENSG0000010000
+Tgd:ENSG0000010001
+```
+
+The list is split into chunks of `--tiledb_batch_size` rows and one job is submitted per chunk,
+so a list of thousands of genes is exported in parallel.
+
+##### Exported columns
+
+`--attrs` accepts both dimensions and attributes of the array:
+
+- dimensions: `CHR`, `CELL`, `GENE`, `POS` (QTL) or `CHR`, `TRAIT`, `POS` (GWAS)
+- attributes: `SNPID`, `RSID`, `EAF`, `BETA`, `SE`, `P` and, for QTL arrays, `DIST`
+
+Alleles are not stored as separate columns, they are part of `SNPID` (`CHR:POS:A1:A2`).
+Asking for a name that does not exist in the array stops the job with the list of valid names.
+
+Each job writes one CSV per batch, `<out>_<batch index>.csv`, published under
+`${outdir}/gwas_and_loci_tables/`. The files have **no header line**: the columns are the
+dimensions that were not listed in `--attrs`, followed by the columns of `--attrs` in the order
+they were given. Note that `--out` is a file name prefix and not a directory, the output
+location is controlled by `--outdir`.
+
+#### Example:
+```bash
+PIPELINE="/path/to/TileDB-sumstat/main.nf"
+CONFIG="/path/to/sanger_profile.config"
+
+TILEDB_PATH="/path/to/TileDB_tiledb_ukbb_celltype2_f3_16_12_25"
+TRAIT_CSV="./TileDB_tiledb_ukbb_celltype2_f3_16_12_25_metadata_20perc_expr_genes.csv"
+
+ATTRS="SNPID,CHR,POS,DIST,EAF,BETA,SE,P"
+TYPE_SUMSTAT="qtl"
+OUT_PREFIX="ukbb_celltype2"
+OUTDIR="./results"
+
+nextflow run "$PIPELINE" \
+  --export_traits \
+  --uri_path "$TILEDB_PATH" \
+  --list_traits "$TRAIT_CSV" \
+  --attrs "$ATTRS" \
+  --out "$OUT_PREFIX" \
+  --outdir "$OUTDIR" \
+  --type_sumstat "$TYPE_SUMSTAT" \
+  --tiledb_batch_size 100 \
+  -c "$CONFIG" \
+  -profile sanger \
+  -resume
+```
+
+Quick Test:
+```bash
+nextflow run main.nf -profile test_export_traits,singularity
 ```
 
 #### Locusbreaker
